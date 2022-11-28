@@ -13,11 +13,16 @@ export function View(props, ref) {
   useMemo(() => {
     ref({
       user: {},
-      fileId: {},
+      get fileId(){
+        return window._xxxx
+      },
       getFileContent() {
 ///TODO
       }, save() {
 ////TODO
+      },
+      publish(){
+
       }
     })
   }, [])
