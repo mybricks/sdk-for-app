@@ -18,7 +18,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   const { children, extName, className = '' } = props;
 	const [content, setContent] = useState<FileContent | null>(null);
 	const user = useMemo(() => safeParse(cookies['mybricks-login-user']), []);
-	const fileId = useMemo(() => Number(getUrlParam('fileId') ?? '0'), []);
+	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
 	
 	useMemo(() => {
 		axios({
