@@ -16,8 +16,33 @@ const API_SUCCESS_CODE = 1;
  */
 const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   const { children, extName, className = '' } = props;
+	const [content, setContent] = useState<FileContent | null>(null);
+	const [config, setConfig] = useState<Record<string, unknown>>({});
 	const user = useMemo(() => safeParse(cookies['mybricks-login-user']), []);
 	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
+	
+	useMemo(() => {
+		Promise.all([
+			axios({
+				method: 'get',
+				url: '/api/workspace/getFullFile',
+				params: { userId: user.email, fileId }
+			}),
+			axios({ method: 'get', url: '/api/config/get' })
+		]).then(([{ data }, { data: configData }]) => {
+			if (data.code === API_SUCCESS_CODE) {
+				setContent(data.data);
+			} else {
+				message.error(`获取页面数据发生错误：${data.message}`);
+			}
+			
+			if (configData.code === API_SUCCESS_CODE) {
+				setConfig(typeof configData.data.config === 'string' ? safeParse(configData.data.config) : configData.data.config);
+			} else {
+				message.error(`获取全局配置项发生错误：${configData.message}`);
+			}
+		})
+	}, []);
 	
   useImperativeHandle(ref, () => {
     return {
@@ -25,19 +50,11 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 	    get fileId() {
 		    return fileId;
 	    },
-	    getFileContent() {
-		    return axios({
-			    method: 'get',
-			    url: '/api/workspace/getFullFile',
-			    params: { userId: user.email, fileId }
-		    }).then(({ data }) => {
-			    if (data.code === API_SUCCESS_CODE) {
-				    return Promise.resolve(data.data);
-			    } else {
-				    message.error(`获取页面数据发生错误：${data.message}`);
-						return Promise.reject();
-			    }
-		    });
+	    get fileContent() {
+				return content;
+	    },
+	    get globalConfig() {
+				return config;
 	    },
 	    save(params, config) {
 		    return axios({
@@ -76,9 +93,9 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 						return Promise.reject(data.message);
 			    }
 		    })
-	    }
+	    },
     };
-  }, [user, fileId, extName]);
+  }, [user, fileId, extName, content, config]);
 
   return (
     <div className={`${css.view} ${className}`}>

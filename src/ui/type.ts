@@ -35,7 +35,8 @@ export interface ViewRef {
 		email: string;
 		id: number;
 	};
+	fileContent: FileContent | null;
+	globalConfig: Record<string, unknown>;
 	save(params: Record<string, unknown>, config?: { skipMessage?: boolean }): Promise<void>;
 	publish(params: PublishParams, config?: { skipMessage?: boolean }): Promise<void>;
-	getFileContent(): Promise<FileContent>;
 }
