@@ -16,23 +16,8 @@ const API_SUCCESS_CODE = 1;
  */
 const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   const { children, extName, className = '' } = props;
-	const [content, setContent] = useState<FileContent | null>(null);
 	const user = useMemo(() => safeParse(cookies['mybricks-login-user']), []);
 	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
-	
-	useMemo(() => {
-		axios({
-			method: 'get',
-			url: '/api/workspace/getFullFile',
-			params: { userId: user.email, fileId }
-		}).then(({ data }) => {
-			if (data.code === API_SUCCESS_CODE) {
-				setContent(data.data);
-			} else {
-				message.error(`获取页面数据发生错误：${data.message}`);
-			}
-		})
-	}, []);
 	
   useImperativeHandle(ref, () => {
     return {
@@ -40,8 +25,19 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 	    get fileId() {
 		    return fileId;
 	    },
-	    get fileContent() {
-		    return content;
+	    getFileContent() {
+		    return axios({
+			    method: 'get',
+			    url: '/api/workspace/getFullFile',
+			    params: { userId: user.email, fileId }
+		    }).then(({ data }) => {
+			    if (data.code === API_SUCCESS_CODE) {
+				    return Promise.resolve(data.data);
+			    } else {
+				    message.error(`获取页面数据发生错误：${data.message}`);
+						return Promise.reject();
+			    }
+		    });
 	    },
 	    save(params, config) {
 		    return axios({
@@ -82,7 +78,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 		    })
 	    }
     };
-  }, [user, fileId, content, extName]);
+  }, [user, fileId, extName]);
 
   return (
     <div className={`${css.view} ${className}`}>
