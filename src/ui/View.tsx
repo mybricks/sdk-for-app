@@ -37,7 +37,8 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 			}
 			
 			if (configData.code === API_SUCCESS_CODE) {
-				setConfig(typeof configData.data.config === 'string' ? safeParse(configData.data.config) : configData.data.config);
+				const config = configData.data?.config;
+				setConfig(typeof config === 'string' ? safeParse(config) : (config || {}));
 			} else {
 				message.error(`获取全局配置项发生错误：${configData.message}`);
 			}
