@@ -22,8 +22,8 @@ export interface FileContent {
 }
 
 interface PublishParams {
-	/** 版本 */
-	version: string;
+	/** 发布类型，线上/测试/日常 */
+	type: string;
 	content: string;
 	/** 发布信息 */
 	commitInfo?: string;
