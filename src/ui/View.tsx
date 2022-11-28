@@ -31,7 +31,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 			axios({ method: 'get', url: '/api/config/get' })
 		]).then(([{ data }, { data: configData }]) => {
 			if (data.code === API_SUCCESS_CODE) {
-				setContent(data.data);
+				setContent({ ...data.data, content: safeParse(data.data.content) });
 			} else {
 				message.error(`获取页面数据发生错误：${data.message}`);
 			}
