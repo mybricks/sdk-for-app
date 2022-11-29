@@ -22,28 +22,30 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
 	
 	useMemo(() => {
-		Promise.all([
-			axios({
-				method: 'get',
-				url: '/api/workspace/getFullFile',
-				params: { userId: user.email, fileId }
-			}),
-			axios({ method: 'get', url: '/api/config/get' })
-		]).then(([{ data }, { data: configData }]) => {
-			if (data.code === API_SUCCESS_CODE) {
-				setContent({ ...data.data, content: safeParse(data.data.content) });
-			} else {
-				message.error(`获取页面数据发生错误：${data.message}`);
-			}
-			
-			if (configData.code === API_SUCCESS_CODE) {
-				const config = configData.data?.config;
-				setConfig(typeof config === 'string' ? safeParse(config) : (config || {}));
-			} else {
-				message.error(`获取全局配置项发生错误：${configData.message}`);
-			}
-		})
-	}, []);
+		if (fileId) {
+			Promise.all([
+				axios({
+					method: 'get',
+					url: '/api/workspace/getFullFile',
+					params: { userId: user.email, fileId }
+				}),
+				axios({ method: 'get', url: '/api/config/get' })
+			]).then(([{ data }, { data: configData }]) => {
+				if (data.code === API_SUCCESS_CODE) {
+					setContent({ ...data.data, content: safeParse(data.data.content) });
+				} else {
+					message.error(`获取页面数据发生错误：${data.message}`);
+				}
+				
+				if (configData.code === API_SUCCESS_CODE) {
+					const config = configData.data?.config;
+					setConfig(typeof config === 'string' ? safeParse(config) : (config || {}));
+				} else {
+					message.error(`获取全局配置项发生错误：${configData.message}`);
+				}
+			})
+		}
+	}, [fileId]);
 	
   useImperativeHandle(ref, () => {
     return {
