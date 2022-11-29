@@ -1,8 +1,8 @@
 import { ReactElement } from 'react';
 
 export interface ViewProps {
-	extName: 'pc-page' | 'cloud-com';
 	children: ReactElement;
+	extName: 'pc-page' | 'cloud-com' | 'material';
 	className?: string;
 }
 
