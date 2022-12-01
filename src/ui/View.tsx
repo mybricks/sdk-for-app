@@ -26,7 +26,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 		axios({ method: 'get', url: '/api/apps/getInstalledList' })
 			.then(({data}) => {
 				if (data.code === API_SUCCESS_CODE) {
-					setInstalledApps({ ...data.data});
+					setInstalledApps(data.data);
 				} else {
 					message.error(`获取应用元信息失败：${data.message}`);
 				}

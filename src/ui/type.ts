@@ -29,8 +29,23 @@ interface PublishParams {
   commitInfo?: string;
 }
 
+interface IInstalledAppExports {
+  type: string;
+  name: string;
+}
+
+interface IInstalledApp {
+  title: string;
+  namespace: string;
+  type: string;
+  homepage: string;
+  icon: string;
+  exports: IInstalledAppExports[];
+}
+
 export interface ViewRef {
   fileId: number;
+  installedApps: IInstalledApp[];
   user: {
     email: string;
     id: number;
