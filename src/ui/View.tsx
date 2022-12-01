@@ -1,4 +1,4 @@
-import React, { forwardRef, ForwardRefRenderFunction, useImperativeHandle, useMemo, useState } from 'react';
+import React, { forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import axios from 'axios';
 import { message } from 'antd';
 import { getCookies, getUrlParam, safeParse } from '../utils';
@@ -18,9 +18,21 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   const { children, extName, className = '' } = props;
 	const [content, setContent] = useState<FileContent | null>(null);
 	const [config, setConfig] = useState<Record<string, unknown>>({});
+	const [installedApps, setInstalledApps] = useState([])
 	const user = useMemo(() => safeParse(cookies['mybricks-login-user']), []);
 	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
 	
+	useEffect(() => {
+		axios({ method: 'get', url: '/api/apps/getInstalledList' })
+			.then(({data}) => {
+				if (data.code === API_SUCCESS_CODE) {
+					setInstalledApps({ ...data.data});
+				} else {
+					message.error(`获取应用元信息失败：${data.message}`);
+				}
+			})
+	}, [])
+
 	useMemo(() => {
 		if (fileId) {
 			Promise.all([
@@ -50,6 +62,9 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   useImperativeHandle(ref, () => {
     return {
 	    user,
+			get installedApps() {
+				return installedApps;
+			},
 	    get fileId() {
 		    return fileId;
 	    },
@@ -78,6 +93,32 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 			    }
 		    });
 	    },
+			openUrl({url, onFailed, onSuccess}: {url: string, onSuccess: Function, onFailed: Function}) {
+				const [schema, removeSchemaPart] = url.split('://');
+				const [pathPart, paramPart] = removeSchemaPart?.split('?');
+				const [namespace, action] = pathPart?.split('/');
+				const param = {}
+				paramPart?.split('&')?.forEach(item => {
+					const [key, val] = item?.split('=')
+					param[key] = decodeURIComponent(val)
+				})
+				console.log(`/${namespace}/${action}.js`)
+				axios.get(`/${namespace}/${action}.js`).then((res) => {
+					eval(res.data)
+					// ts-ignore
+					let fn;
+					if(window?.[action]?.default) {
+						fn = window?.[action]?.default
+					} else {
+						fn = window?.[action]
+					}
+					fn({
+						...param,
+						onSuccess,
+						onFailed
+					})
+				})
+			},
 	    publish(params, config) {
 		    return axios({
 			    method: 'post',
