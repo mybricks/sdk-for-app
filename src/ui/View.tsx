@@ -69,7 +69,8 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 		    return fileId;
 	    },
 	    get fileContent() {
-				return content;
+				/** 防止外层对 content 进行修改 */
+				return JSON.parse(JSON.stringify(content));
 	    },
 	    get globalConfig() {
 				return config;
