@@ -2,7 +2,7 @@ import React, { forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHa
 import axios from 'axios';
 import { message } from 'antd';
 import { getCookies, getUrlParam, safeParse } from '../utils';
-import { FileContent, ViewProps, ViewRef } from './type';
+import { FileContent, ViewProps, ViewRef, IInstalledApp } from './type';
 
 import css from './View.less'
 
@@ -24,13 +24,13 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 	
 	useEffect(() => {
 		axios({ method: 'get', url: '/api/apps/getInstalledList' })
-			.then(({data}) => {
-				if (data.code === API_SUCCESS_CODE) {
-					setInstalledApps(data.data);
-				} else {
-					message.error(`获取应用元信息失败：${data.message}`);
-				}
-			})
+		.then(({data}) => {
+			if (data.code === API_SUCCESS_CODE) {
+				setInstalledApps(data.data);
+			} else {
+				message.error(`获取应用元信息失败：${data.message}`);
+			}
+		})
 	}, [])
 
 	useMemo(() => {
@@ -93,31 +93,46 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 			    }
 		    });
 	    },
-			openUrl({url, onFailed, onSuccess}: {url: string, onSuccess: Function, onFailed: Function}) {
+			openUrl({url, onFailed, param = {}, onSuccess}: {url: string, param: any,onSuccess: Function, onFailed: Function}) {
 				const [schema, removeSchemaPart] = url.split('://');
-				const [pathPart, paramPart] = removeSchemaPart?.split('?');
+				const [pathPart] = removeSchemaPart?.split('?');
 				const [namespace, action] = pathPart?.split('/');
-				const param = {}
-				paramPart?.split('&')?.forEach(item => {
-					const [key, val] = item?.split('=')
-					param[key] = decodeURIComponent(val)
-				})
-				console.log(`/${namespace}/${action}.js`)
-				axios.get(`/${namespace}/${action}.js`).then((res) => {
-					eval(res.data)
-					// ts-ignore
-					let fn;
-					if(window?.[action]?.default) {
-						fn = window?.[action]?.default
-					} else {
-						fn = window?.[action]
+				let urlSchema = ''
+				installedApps?.forEach((app: IInstalledApp) => {
+					if(app.namespace === namespace) {
+						app?.exports?.forEach(e => {
+							if(e.name === action) {
+								urlSchema = `/${namespace}/${e.path}`
+							}
+						})
 					}
-					fn({
-						...param,
-						onSuccess,
-						onFailed
-					})
 				})
+				if(!urlSchema) {
+					onFailed({
+						code: -1,
+						message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
+					})
+				} else {
+					axios.get(urlSchema).then((res) => {
+						try {
+							eval(res.data)
+							// ts-ignore
+							let fn;
+							if(window?.[action]?.default) {
+								fn = window?.[action]?.default
+							} else {
+								fn = window?.[action]
+							}
+							fn({
+								...param,
+								onSuccess,
+								onFailed
+							})
+						} catch(e) {
+							console.log(e)
+						}
+					})
+				}
 			},
 	    publish(params, config) {
 		    return axios({
@@ -139,7 +154,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 		    })
 	    },
     };
-  }, [user, fileId, extName, content, config]);
+  }, [user, fileId, extName, content, config, installedApps]);
 
   return (
     <div className={`${css.view} ${className}`}>

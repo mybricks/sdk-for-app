@@ -32,9 +32,10 @@ interface PublishParams {
 interface IInstalledAppExports {
   type: string;
   name: string;
+  path: string;
 }
 
-interface IInstalledApp {
+export interface IInstalledApp {
   title: string;
   namespace: string;
   type: string;
