@@ -2,12 +2,15 @@ import React, { forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHa
 import axios from 'axios';
 import { message } from 'antd';
 import { getCookies, getUrlParam, safeParse } from '../utils';
-import { FileContent, ViewProps, ViewRef, IInstalledApp } from './type';
+import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig } from './type';
 
 import css from './View.less'
 
 const cookies = getCookies();
 const API_SUCCESS_CODE = 1;
+const DefaultConfig: IConfig = {
+	system: {}
+}
 /**
  * 前端全局拦截，注入相关能力
  * @param props
@@ -15,9 +18,9 @@ const API_SUCCESS_CODE = 1;
  * @constructor
  */
 const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
-  const { children, extName, className = '' } = props;
+  const { children, extName, className = '', namespace } = props;
 	const [content, setContent] = useState<FileContent | null>(null);
-	const [config, setConfig] = useState<Record<string, unknown>>({});
+	const [config, setConfig] = useState<IConfig>(DefaultConfig);
 	const [installedApps, setInstalledApps] = useState([])
 	const user = useMemo(() => safeParse(cookies['mybricks-login-user']), []);
 	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
@@ -41,7 +44,13 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 					url: '/api/workspace/getFullFile',
 					params: { userId: user.email, fileId }
 				}),
-				axios({ method: 'get', url: '/api/config/get' })
+				axios({ 
+					method: 'post', 
+					url: '/api/config/get',
+					data: {
+						scope: [namespace, 'system']
+					}
+				})
 			]).then(([{ data }, { data: configData }]) => {
 				if (data.code === API_SUCCESS_CODE) {
 					setContent({ ...data.data, content: safeParse(data.data.content) });
@@ -51,7 +60,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 				
 				if (configData.code === API_SUCCESS_CODE) {
 					const config = configData.data?.config;
-					setConfig(typeof config === 'string' ? safeParse(config) : (config || {}));
+					setConfig(typeof config === 'string' ? safeParse(config) : (config || DefaultConfig));
 				} else {
 					message.error(`获取全局配置项发生错误：${configData.message}`);
 				}
@@ -72,7 +81,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 				/** 防止外层对 content 进行修改 */
 				return JSON.parse(JSON.stringify(content));
 	    },
-	    get globalConfig() {
+	    get config() {
 				return config;
 	    },
 	    save(params, config) {

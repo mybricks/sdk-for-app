@@ -4,6 +4,8 @@ export interface ViewProps {
   children: ReactElement;
   extName: "pc-page" | "cloud-com" | "material";
   className?: string;
+  // 应用空间
+  namespace: string;
 }
 
 export interface FileContent {
@@ -44,6 +46,11 @@ export interface IInstalledApp {
   exports: IInstalledAppExports[];
 }
 
+export interface IConfig {
+  system: any;
+  [appNamespace: string]: any;
+}
+
 export interface ViewRef {
   fileId: number;
   installedApps: IInstalledApp[];
@@ -53,7 +60,7 @@ export interface ViewRef {
   };
   openUrl: Function;
   fileContent: FileContent | null;
-  globalConfig: Record<string, unknown>;
+  config: IConfig;
   save(
     params: Record<string, unknown>,
     config?: { skipMessage?: boolean }
