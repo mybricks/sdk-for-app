@@ -28,7 +28,7 @@ export const setting = {
       method: 'post', 
       url: '/api/config/update',
       data: {
-        namespace: [namespace],
+        namespace: namespace,
         userId: user.email,
         config,
       }
