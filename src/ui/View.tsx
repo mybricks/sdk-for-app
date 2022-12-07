@@ -2,12 +2,11 @@ import React, { forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHa
 import axios from 'axios';
 import { message } from 'antd';
 import { getCookies, getUrlParam, safeParse } from '../utils';
-import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig } from './type';
+import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from './type';
 
 import css from './View.less'
 
 const cookies = getCookies();
-const API_SUCCESS_CODE = 1;
 const DefaultConfig: IConfig = {
 	system: {}
 }
@@ -25,16 +24,39 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 	const user = useMemo(() => safeParse(cookies['mybricks-login-user']), []);
 	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
 	
+	/** 获取安卓APP */
 	useEffect(() => {
 		axios({ method: 'get', url: '/api/apps/getInstalledList' })
 		.then(({data}) => {
-			if (data.code === API_SUCCESS_CODE) {
+			if (data.code === API_CODE.SUCCESS) {
 				setInstalledApps(data.data);
 			} else {
 				message.error(`获取应用元信息失败：${data.message}`);
 			}
 		})
 	}, [])
+
+	/** 获取全局设置 */
+	useEffect(() => {
+		if (!namespace) {
+			return
+		}
+
+		axios({ 
+			method: 'post', 
+			url: '/api/config/get',
+			data: {
+				scope: [namespace, 'system']
+			}
+		}).then(({ data: configData }) => {
+			if (configData.code === API_CODE.SUCCESS) {
+				const config = configData?.data;
+				setConfig(typeof config === 'string' ? safeParse(config) : (config || DefaultConfig));
+			} else {
+				message.error(`获取全局配置项发生错误：${configData.message}`);
+			}
+		})
+	}, [namespace])
 
 	useMemo(() => {
 		if (fileId) {
@@ -44,25 +66,11 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 					url: '/api/workspace/getFullFile',
 					params: { userId: user.email, fileId }
 				}),
-				axios({ 
-					method: 'post', 
-					url: '/api/config/get',
-					data: {
-						scope: [namespace, 'system']
-					}
-				})
-			]).then(([{ data }, { data: configData }]) => {
-				if (data.code === API_SUCCESS_CODE) {
+			]).then(([{ data }]) => {
+				if (data.code === API_CODE.SUCCESS) {
 					setContent({ ...data.data, content: safeParse(data.data.content) });
 				} else {
 					message.error(`获取页面数据发生错误：${data.message}`);
-				}
-				
-				if (configData.code === API_SUCCESS_CODE) {
-					const config = configData.data?.config;
-					setConfig(typeof config === 'string' ? safeParse(config) : (config || DefaultConfig));
-				} else {
-					message.error(`获取全局配置项发生错误：${configData.message}`);
 				}
 			})
 		}
@@ -82,7 +90,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 				return JSON.parse(JSON.stringify(content));
 	    },
 	    get config() {
-				return config;
+				return JSON.parse(JSON.stringify(config));
 	    },
 	    save(params, config) {
 		    return axios({
@@ -95,7 +103,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 				    ...params,
 			    }
 		    }).then(({ data }) => {
-			    if (data.code === API_SUCCESS_CODE) {
+			    if (data.code === API_CODE.SUCCESS) {
 				    !config?.skipMessage && message.info(`保存完成`);
 			    } else {
 				    !config?.skipMessage && message.error(`保存失败：${data.message}`);
@@ -155,7 +163,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 				    ...params,
 			    }
 		    }).then(({ data }) => {
-			    if (data.code === API_SUCCESS_CODE) {
+			    if (data.code === API_CODE.SUCCESS) {
 				    !config?.skipMessage && message.info(`发布完成`);
 			    } else {
 				    !config?.skipMessage && message.error(`发布失败：${data.message}`);

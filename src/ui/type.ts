@@ -1,5 +1,10 @@
 import { ReactElement } from "react";
 
+/** 接口返回 */
+export enum API_CODE {
+  SUCCESS = 1
+}
+
 export interface ViewProps {
   children: ReactElement;
   extName: "pc-page" | "cloud-com" | "material";
