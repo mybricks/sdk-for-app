@@ -3,9 +3,24 @@ import { API_CODE } from './ui/type'
 import { getCookies, safeParse } from './utils';
 
 const cookies = getCookies();
-const user = safeParse(cookies['mybricks-login-user'])
+const userBasicInfo = safeParse(cookies['mybricks-login-user'])
 
 type Namespace = 'system' | string
+
+export const user = {
+  getUserInfo: () => {
+    return axios({ 
+      method: 'get', 
+      url: `/api/user/queryBy?email=${userBasicInfo.email}`
+    }).then(({ data }) => {
+      if (data?.data) {
+        return data?.data?.[0]
+      } else {
+        throw new Error('获取用户信息失败失败')
+      }
+    })
+  }
+}
 
 export const setting = {
   getSetting: (namespaces: Namespace[]) => {
@@ -29,7 +44,7 @@ export const setting = {
       url: '/api/config/update',
       data: {
         namespace: namespace,
-        userId: user.email,
+        userId: userBasicInfo.email,
         config,
       }
     }).then(({ data }) => {
