@@ -122,7 +122,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 					if(app.namespace === namespace) {
 						app?.exports?.forEach(e => {
 							if(e.name === action) {
-								urlSchema = `/${namespace}/${e.path}`
+								urlSchema = e.path;
 							}
 						})
 					}
@@ -141,7 +141,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 						onSuccess,
 						onFailed,
 						onClose: () => setSDKModalInfo({ open: false }),
-					})
+					});
 					/** js 组件类型
 						axios.get(urlSchema).then((res) => {
 							try {
