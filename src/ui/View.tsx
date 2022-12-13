@@ -117,7 +117,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 				const [schema, removeSchemaPart] = url.split('://');
 				const [pathPart] = removeSchemaPart?.split('?');
 				const [namespace, action] = pathPart?.split('/');
-				let urlSchema = ''
+				let urlSchema = '';
 				installedApps?.forEach((app: IInstalledApp) => {
 					if(app.namespace === namespace) {
 						app?.exports?.forEach(e => {
@@ -126,9 +126,10 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 							}
 						})
 					}
-				})
+				});
+				
 				if(!urlSchema) {
-					onFailed({
+					onFailed?.({
 						code: -1,
 						message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
 					})
