@@ -3,9 +3,9 @@ import axios from 'axios';
 import { message } from 'antd';
 import { getCookies, getUrlParam, safeParse } from '../utils';
 import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from './type';
+import SDKModal from './SDKModal';
 
 import css from './View.less'
-import SDKModal from "./SDKModal";
 
 const cookies = getCookies();
 const DefaultConfig: IConfig = {

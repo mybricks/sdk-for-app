@@ -37,7 +37,7 @@ const SDKModal: FC<SDKModalProps> = props => {
 				}
 			}
 		}
-	}, []);
+	}, [onClose, onSuccess, params]);
 	
 	useEffect(() => {
 		window.addEventListener('message', onMessage);
