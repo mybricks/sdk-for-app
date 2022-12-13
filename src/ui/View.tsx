@@ -190,7 +190,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   return (
     <div className={`${css.view} ${className}`}>
       {children}
-	    <SDKModal modalInfo={sdkModalInfo} />
+	    {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
     </div>
   )
 }
