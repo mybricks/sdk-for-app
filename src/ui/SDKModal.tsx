@@ -48,7 +48,7 @@ const SDKModal: FC<SDKModalProps> = props => {
 	  <Modal
 		  centered
 		  open={open}
-		  width={1000}
+		  width={930}
 		  footer={null}
 	  >
 		  <iframe ref={iframeRef} src={url} frameBorder="0"></iframe>
