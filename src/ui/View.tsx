@@ -5,6 +5,7 @@ import { getCookies, getUrlParam, safeParse } from '../utils';
 import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from './type';
 
 import css from './View.less'
+import SDKModal from "./SDKModal";
 
 const cookies = getCookies();
 const DefaultConfig: IConfig = {
@@ -20,11 +21,12 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   const { children, extName, className = '', namespace } = props;
 	const [content, setContent] = useState<FileContent | null>(null);
 	const [config, setConfig] = useState<IConfig>(DefaultConfig);
-	const [installedApps, setInstalledApps] = useState([])
+	const [installedApps, setInstalledApps] = useState([]);
+	const [sdkModalInfo, setSDKModalInfo] = useState<any>({});
 	const user = useMemo(() => safeParse(cookies['mybricks-login-user']), []);
 	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
 	
-	/** 获取安卓APP */
+	/** 获取已安装APP */
 	useEffect(() => {
 		axios({ method: 'get', url: '/api/apps/getInstalledList' })
 		.then(({data}) => {
@@ -131,25 +133,35 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 						message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
 					})
 				} else {
-					axios.get(urlSchema).then((res) => {
-						try {
-							eval(res.data)
-							// ts-ignore
-							let fn;
-							if(window?.[action]?.default) {
-								fn = window?.[action]?.default
-							} else {
-								fn = window?.[action]
-							}
-							fn({
-								...param,
-								onSuccess,
-								onFailed
-							})
-						} catch(e) {
-							console.log(e)
-						}
+					setSDKModalInfo({
+						open: true,
+						param,
+						url: urlSchema,
+						onSuccess,
+						onFailed,
+						onClose: () => setSDKModalInfo({ open: false }),
 					})
+					/** js 组件类型
+						axios.get(urlSchema).then((res) => {
+							try {
+								eval(res.data)
+								// ts-ignore
+								let fn;
+								if(window?.[action]?.default) {
+									fn = window?.[action]?.default
+								} else {
+									fn = window?.[action]
+								}
+								fn({
+									...param,
+									onSuccess,
+									onFailed
+								})
+							} catch(e) {
+								console.log(e)
+							}
+						})
+					*/
 				}
 			},
 	    publish(params, config) {
@@ -177,6 +189,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   return (
     <div className={`${css.view} ${className}`}>
       {children}
+	    <SDKModal modalInfo={sdkModalInfo} />
     </div>
   )
 }
