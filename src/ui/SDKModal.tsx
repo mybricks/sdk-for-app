@@ -1,6 +1,8 @@
 import React, {FC, useCallback, useEffect, useRef} from 'react';
 import { Modal } from 'antd';
 
+import styles from './SDKModal.less';
+
 interface SDKModalProps {
 	modalInfo: {
 		url: string;
@@ -46,12 +48,15 @@ const SDKModal: FC<SDKModalProps> = props => {
 	
   return (
 	  <Modal
+		  closable={false}
+		  className={styles.SDKModal}
 		  centered
 		  open={open}
 		  width={930}
+		  destroyOnClose
 		  footer={null}
 	  >
-		  <iframe ref={iframeRef} src={url} frameBorder="0"></iframe>
+		  <iframe className={styles.iframe} ref={iframeRef} src={url} frameBorder="0"></iframe>
 	  </Modal>
   );
 };

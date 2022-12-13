@@ -113,7 +113,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 			    }
 		    });
 	    },
-			openUrl({url, onFailed, param = {}, onSuccess}: {url: string, param: any,onSuccess: Function, onFailed: Function}) {
+			openUrl({url, onFailed, params = {}, onSuccess}: {url: string, params: any,onSuccess: Function, onFailed: Function}) {
 				const [schema, removeSchemaPart] = url.split('://');
 				const [pathPart] = removeSchemaPart?.split('?');
 				const [namespace, action] = pathPart?.split('/');
@@ -136,7 +136,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 				} else {
 					setSDKModalInfo({
 						open: true,
-						param,
+						params,
 						url: urlSchema,
 						onSuccess,
 						onFailed,
