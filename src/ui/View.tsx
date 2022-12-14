@@ -106,7 +106,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 			    }
 		    }).then(({ data }) => {
 			    if (data.code === API_CODE.SUCCESS) {
-				    !config?.skipMessage && message.info(`保存完成`);
+				    !config?.skipMessage && message.success(`保存完成`);
 			    } else {
 				    !config?.skipMessage && message.error(`保存失败：${data.message}`);
 				    return Promise.reject(data.message);
@@ -177,7 +177,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 			    }
 		    }).then(({ data }) => {
 			    if (data.code === API_CODE.SUCCESS) {
-				    !config?.skipMessage && message.info(`发布完成`);
+				    !config?.skipMessage && message.success(`发布完成`);
 			    } else {
 				    !config?.skipMessage && message.error(`发布失败：${data.message}`);
 						return Promise.reject(data.message);
