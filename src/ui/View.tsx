@@ -140,35 +140,33 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 						message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
 					})
 				} else {
-					setSDKModalInfo({
-						open: true,
-						params,
-						url: urlSchema,
-						onSuccess,
-						onFailed,
-						onClose: () => setSDKModalInfo({ open: false }),
-					});
-					/** js 组件类型
+					if (urlSchema.endsWith('html')) {
+						setSDKModalInfo({
+							open: true,
+							params,
+							url: urlSchema,
+							onSuccess,
+							onFailed,
+							onClose: () => setSDKModalInfo({ open: false }),
+						});
+					} else if (urlSchema.endsWith('js')) {
 						axios.get(urlSchema).then((res) => {
 							try {
-								eval(res.data)
-								// ts-ignore
+								eval(res.data);
 								let fn;
 								if(window?.[action]?.default) {
-									fn = window?.[action]?.default
+									fn = window?.[action]?.default;
 								} else {
-									fn = window?.[action]
+									fn = window?.[action];
 								}
-								fn({
-									...param,
-									onSuccess,
-									onFailed
-								})
+								fn({ ...params, onSuccess, onFailed });
 							} catch(e) {
-								console.log(e)
+								console.log(e);
 							}
 						})
-					*/
+					} else {
+						console.log('invalid url schema');
+					}
 				}
 			},
 	    publish(params, config) {
