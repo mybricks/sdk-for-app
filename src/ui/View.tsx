@@ -39,7 +39,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 		
 		axios({ method: 'get', url: `/api/user/queryBy?email=${user.email}` }).then(({ data }) => {
 			if (data?.code === API_CODE.SUCCESS) {
-				setUser(user => ({ ...user, isAdmin: data?.data?.[0]?.role === 10 }));
+				setUser(user => ({ ...user, isAdmin: data?.data?.[0]?.isAdmin }));
 			}
 		});
 	}, [])
