@@ -72,11 +72,11 @@ export const task = {
         injectParam: JSON.stringify(params)
       }
     }).then(({ data }) => {
-      const { code } = data ?? {};
+      const { code, msg, message } = data ?? {};
       if (code === API_CODE.SUCCESS) {
         return true
       } else {
-        throw new Error('执行系统任务失败')
+        throw new Error(msg || message || '执行任务失败')
       }
     })  
   }
