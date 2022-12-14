@@ -23,7 +23,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 	const [config, setConfig] = useState<IConfig>(DefaultConfig);
 	const [installedApps, setInstalledApps] = useState([]);
 	const [sdkModalInfo, setSDKModalInfo] = useState<any>({});
-	const user = useMemo(() => safeParse(cookies['mybricks-login-user']), []);
+	const [user, setUser] = useState(safeParse(cookies['mybricks-login-user']));
 	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
 	
 	/** 获取已安装APP */
@@ -35,7 +35,13 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 			} else {
 				message.error(`获取应用元信息失败：${data.message}`);
 			}
-		})
+		});
+		
+		axios({ method: 'get', url: `/api/user/queryBy?email=${user.email}` }).then(({ data }) => {
+			if (data?.code === API_CODE.SUCCESS) {
+				setUser(user => ({ ...user, isAdmin: data?.data?.[0]?.role === 10 }));
+			}
+		});
 	}, [])
 
 	/** 获取全局设置 */
