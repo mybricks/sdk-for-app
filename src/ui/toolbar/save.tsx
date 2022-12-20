@@ -4,6 +4,7 @@ import styles from './../View.less'
 
 interface SaveButtonProps {
   disabled?: boolean
+  loading?: boolean
   /** 右上角小红点提示可以保存 */
   dotTip?: boolean
   onClick?: () => void
@@ -12,6 +13,7 @@ interface SaveButtonProps {
 
 export default ({
   disabled = false,
+  loading = false,
   dotTip = false,
   onClick,
   children,
@@ -19,6 +21,7 @@ export default ({
   return (
     <Button
       disabled={disabled}
+      loading={loading}
       className={styles.toolbarButton}
       size="small"
       onClick={onClick}

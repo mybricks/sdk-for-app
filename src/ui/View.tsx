@@ -5,6 +5,8 @@ import { getCookies, getUrlParam, safeParse } from '../utils';
 import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from './type';
 import SDKModal from './SDKModal';
 
+import GlobalContext from './globalContext';
+
 import css from './View.less'
 
 const cookies = getCookies();
@@ -112,6 +114,8 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 			    }
 		    }).then(({ data }) => {
 			    if (data.code === API_CODE.SUCCESS) {
+						/** 通过_saveTime更新左上角的版本信息，只有版本信息LastUpdateInfo在消费 */
+						setContent(c => ({ ...c, _saveTime: new Date().getTime() }))
 				    !config?.skipMessage && message.success(`保存完成`);
 			    } else {
 				    !config?.skipMessage && message.error(`保存失败：${data.message}`);
@@ -192,10 +196,12 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   }, [user, fileId, extName, content, config, installedApps]);
 
   return (
-    <div className={`${css.view} ${className}`}>
-      {children}
-	    {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
-    </div>
+		<GlobalContext.Provider value={{ fileContent: content }}>
+			<div className={`${css.view} ${className}`}>
+				{children}
+				{sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
+			</div>
+		</GlobalContext.Provider>
   )
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "description": "SDK for application UI",
   "main": "index.min.js",
   "scripts": {
@@ -55,5 +55,8 @@
     "webpack-dev-server": "^4.9.3",
     "webpack-merge": "^5.8.0",
     "webpackbar": "^5.0.2"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.7"
   }
 }

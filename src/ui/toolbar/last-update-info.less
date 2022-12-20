@@ -1,0 +1,29 @@
+.lastUpdate {
+  display: flex;
+  font-size: 12px;
+  font-weight: 200;
+  color: #999999;
+  align-items: center;
+
+  .content {
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    &:hover {
+      background-color: #ebedf0;
+    }
+  }
+
+  :global {
+    .ant-divider-vertical {
+      top: 0;
+      height: 1rem;
+    }
+  }
+
+  .clockIcon {
+    margin-right: 4px;
+  }
+}
