@@ -4,6 +4,7 @@ import { message } from 'antd';
 import { getCookies, getUrlParam, safeParse } from '../utils';
 import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from './type';
 import SDKModal from './SDKModal';
+import MockView from './MockView';
 
 import GlobalContext from './globalContext';
 
@@ -27,7 +28,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
 	const [sdkModalInfo, setSDKModalInfo] = useState<any>({});
 	const [user, setUser] = useState(safeParse(cookies['mybricks-login-user']));
 	const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
-	
+
 	/** 获取已安装APP */
 	useEffect(() => {
 		axios({ method: 'get', url: '/api/apps/getInstalledList' })
@@ -205,4 +206,5 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   )
 }
 
-export default forwardRef(View)
+// @ts-ignore
+export default forwardRef(ENV === 'DEV' ? MockView : View)
