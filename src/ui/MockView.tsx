@@ -18,8 +18,7 @@ const BASIC_DATA = {
   }
 }
 // @ts-ignore
-const GLOBAL_MOCK_DATA = MOCKDATA ? Object.assign({}, BASIC_DATA, MOCKDATA) : BASIC_DATA
-
+const GLOBAL_MOCK_DATA = typeof MOCKDATA === 'undefined' ? BASIC_DATA : Object.assign({}, BASIC_DATA, MOCKDATA)
 const MockView: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   const { children, extName, className = '', namespace } = props;
 	const [content, setContent] = useState<any>(null);

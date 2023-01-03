@@ -206,5 +206,10 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   )
 }
 
+let Com = View;
 // @ts-ignore
-export default forwardRef(ENV === 'DEV' ? MockView : View)
+if(typeof ENV !== 'undefined' &&  ENV === 'DEV') {
+	Com = MockView
+}
+
+export default forwardRef(Com)
