@@ -52,6 +52,7 @@ const SDKModal: FC<SDKModalProps> = props => {
 		  className={styles.SDKModal}
 		  centered
 		  open={open}
+			visible={open}
 		  width={930}
 		  destroyOnClose
 		  footer={null}
