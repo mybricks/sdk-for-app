@@ -28,7 +28,7 @@ export default function LastUpdate({
   const _content = useMemo(() => {
     return content || fileContent?._saveTime
       ? `改动已保存-${UpdateTime(fileContent?._saveTime)}`
-      : `${fileContent?.updatorName}保存于${UpdateTime(
+      : `${fileContent?.updatorName ?? ''}保存于${UpdateTime(
           fileContent?._updateTime
         )}`
   }, [content, fileContent?._saveTime, fileContent?.updatorName, fileContent?._updateTime])
