@@ -1,0 +1,61 @@
+.locker {
+  margin-right: 5px;
+  .cooperationUsersList {
+    display: flex;
+
+    .popover {
+      :global {
+        .ant-popover-inner {
+          padding: 0px !important;
+        }
+      }
+    }
+
+    .userAvatar {
+      width: 26px;
+      height: 26px;
+      margin-left: 4px;
+
+      img {
+        height: 100%;
+        width: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .userCount {
+        width: 100%;
+        height: 100%;
+        line-height: 100%;
+        color: #5c6066;
+        border-radius: 50%;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        background-color: #e6e8eb;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+.userInfo {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.overlayUsersListPopover {
+  padding-top: 0 !important;
+  :global {
+    .ant-popover-arrow {
+      display: none !important;
+    }
+    .ant-popover-inner {
+      padding: 0 !important;
+    }
+    .ant-popover-inner-content {
+      padding: 0 !important;
+    }
+  }
+}

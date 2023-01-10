@@ -197,7 +197,7 @@ const View: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   }, [user, fileId, extName, content, config, installedApps]);
 
   return (
-		<GlobalContext.Provider value={{ fileContent: content }}>
+		<GlobalContext.Provider value={{ fileContent: content, user, fileId }}>
 			<div className={`${css.view} ${className}`}>
 				{children}
 				{sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
