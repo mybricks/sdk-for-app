@@ -1,3 +1,5 @@
+import { safeParse } from './parse'
+
 export const getCookies = () => {
 	return document.cookie.split('; ').reduce((s, e) => {
 		const p = e.indexOf('=');
@@ -5,3 +7,15 @@ export const getCookies = () => {
 		return s;
 	}, {});
 };
+
+const cookies = getCookies();
+const userBasicInfo = safeParse(cookies['mybricks-login-user'])
+
+interface UserInfo {
+	email: string
+	id: string
+}
+
+export const getUserInfo = ():UserInfo => {
+	return userBasicInfo || {}
+}

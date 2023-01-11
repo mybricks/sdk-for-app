@@ -1,0 +1,173 @@
+.fileOpenModal {
+  :global {
+    .ant-modal-close {
+      // display: none;
+    }
+
+    .ant-modal-body {
+      padding: 16px;
+    }
+  }
+}
+
+.openPanel {
+  // margin-top: 30px;
+
+  .filesList {
+    background: #EBECEE;
+    border-radius: 3px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    overflow-x: auto;
+  }
+
+  .commonListRender {
+    height: 420px;
+    display: flex;
+    overflow-y: auto;
+    border-right: 1px solid #DDD;
+    padding: 10px 5px;
+    width: 200px;
+    flex-shrink: 0;
+  }
+
+  .commonItem {
+    font-size: 13px;
+    color: rgba(0,0,0,.75);
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 3px;
+    padding: 0 5px;
+    flex-shrink: 0;
+
+    cursor: pointer;
+
+    &:hover {
+      background-color: #DDD;
+    }
+
+    &.selected {
+      background-color: #DDD;
+    }
+  }
+
+  .filesRender {
+    .commonListRender();
+    flex-direction: column;
+    align-items: flex-start;
+
+    .file {
+      .commonItem();
+  
+      .fileLeft {
+        display: flex;
+        align-items: center;
+      }
+  
+      .fileRight {
+        display: flex;
+        align-items: center;
+      }
+  
+      .fileIcon {
+        width: 12px;
+        height: 12px;
+        margin-right: 5px;
+      }
+  
+      .fileArrow {
+        font-size: 12px;
+        transform: scale(0.8);
+        transform-origin: center center;
+      }
+  
+      .fileName {
+        white-space: nowrap;
+      }
+    }
+  
+  }
+
+  .versionsRender {
+    .commonListRender();
+    flex-direction: column;
+    align-items: flex-start;
+
+    .version {
+      .commonItem();
+      justify-content: flex-start
+    }
+  }
+
+  .commonDetailRender {
+    height: 420px;
+    min-width: 230px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    // border-right: 1px solid #DDD;
+    padding: 10px 8px;
+    flex-shrink: 0;
+
+    .image {
+      width: 160px;
+      height: 160px;
+
+      >img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .name {
+      font-size: 16px;
+    }
+
+    .rowInfo {
+      font-size: 12px;
+      height: 30px;
+      border-bottom: 1px solid #DDD;
+      flex-shrink: 0;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      >span:first-child {
+        color: rgba(0,0,0,.5);
+      }
+      >span:last-child {
+        color: rgba(0,0,0,.75);
+      }
+    }
+  }
+
+  .fileDetailRender {
+    .commonDetailRender();
+  }
+
+  .versionDetailRender {
+    .commonDetailRender();
+  }
+
+  .loadingRender {
+    .commonListRender();
+    justify-content: center;
+    align-items: flex-start;
+    font-size: 12px;
+  }
+  .pathLoading {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+}

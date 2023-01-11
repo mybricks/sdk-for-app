@@ -7,6 +7,8 @@ const userBasicInfo = safeParse(cookies['mybricks-login-user'])
 
 type Namespace = 'system' | string
 
+export  * as fileSystem from './apis/fileSystem';
+
 export const user = {
   getUserInfo: () => {
     return axios({ 
@@ -81,3 +83,4 @@ export const task = {
     })  
   }
 }
+
