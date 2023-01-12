@@ -109,6 +109,7 @@ interface openPanelProps {
   canChooseFiles?: boolean
   canChooseDirectories?: boolean
   allowsMultipleSelection?: boolean
+  allowedFileExtNames?: string[]
   onOk?: (urls: FileUrl[]) => void
   onCancel?: () => void
 }
@@ -126,7 +127,15 @@ interface Path {
   type?: PathType
 }
 
-const FilePanel = ({ onChange }) => {
+interface FilePanelProps extends openPanelProps {
+  onChange: any
+}
+
+const FilePanel = ({
+  onChange,
+  canChooseDirectories,
+  allowedFileExtNames,
+}: FilePanelProps) => {
   const [filesMap, setFilesMap] = useState({})
   const [curPath, setCurPath] = useState([] as Path[])
 
@@ -155,11 +164,10 @@ const FilePanel = ({ onChange }) => {
 
       /** 需要异步加载*/
       if (!hasCached) {
-
         /** 异步请求数据  */
         switch (true) {
           case extName === 'folder': {
-            const _fileId = `folder_${fileId}`;
+            const _fileId = `folder_${fileId}`
 
             /** 先设置成加载中  */
             setCurPath((c) => {
@@ -167,7 +175,6 @@ const FilePanel = ({ onChange }) => {
               path[level] = { fileId: _fileId, loading: true, type: undefined }
               return path.slice(0, level + 1)
             })
-
             ;(async () => {
               const data = await getAll({ parentId: file.id })
               setFilesMap((c) => {
@@ -185,7 +192,11 @@ const FilePanel = ({ onChange }) => {
                 /** 如果当前用户并没有切换别的文件的话，准备切换成列表 */
                 if (c[level].fileId === _fileId) {
                   const path = Array.from(c)
-                  path[level] = { fileId: _fileId, loading: false, type: PathType.Files }
+                  path[level] = {
+                    fileId: _fileId,
+                    loading: false,
+                    type: PathType.Files,
+                  }
                   return path.slice(0, level + 1)
                 }
                 /** 如果当前用户已经切换了别的文件，则不变 */
@@ -202,7 +213,7 @@ const FilePanel = ({ onChange }) => {
               const path = Array.from(c)
               path[level] = { fileId: fileId, loading: true, type: undefined }
               return path.slice(0, level + 1)
-            });
+            })
             ;(async () => {
               const data = await getVersions({ fileId })
               const hasVersions = Array.isArray(data) && data.length > 0
@@ -313,12 +324,17 @@ const FilePanel = ({ onChange }) => {
       return (
         <div className={styles.filesRender}>
           {(files ?? []).map((file) => {
+            const disabled =
+              Array.isArray(allowedFileExtNames) &&
+              allowedFileExtNames.length > 0
+                ? !(allowedFileExtNames.concat('folder')).includes(file.extName)
+                : false
             return (
               <div
                 className={`${styles.file} ${
                   file?.id === selectedPath?.fileId ? styles.selected : ''
-                }`}
-                onClick={() => handleFileSelected(file, level)}
+                } ${disabled ? styles.disabled : ''}`}
+                onClick={() => !disabled && handleFileSelected(file, level)}
               >
                 <div className={styles.fileLeft}>
                   {false && (
@@ -339,7 +355,7 @@ const FilePanel = ({ onChange }) => {
         </div>
       )
     },
-    [handleFileSelected]
+    [handleFileSelected, allowedFileExtNames]
   )
 
   const LoadingRender = useCallback(() => {
@@ -350,7 +366,7 @@ const FilePanel = ({ onChange }) => {
     return (
       <div className={styles.fileDetailRender}>
         <div className={styles.image}>
-          <img src="" />
+          <img src="https://ali-ec.static.yximgs.com/kos/nlav11092/apps/file.d64916fe3c951caa.svg" />
         </div>
         <div className={styles.name}>{`${file?.name}.${file?.extName}`}</div>
         {file?.creatorName && (
@@ -402,7 +418,7 @@ const FilePanel = ({ onChange }) => {
     return (
       <div className={styles.versionDetailRender}>
         <div className={styles.image}>
-          <img src="" />
+          <img src="https://ali-ec.static.yximgs.com/kos/nlav11092/apps/file.d64916fe3c951caa.svg" />
         </div>
         <div className={styles.name}>
           {`${version?.type}@${version?.version}`}
@@ -543,9 +559,10 @@ const FilePanel = ({ onChange }) => {
 }
 
 export default ({
-  canChooseFiles = false,
+  canChooseFiles = true,
   canChooseDirectories = false,
   allowsMultipleSelection = false,
+  allowedFileExtNames,
 }: openPanelProps) => {
   let selectedFile
   return new Promise((resolve, reject) => {
@@ -558,6 +575,8 @@ export default ({
       className: styles.fileOpenModal,
       content: (
         <FilePanel
+          allowedFileExtNames={allowedFileExtNames}
+          canChooseDirectories={canChooseDirectories}
           onChange={(file) => {
             selectedFile = file
           }}
