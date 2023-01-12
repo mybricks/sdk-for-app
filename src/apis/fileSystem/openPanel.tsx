@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import ReactDOM from 'react-dom'
-import axios from 'axios'
-import getAll from './getAll'
-import getVersions from './getVersions'
+import { fileSystem, app } from './../../api'
+import { InstalledApp } from './../type'
 import { Modal } from 'antd'
 import styles from './openPanel.less'
 
@@ -123,13 +122,16 @@ enum PathType {
 
 interface Path {
   fileId: number | string
-  loading: false
+  loading: boolean
   type?: PathType
 }
 
 interface FilePanelProps extends openPanelProps {
   onChange: any
 }
+
+type AppMapCacheType = { [keyName: string]: InstalledApp } | null
+const AppMapCache: AppMapCacheType = null
 
 const FilePanel = ({
   onChange,
@@ -139,11 +141,31 @@ const FilePanel = ({
   const [filesMap, setFilesMap] = useState({})
   const [curPath, setCurPath] = useState([] as Path[])
 
+  const [appMap, setAppMap] = useState<AppMapCacheType>(AppMapCache)
+
   const onChangeRef = useRef(null)
 
   useEffect(() => {
+    if (AppMapCache) {
+      return
+    }
+    app.getInstalledList().then(installedApps => {
+      let appMap = {}
+      installedApps.forEach(app => {
+        appMap[app.type] = app
+      })
+      appMap['folder'] = {
+        icon: 'https://assets.mybricks.world/icon/folder.5782d987cf098ea8.png'
+      }
+
+      AppMapCache = JSON.parse(JSON.stringify(appMap))
+      setAppMap(appMap)
+    })
+  }, [])
+
+  useEffect(() => {
     ;(async () => {
-      const data = await getAll()
+      const data = await fileSystem.getAll()
       setFilesMap((c) => {
         return {
           ...c,
@@ -176,7 +198,7 @@ const FilePanel = ({
               return path.slice(0, level + 1)
             })
             ;(async () => {
-              const data = await getAll({ parentId: file.id })
+              const data = await fileSystem.getAll({ parentId: file.id })
               setFilesMap((c) => {
                 return {
                   ...c,
@@ -215,7 +237,7 @@ const FilePanel = ({
               return path.slice(0, level + 1)
             })
             ;(async () => {
-              const data = await getVersions({ fileId })
+              const data = await fileSystem.getVersions({ fileId })
               const hasVersions = Array.isArray(data) && data.length > 0
 
               if (hasVersions) {
@@ -298,19 +320,37 @@ const FilePanel = ({
       const hasCached = !!filesMap[fileId]
 
       if (!hasCached) {
-        setFilesMap((c) => {
-          return {
-            ...c,
-            [fileId]: {
-              type: PathType.FileDetail,
-              data: version,
-              _origin: version,
-            },
-          }
+        /** 先设置成加载中  */
+        setCurPath((c) => {
+          const path = Array.from(c)
+          path[level] = { fileId: fileId, loading: true, type: PathType.VersionDetail }
+          return path.slice(0, level + 1)
         })
+        ;(async () => {
+          const versionDetail = await fileSystem.getPublishContent({ pubId: version.id })
+
+          setFilesMap((c) => {
+            return {
+              ...c,
+              [fileId]: {
+                type: PathType.VersionDetail,
+                data: versionDetail,
+                _origin: versionDetail,
+              },
+            }
+          })
+
+          setCurPath((c) => {
+            const path = Array.from(c)
+            path[level] = { fileId, loading: false, type: PathType.VersionDetail }
+            return path.slice(0, level + 1)
+          })
+          return
+        })()
       }
 
-      setCurPath((c) => {
+       /** 不需要异步加载 */
+       setCurPath((c) => {
         const path = Array.from(c)
         path[level] = { fileId, loading: false, type: PathType.VersionDetail }
         return path.slice(0, level + 1)
@@ -337,12 +377,12 @@ const FilePanel = ({
                 onClick={() => !disabled && handleFileSelected(file, level)}
               >
                 <div className={styles.fileLeft}>
-                  {false && (
-                    <img className={styles.fileIcon} src={file?.icon} />
+                  {appMap[file?.extName] && (
+                    <img className={styles.fileIcon} src={appMap[file?.extName]?.icon} />
                   )}
                   <span
                     className={styles.fileName}
-                  >{`${file?.name}.${file?.extName}`}</span>
+                  >{`${file?.name}${file?.extName === 'folder' ? '' : '.' + file?.extName}`}</span>
                 </div>
                 <div className={styles.fileRight}>
                   {file?.extName === 'folder' && (
@@ -355,7 +395,7 @@ const FilePanel = ({
         </div>
       )
     },
-    [handleFileSelected, allowedFileExtNames]
+    [handleFileSelected, appMap, allowedFileExtNames]
   )
 
   const LoadingRender = useCallback(() => {
@@ -366,7 +406,7 @@ const FilePanel = ({
     return (
       <div className={styles.fileDetailRender}>
         <div className={styles.image}>
-          <img src="https://ali-ec.static.yximgs.com/kos/nlav11092/apps/file.d64916fe3c951caa.svg" />
+          <img src={appMap?.[file.extName]?.icon || "https://ali-ec.static.yximgs.com/kos/nlav11092/apps/file.d64916fe3c951caa.svg"} />
         </div>
         <div className={styles.name}>{`${file?.name}.${file?.extName}`}</div>
         {file?.creatorName && (
@@ -389,7 +429,7 @@ const FilePanel = ({
         )}
       </div>
     )
-  }, [])
+  }, [appMap])
 
   const VersionsRender = useCallback(({ versions, selectedPath, level }) => {
     return (
@@ -429,10 +469,22 @@ const FilePanel = ({
             <span>{version?.creatorId}</span>
           </div>
         )}
+        {version?.version && (
+          <div className={styles.rowInfo}>
+            <span>版本</span>
+            <span>{version?.version}</span>
+          </div>
+        )}
         {version?.createTime && (
           <div className={styles.rowInfo}>
             <span>创建时间</span>
             <span>{version?.createTime}</span>
+          </div>
+        )}
+        {version?.updateTime && (
+          <div className={styles.rowInfo}>
+            <span>更新时间</span>
+            <span>{version?.updateTime}</span>
           </div>
         )}
       </div>
@@ -460,7 +512,7 @@ const FilePanel = ({
     const res = _path.reduce((acc, cur) => {
       /** VersionDetail的上一层是Version */
       if (cur.type === PathType.VersionDetail) {
-        const { id, type, version, fileContentId } =
+        const { id, type, version, content } =
           filesMap[cur.fileId]?._origin || {}
         return {
           ...acc,
@@ -468,7 +520,7 @@ const FilePanel = ({
             id,
             type,
             version,
-            fileContentId,
+            content
           },
         }
       }

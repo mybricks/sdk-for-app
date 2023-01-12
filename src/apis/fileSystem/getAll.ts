@@ -1,17 +1,6 @@
 import axios from 'axios';
 import { getUserInfo } from './../../utils'
-
-interface FileItem {
-  id: number
-  name: string
-  parentId: number | null
-  description: string | null
-  extName: string
-  createTime: string
-  creatorId: string
-  creatorName: string
-  updateTime: string
-}
+import { FileItem } from './../type'
 
 export default (params = {}): Promise<FileItem[]> => {
   const { parentId } = params
