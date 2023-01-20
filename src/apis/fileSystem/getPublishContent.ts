@@ -9,7 +9,7 @@ export default (params: Params): Promise<VersionDetailItem[]> => {
   const { pubId } = params ?? {}
   return axios({ 
     method: 'get', 
-    url: '/api/workspace/publish/content',
+    url: '/paas/api/workspace/publish/content',
     params: {
       id: pubId,
     }

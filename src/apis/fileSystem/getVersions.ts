@@ -11,7 +11,7 @@ export default (params: Params): Promise<VersionItem[]> => {
   const { fileId, pageIndex = 1, pageSize = 100 } = params ?? {}
   return axios({ 
     method: 'get', 
-    url: '/api/workspace/publish/versions',
+    url: '/paas/api/workspace/publish/versions',
     params: {
       fileId,
       pageIndex,

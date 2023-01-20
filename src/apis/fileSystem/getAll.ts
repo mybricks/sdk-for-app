@@ -7,7 +7,7 @@ export default (params = {}): Promise<FileItem[]> => {
   const userInfo = getUserInfo()
   return axios({ 
     method: 'get', 
-    url: '/api/workspace/getAll',
+    url: '/paas/api/workspace/getAll',
     params: {
       userId: userInfo?.email,
       parentId,

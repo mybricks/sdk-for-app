@@ -13,7 +13,19 @@ export const user = {
   getUserInfo: () => {
     return axios({ 
       method: 'get', 
-      url: `/api/user/queryBy?email=${userBasicInfo.email}`
+      url: `/paas/api/user/queryBy?email=${userBasicInfo.email}`
+    }).then(({ data }) => {
+      if (data?.data) {
+        return data?.data?.[0]
+      } else {
+        throw new Error('获取用户信息失败失败')
+      }
+    })
+  },
+  getLoginUser: () => {
+    return axios({ 
+      method: 'get', 
+      url: `/paas/api/user/signed`
     }).then(({ data }) => {
       if (data?.data) {
         return data?.data?.[0]

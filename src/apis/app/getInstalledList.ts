@@ -4,7 +4,7 @@ import { InstalledApp } from './../type'
 export default (): Promise<InstalledApp[]> => {
   return axios({ 
     method: 'get', 
-    url: '/api/apps/getInstalledList',
+    url: '/paas/api/apps/getInstalledList',
   }).then(({ data }) => {
     if (data?.data) {
       return data?.data || []
