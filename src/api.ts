@@ -28,7 +28,7 @@ export const user = {
       url: `/paas/api/user/signed`,
     }).then(({ data }) => {
       if (data?.data) {
-        return data?.data?.[0];
+        return data?.data;
       } else {
         throw new Error("获取用户信息失败失败");
       }
