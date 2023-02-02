@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Button } from 'antd'
-import styles from './../View.less'
+import css from './index.less'
 
 interface ButtonProps {
   disabled?: boolean
@@ -14,7 +14,7 @@ export default ({ disabled = false, loading = false, onClick, children }: Button
     <Button
       disabled={disabled}
       loading={loading}
-      className={styles.toolbarButton}
+      className={css.button}
       size="small"
       onClick={onClick}
     >

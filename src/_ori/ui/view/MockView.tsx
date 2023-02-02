@@ -1,10 +1,10 @@
 import React, { forwardRef, ForwardRefRenderFunction, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import axios from 'axios';
 import { message } from 'antd';
-import { getCookies, getUrlParam, safeParse } from '../utils';
-import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from './type';
-import SDKModal from './SDKModal';
-import GlobalContext from './globalContext';
+import { getCookies, getUrlParam, safeParse } from '../../utils';
+import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from '../type';
+import SDKModal from '../SDKModal';
+import GlobalContext from '../globalContext';
 import css from './View.less'
 
 const BASIC_DATA = {
@@ -19,6 +19,7 @@ const BASIC_DATA = {
 }
 // @ts-ignore
 const GLOBAL_MOCK_DATA = typeof MOCKDATA === 'undefined' ? BASIC_DATA : Object.assign({}, BASIC_DATA, MOCKDATA)
+
 const MockView: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
   const { children, extName, className = '', namespace } = props;
 	const [content, setContent] = useState<any>(null);
@@ -126,7 +127,8 @@ const MockView: ForwardRefRenderFunction<ViewRef, ViewProps> = (props, ref) => {
         }
 	    },
     };
-  }, [fileId, extName, content]);
+  }, [fileId, extName, content])
+
   return (
 		<GlobalContext.Provider value={{ fileContent: content }}>
 			<div className={`${css.view} ${className}`}>

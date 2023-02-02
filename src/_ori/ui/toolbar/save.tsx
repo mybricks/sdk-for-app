@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Button } from 'antd'
-import styles from './../View.less'
+import {Button} from 'antd'
+import css from './index.less'
 
 interface SaveButtonProps {
   disabled?: boolean
@@ -12,24 +12,24 @@ interface SaveButtonProps {
 }
 
 export default ({
-  disabled = false,
-  loading = false,
-  dotTip = false,
-  onClick,
-  children,
-}: SaveButtonProps) => {
+                  disabled = false,
+                  loading = false,
+                  dotTip = false,
+                  onClick,
+                  children,
+                }: SaveButtonProps) => {
   return (
     <Button
       disabled={disabled}
       loading={loading}
-      className={styles.toolbarButton}
+      className={css.button}
       size="small"
       onClick={onClick}
     >
       {!disabled && dotTip ? (
-        <div className={styles.saveDot}>＊</div>
+        <div className={css.saveDot}>＊</div>
       ) : (
-        <div />
+        <div/>
       )}
       {children || '保存'}
     </Button>

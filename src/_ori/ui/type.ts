@@ -6,9 +6,9 @@ export enum API_CODE {
 }
 
 export interface ViewProps {
-  children: ReactElement;
+  //children: ReactElement;
   extName: "pc-page" | "cloud-com" | "mybricks-material" | "string";
-  className?: string;
+  //className?: string;
   // 应用空间
   namespace: string;
 }

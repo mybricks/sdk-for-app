@@ -44,3 +44,40 @@
     align-items: center;
   }
 }
+
+.button {
+  letter-spacing: 0;
+  border: 1px solid #cbcbcb;
+  border-radius: 4px;
+  padding: 3px 13px;
+  margin: 0 5px;
+  font-size: 12px;
+  height: 26px;
+  background-color: #fff;
+  position: relative;
+  color: #000000;
+
+  position: relative;
+
+  &:last-child {
+    margin-right: 0px;
+  }
+
+  .saveDot {
+    position: absolute;
+    top: -1px;
+    right: 3px;
+    font-size: 12px;
+    color: #FF4907;
+    transform: scale(0.8);
+  }
+
+  :global {
+    .ant-dropdown-menu {
+      .ant-dropdown-menu-item {
+        font-size: 12px;
+        padding: 3px 12px;
+      }
+    }
+  }
+}

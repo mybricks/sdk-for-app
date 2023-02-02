@@ -1,8 +1,4 @@
-import { ViewRef } from './type'
-import View from './View'
+import View from './view'
+import Toolbar from './toolbar'
 
-export * from './toolbar'
-export { Locker } from './locker'
-
-export { View }
-export type { ViewRef }
+export {View, Toolbar}

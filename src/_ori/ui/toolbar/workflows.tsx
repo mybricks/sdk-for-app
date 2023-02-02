@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
-import { Dropdown, Button, Menu } from 'antd'
-import styles from './../View.less'
+import React, {useMemo} from 'react'
+import {Dropdown, Button, Menu} from 'antd'
+import css from './index.less'
 
 const DownOutlined = window?.icons?.DownOutlined
 
@@ -14,11 +14,11 @@ interface WorkflowOptions {
 interface WorkflowsProps {
   disabled?: boolean
   options?: WorkflowOptions
-  onClick?: ({ fileId, version, name }) => void,
+  onClick?: ({fileId, version, name}) => void,
   children?: any
 }
 
-export default ({ disabled, options, onClick, children }: WorkflowsProps) => {
+export default ({disabled, options, onClick, children}: WorkflowsProps) => {
   const _options = useMemo(() => {
     return Object.keys(options ?? {}).map((keyName) => {
       return {
@@ -40,7 +40,7 @@ export default ({ disabled, options, onClick, children }: WorkflowsProps) => {
   if (Array.isArray(_options) && _options.length <= 1) {
     return (
       <Button
-        className={styles.toolbarButton}
+        className={css.button}
         disabled={disabled}
         size="small"
         onClick={() =>
@@ -78,10 +78,10 @@ export default ({ disabled, options, onClick, children }: WorkflowsProps) => {
       getPopupContainer={(triggerNode) => triggerNode}
       trigger={['click']}
     >
-      <Button size="small" className={styles.toolbarButton}>
-        <div />
+      <Button size="small" className={css.button}>
+        <div/>
         {text}
-        <DownOutlined />
+        <DownOutlined/>
       </Button>
     </Dropdown>
   )
