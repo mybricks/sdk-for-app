@@ -1,23 +1,27 @@
-import {isEnvOfDev, isEnvOfDevAndBrowser} from "../env";
+import {isEnvOfDev, isEnvOfDevAndBrowser} from "../../env";
 
 interface Fn {
-  (): Promise<string>
+  (fileId: string): Promise<string>
 }
 
 /**
- * 获取当前文件内容
+ * 获取文件内容
+ * @param fileId 文件id
  */
-const getFileContent: Fn = function () {
+const getContent: Fn = function (fileId: string) {
   if (isEnvOfDevAndBrowser()) {//浏览器开发环境
-    return forDevBrowser()
+    return forDevBrowser(fileId)
   }
 }
 
-export default getFileContent
+export default getContent
 
 //------------------------------------------------------------------
 
-const forDevBrowser: Fn = function () {
+const forDevBrowser: Fn = function (fileId: string) {
+  console.log(fileId)
+
+
   return new Promise<string>((resolve, reject) => {
     let pageContent = window.localStorage.getItem('--mybricks--')
     if (pageContent) {

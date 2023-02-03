@@ -1,4 +1,4 @@
-import {isEnvOfDev, isEnvOfDevAndBrowser} from "../env";
+import {isEnvOfDev, isEnvOfDevAndBrowser} from "../../env";
 
 /**
  * 保存文件
@@ -7,20 +7,20 @@ import {isEnvOfDev, isEnvOfDevAndBrowser} from "../env";
  */
 
 interface Fn {
-  (opts: { content: string }): Promise<boolean>
+  (fileId: string, opts: { content: string }): Promise<boolean>
 }
 
-const saveFile: Fn = function (opts) {
+const publish: Fn = function (fileId: string, opts) {
   if (isEnvOfDevAndBrowser()) {//浏览器开发环境
-    return forDevBrowser(opts)
+    return forDevBrowser(fileId, opts)
   }
 }
 
-export default saveFile
+export default publish
 
 //----------------------------------------------------------------------------------
 
-const forDevBrowser: Fn = function (opts) {
+const forDevBrowser: Fn = function (fileId: string, opts) {
   return new Promise<boolean>((resolve, reject) => {
     window.localStorage.setItem('--mybricks--', JSON.stringify(opts.content))
     resolve(true)

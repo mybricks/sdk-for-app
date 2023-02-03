@@ -1,10 +1,3 @@
-//当前文件ID
-
-export const Env:{
-  curFileId: string
-} = {}
-
-//----------------------------------------------------------------
 
 export function isEnvOfDev() {
   // @ts-ignore

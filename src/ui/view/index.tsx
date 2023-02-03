@@ -1,15 +1,30 @@
 import css from './css.less'
-import {useMemo} from "react";
-import init from "../../api/init";
+import {forwardRef, ForwardRefRenderFunction, useImperativeHandle, useLayoutEffect, useMemo, useState} from "react";
 
-export default function View({children}) {
-  useMemo(()=>{
-    init()
-  },[])
+type T_Props = {
+  onLoad: (props: {
+    fileId: string;
+    user: {
+      id: string;
+      name: string;
+    }
+  }) => {}
+}
+
+export default function View({onLoad, children}: T_Props) {
+  const [jsx, setJSX] = useState('加载中..')
+  useLayoutEffect(() => {
+    setJSX(onLoad({
+      user: {id: 'TODO', name: 'TODO'},
+      get fileId() {
+        return 'TODO';
+      }
+    }) as any)
+  }, [])
 
   return (
     <div className={css.view}>
-      {children}
+      {jsx}
     </div>
   )
 }
