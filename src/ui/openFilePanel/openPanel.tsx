@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import ReactDOM from 'react-dom'
-import { fileSystem, app } from './../../api'
-import { InstalledApp } from './../type'
 import { Modal } from 'antd'
 import styles from './openPanel.less'
+import API from '../../api/index'
 
+
+// @ts-ignore
 const RightOutlined = window?.icons?.RightOutlined
 
 interface ModalProps {
@@ -130,8 +131,8 @@ interface FilePanelProps extends openPanelProps {
   onChange: any
 }
 
-type AppMapCacheType = { [keyName: string]: InstalledApp } | null
-const AppMapCache: AppMapCacheType = null
+type AppMapCacheType = { [keyName: string]: any } | null
+let AppMapCache: AppMapCacheType = null
 
 const FilePanel = ({
   onChange,
@@ -140,7 +141,7 @@ const FilePanel = ({
 }: FilePanelProps) => {
   const [filesMap, setFilesMap] = useState({})
   const [curPath, setCurPath] = useState([] as Path[])
-
+  const [curUser, setCurUser] = useState({})
   const [appMap, setAppMap] = useState<AppMapCacheType>(AppMapCache)
 
   const onChangeRef = useRef(null)
@@ -149,15 +150,14 @@ const FilePanel = ({
     if (AppMapCache) {
       return
     }
-    app.getInstalledList().then(installedApps => {
+    API.App.getInstalledList().then((installedApps: any) => {
       let appMap = {}
-      installedApps.forEach(app => {
+      installedApps?.forEach(app => {
         appMap[app.type] = app
       })
       appMap['folder'] = {
         icon: 'https://assets.mybricks.world/icon/folder.5782d987cf098ea8.png'
       }
-
       AppMapCache = JSON.parse(JSON.stringify(appMap))
       setAppMap(appMap)
     })
@@ -165,7 +165,9 @@ const FilePanel = ({
 
   useEffect(() => {
     ;(async () => {
-      const data = await fileSystem.getAll()
+      const loginUser: any = await API.User.getLoginUser()
+      setCurUser(loginUser)
+      const data = await API.File.getAll({ email: loginUser?.email })
       setFilesMap((c) => {
         return {
           ...c,
@@ -198,7 +200,8 @@ const FilePanel = ({
               return path.slice(0, level + 1)
             })
             ;(async () => {
-              const data = await fileSystem.getAll({ parentId: file.id })
+              // @ts-ignore
+              const data = await API.File.getAll({ parentId: file.id, email: curUser?.email })
               setFilesMap((c) => {
                 return {
                   ...c,
@@ -237,7 +240,7 @@ const FilePanel = ({
               return path.slice(0, level + 1)
             })
             ;(async () => {
-              const data = await fileSystem.getVersions({ fileId })
+              const data = await API.File.getVersions({ fileId })
               const hasVersions = Array.isArray(data) && data.length > 0
 
               if (hasVersions) {
@@ -327,7 +330,7 @@ const FilePanel = ({
           return path.slice(0, level + 1)
         })
         ;(async () => {
-          const versionDetail = await fileSystem.getPublishContent({ pubId: version.id })
+          const versionDetail = await API.File.getPublishContent({ pubId: version.id })
 
           setFilesMap((c) => {
             return {
@@ -377,7 +380,7 @@ const FilePanel = ({
                 onClick={() => !disabled && handleFileSelected(file, level)}
               >
                 <div className={styles.fileLeft}>
-                  {appMap[file?.extName] && (
+                  {appMap?.[file?.extName] && (
                     <img className={styles.fileIcon} src={appMap[file?.extName]?.icon} />
                   )}
                   <span
@@ -557,7 +560,8 @@ const FilePanel = ({
         ...(acc || {}),
       }
     }, {})
-    onChangeRef.current?.(res)
+    // @ts-ignore
+    onChangeRef?.current?.(res)
   }, [curPath, filesMap])
 
   return (
@@ -610,7 +614,7 @@ const FilePanel = ({
   )
 }
 
-export default ({
+const openFilePanel = ({
   canChooseFiles = true,
   canChooseDirectories = false,
   allowsMultipleSelection = false,
@@ -650,4 +654,9 @@ export default ({
       },
     })
   })
+}
+
+
+export {
+  openFilePanel
 }

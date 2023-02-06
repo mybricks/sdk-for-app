@@ -1,1 +1,0 @@
-export { default as getInstalledList } from './getInstalledList'

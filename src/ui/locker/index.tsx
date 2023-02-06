@@ -9,7 +9,7 @@ import React, {
 import axios from 'axios';
 import { Popover } from 'antd'
 
-import GlobalContext from '../globalContext';
+import GlobalContext from '../../_ori/ui/globalContext';
 
 import css from './index.less'
 
@@ -37,7 +37,7 @@ export interface LockerProps {
 // @ts-ignore
 const isMock = typeof ENV !== 'undefined' &&  ENV === 'DEV'
 
-export function Locker(props: LockerProps): JSX.Element {
+function Locker(props: LockerProps): JSX.Element {
   const { user, fileId } = useContext(GlobalContext)
 
   const render = useMemo(() => {
@@ -172,3 +172,5 @@ async function getFileCooperationUsers ({userId, fileId}): Promise<User[]> {
     })
   })
 }
+
+export default Locker

@@ -1,7 +1,9 @@
-import getContent from "./getContent";
-import save from "./save";
+import getAll from "./getAll";
+import getPublishContent from './getPublishContent'
+import getVersions from './getVersions'
 
 export const File = {
-  getContent,
-  save
+  getAll,
+  getPublishContent,
+  getVersions,
 }
