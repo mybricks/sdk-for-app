@@ -35,7 +35,6 @@ export default function View({onLoad}: T_Props) {
         const loginUser: any = await API.User.getLoginUser()
         setUser(user => ({...loginUser, isAdmin: loginUser?.isAdmin}));
         const apps: any = await API.App.getInstalledList()
-        console.log('!!!', loginUser, apps)
         setInstalledApps(apps);
       } catch(e: any) {
         message.error(`应用初始化数据失败, ${e.message}`);
@@ -72,9 +71,8 @@ export default function View({onLoad}: T_Props) {
         return JSON.parse(JSON.stringify(config));
       },
     })
-    console.log('####', nodes)
     setJSX(nodes as any)
-  }, [])
+  }, [user, fileId, content, config, installedApps])
 
   return (
     <div className={css.view}>

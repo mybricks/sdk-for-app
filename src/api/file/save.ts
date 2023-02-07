@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const getAll = (params: {userId, fileId, shareType, name, content, icon, namespace, type}): Promise<any[]> => {
+const getAll = (params: {userId, fileId, shareType, name, content, icon, namespace?, type?}): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     axios({ 
-      method: 'get', 
+      method: 'post', 
       url: '/paas/api/workspace/saveFile',
-      params: params
+      data: params
     }).then(({ data }) => {
       if (data?.code === 1) {
         resolve(data?.data)
