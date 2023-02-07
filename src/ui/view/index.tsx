@@ -40,23 +40,14 @@ export default function View({onLoad}: T_Props) {
         setUser(user => ({...loginUser, isAdmin: loginUser?.isAdmin}));
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
+        const data = await API.File.getFullFile({userId: user.email, fileId})
+        // @ts-ignore
+        setContent({...data, content: safeParse(data.content)});
       } catch(e: any) {
         message.error(`应用初始化数据失败, ${e.message}`);
       }
     })()
-  }, [])
-
-  useMemo(async () => {
-    if (fileId) {
-      try {
-        const data = await API.File.getFullFile({userId: user.email, fileId})
-        // @ts-ignore
-        setContent({...data, content: safeParse(data.content)});
-      } catch (e: any) {
-        message.error(`获取页面数据发生错误：${e.message}`);
-      }
-    }
-  }, [fileId]);
+  }, [fileId])
 
   useLayoutEffect(() => {
     const nodes = onLoad({
@@ -130,7 +121,9 @@ export default function View({onLoad}: T_Props) {
         }
       },
     })
-    setJSX(nodes as any)
+    if(user && content && installedApps) {
+      setJSX(nodes as any)
+    }
   }, [user, fileId, content, config, installedApps])
 
   return (
