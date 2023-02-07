@@ -1,6 +1,8 @@
-const USER_NAME = "dev";
+import type { T_UserInfo } from '../type';
 
-export const USER_INFO = {
+const USER_NAME: "dev" = "dev";
+
+export const USER_INFO: T_UserInfo = {
   id: 1,
   name: USER_NAME,
   email: `${USER_NAME}@mock.com`,

@@ -1,6 +1,8 @@
 import axios from "axios";
 
-const getLoginUser = async () => {
+import { T_UserInfo } from "./type";
+
+const getLoginUser: () => Promise<T_UserInfo> = async () => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",

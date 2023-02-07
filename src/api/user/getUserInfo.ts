@@ -1,10 +1,11 @@
 import axios from "axios";
+import type { T_UserInfo } from "./type";
 
 /**
  * 获取文件内容
  * @param fileId 文件id
  */
-const getUserInfo = async (email: string) => {
+const getUserInfo: (email: string) => Promise<T_UserInfo> = async (email: string) => {
   return new Promise((resolve, reject) => {
     if (!email) {
       reject('email不能为空')

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const getAll = (params: {userId, fileId, shareType, name, content, icon, namespace, type}): Promise<any[]> => {
+const save = (params: {userId, fileId, shareType, name, content, icon, namespace, type}): Promise<{}> => {
   return new Promise((resolve, reject) => {
     axios({ 
       method: 'get', 
@@ -8,12 +8,12 @@ const getAll = (params: {userId, fileId, shareType, name, content, icon, namespa
       params: params
     }).then(({ data }) => {
       if (data?.code === 1) {
-        resolve(data?.data)
+        resolve(data?.data);
       } else {
-        reject('保存失败')
+        reject('保存失败');
       }
-    })
-  })
+    });
+  });
 }
 
-export default getAll
+export default save;
