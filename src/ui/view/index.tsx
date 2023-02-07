@@ -2,6 +2,8 @@ import React, {forwardRef, ForwardRefRenderFunction, useImperativeHandle, useLay
 import {message} from 'antd';
 import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from '../../type'
 import API from '../../api/index'
+import axios from 'axios';
+import SDKModal from '../sdkModal/SDKModal';
 import {getUrlParam, safeParse} from '../util';
 
 import css from './css.less'
@@ -13,6 +15,7 @@ type T_Props = {
     installedApps: any[];
     fileContent: any;
     config: any
+    openUrl: (param: any) => any
   }) => {}
 }
 
@@ -26,6 +29,7 @@ export default function View({onLoad}: T_Props) {
   const [user, setUser] = useState<any>({});
   const [config, setConfig] = useState<IConfig>(DefaultConfig);
   const [installedApps, setInstalledApps] = useState([]);
+  const [sdkModalInfo, setSDKModalInfo] = useState<any>({});
   const [content, setContent] = useState<FileContent | null>(null);
   const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
 
@@ -70,6 +74,61 @@ export default function View({onLoad}: T_Props) {
       get config() {
         return JSON.parse(JSON.stringify(config));
       },
+      openUrl({
+        url,
+        onFailed,
+        params = {},
+        onSuccess
+      }: { url: string, params: any, onSuccess: Function, onFailed: Function }) {
+        const [schema, removeSchemaPart] = url.split('://');
+        const [pathPart] = removeSchemaPart?.split('?');
+        const [namespace, action] = pathPart?.split('/');
+        let urlSchema = '';
+        installedApps?.forEach((app: IInstalledApp) => {
+          if (app.namespace === namespace) {
+            app?.exports?.forEach(e => {
+              if (e.name === action) {
+                urlSchema = e.path;
+              }
+            })
+          }
+        });
+
+        if (!urlSchema) {
+          onFailed?.({
+            code: -1,
+            message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
+          })
+        } else {
+          if (urlSchema.endsWith('html')) {
+            setSDKModalInfo({
+              open: true,
+              params,
+              url: urlSchema,
+              onSuccess,
+              onFailed,
+              onClose: () => setSDKModalInfo({open: false}),
+            });
+          } else if (urlSchema.endsWith('js')) {
+            axios.get(urlSchema).then((res) => {
+              try {
+                eval(res.data);
+                let fn;
+                if (window?.[action]?.default) {
+                  fn = window?.[action]?.default;
+                } else {
+                  fn = window?.[action];
+                }
+                fn({...params, onSuccess, onFailed});
+              } catch (e) {
+                console.log(e);
+              }
+            })
+          } else {
+            console.log('invalid url schema');
+          }
+        }
+      },
     })
     setJSX(nodes as any)
   }, [user, fileId, content, config, installedApps])
@@ -77,6 +136,7 @@ export default function View({onLoad}: T_Props) {
   return (
     <div className={css.view}>
       {jsx}
+      {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
     </div>
   )
 }
