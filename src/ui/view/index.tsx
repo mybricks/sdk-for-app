@@ -25,6 +25,8 @@ const DefaultConfig: IConfig = {
 }
 
 
+const _APP_CONFIG_ = { namespace: 'mybricks-pc-page' }
+
 export default function View({onLoad}: T_Props) {
   const [jsx, setJSX] = useState('加载中..')
   const [user, setUser] = useState<any>({});
@@ -33,6 +35,7 @@ export default function View({onLoad}: T_Props) {
   const [sdkModalInfo, setSDKModalInfo] = useState<any>({});
   const [content, setContent] = useState<FileContent | null>(null);
   const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
+  const appMeta = API.App.getAppMeta();
 
   useMemo(() => {
     (async () => {
@@ -44,6 +47,8 @@ export default function View({onLoad}: T_Props) {
         const data = await API.File.getFullFile({userId: user.email, fileId})
         // @ts-ignore
         setContent({...data, content: safeParse(data.content)});
+        const configRes = await API.Config.getConfig({ namespace: [appMeta?.namespace, 'system'] })
+        setConfig(typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig));
       } catch(e: any) {
         message.error(`应用初始化数据失败, ${e.message}`);
       }
@@ -67,8 +72,7 @@ export default function View({onLoad}: T_Props) {
         return JSON.parse(JSON.stringify(config));
       },
       get meta() {
-        // @ts-ignore
-        return API.App.getAppMeta()
+        return appMeta
       },
       openUrl({
         url,
@@ -126,7 +130,7 @@ export default function View({onLoad}: T_Props) {
         }
       },
     })
-    if(user && content && installedApps) {
+    if(user && content && installedApps && config) {
       setJSX(nodes as any)
     }
   }, [user, fileId, content, config, installedApps])

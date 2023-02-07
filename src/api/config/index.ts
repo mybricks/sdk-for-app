@@ -1,5 +1,5 @@
-import getInstalledList from '../app/getInstalledList'
+import getConfig from './getConfig'
 
-export const App = {
-  getInstalledList,
+export const Config = {
+  getConfig,
 }
