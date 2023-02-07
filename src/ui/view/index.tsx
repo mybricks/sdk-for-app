@@ -15,6 +15,7 @@ type T_Props = {
     installedApps: any[];
     fileContent: any;
     config: any
+    meta: any
     openUrl: (param: any) => any
   }) => {}
 }
@@ -64,6 +65,10 @@ export default function View({onLoad}: T_Props) {
       },
       get config() {
         return JSON.parse(JSON.stringify(config));
+      },
+      get meta() {
+        // @ts-ignore
+        return API.App.getAppMeta()
       },
       openUrl({
         url,
