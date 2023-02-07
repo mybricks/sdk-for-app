@@ -10,10 +10,10 @@ import React, {
   useState
 } from "react"; 
 import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from '../../type'
-import SDKModal from '../sdkModal/SDKModal';
+import SDKModal from '../../ui/sdkModal/SDKModal';
 import API from '../../api/index'
-import GlobalContext from './globalContext';
-import {getUrlParam, safeParse} from '../util';
+import GlobalContext from '../../ui/view/globalContext';
+import {getUrlParam, safeParse} from '../../ui/util';
 
 import css from './css.less'
 
