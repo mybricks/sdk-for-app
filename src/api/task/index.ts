@@ -1,5 +1,11 @@
 import exec from "./exec";
 
-export const Task = {
+import execMock from "./mock/exec";
+
+import { isEnvOfDevAndBrowser } from "../../env";
+
+export const Task = isEnvOfDevAndBrowser() ? {
+  exec: execMock
+} : {
   exec,
 }
