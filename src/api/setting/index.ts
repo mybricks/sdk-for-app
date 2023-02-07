@@ -1,7 +1,14 @@
+import { isEnvOfDevAndBrowser } from "../../env";
+
 import getSetting from "./getSetting";
 import saveSetting from "./saveSetting";
 
-export const Setting = {
+import getSettingMock from "./mock/getSetting";
+
+export const Setting = isEnvOfDevAndBrowser() ? {
+  getSetting: getSettingMock,
+  saveSetting
+} : {
   getSetting,
   saveSetting
 }

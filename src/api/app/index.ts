@@ -6,7 +6,8 @@ import getAppMeta from './getAppMeta'
 import getAppMetaMock from './mock/getAppMetaMock'
 
 const App = isEnvOfDevAndBrowser() ? {
-  getAppMetaMock
+  getAppMeta: getAppMetaMock,
+  getInstalledList
 } : {
   getAppMeta,
   getInstalledList,
