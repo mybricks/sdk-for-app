@@ -2,6 +2,9 @@
   "types": [
     "node"
   ],
+  "typeRoots": [ 
+    "./src" 
+], 
   "compilerOptions": {
     "module": "es2020",
     "target": "es6",
@@ -26,14 +29,7 @@
     "noEmit": true,
     "jsx": "react",
     "baseUrl": ".",
-    "paths": {
-      "@mybricks/rxui": [
-        "../../rxui/types.d.ts"
-      ],
-      "@mybricks/comlib-core": [
-        "../_comlibs/comlib-core/src/runtime.ts"
-      ]
-    }
+    "paths": {}
   },
   "exclude": [
     "./node_modules"
