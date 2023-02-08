@@ -24,9 +24,6 @@ const DefaultConfig: IConfig = {
   system: {}
 }
 
-
-const _APP_CONFIG_ = { namespace: 'mybricks-pc-page' }
-
 export default function View({onLoad}: T_Props) {
   const [jsx, setJSX] = useState('加载中..')
   const [user, setUser] = useState<any>({});
