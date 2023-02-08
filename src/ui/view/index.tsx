@@ -47,7 +47,7 @@ export default function View({onLoad}: T_Props) {
         const data = await API.File.getFullFile({userId: user.email, fileId})
         // @ts-ignore
         setContent({...data, content: safeParse(data.content)});
-        const configRes = await API.Config.getConfig({ namespace: [appMeta?.namespace, 'system'] })
+        const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system'])
         setConfig(typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig));
       } catch(e: any) {
         message.error(`应用初始化数据失败, ${e.message}`);
@@ -136,9 +136,9 @@ export default function View({onLoad}: T_Props) {
   }, [user, fileId, content, config, installedApps])
 
   return (
-    <div className={css.view}>
+    <>
       {jsx}
       {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
-    </div>
+    </>
   )
 }
