@@ -12,7 +12,7 @@ const exec = async ({ fileId, version }: { fileId: string; version: string }, pa
       data: {
         fileId,
         version,
-        injectParam: JSON.stringify(params),
+        injectParam: params,
       },
     }).then(({ data }) => {
       const { code, msg, message } = data ?? {};
