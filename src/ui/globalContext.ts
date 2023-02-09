@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FileContent } from './type';
+import { FileContent } from '../type';
 
 interface GlobalContext {
   fileContent: FileContent | null,

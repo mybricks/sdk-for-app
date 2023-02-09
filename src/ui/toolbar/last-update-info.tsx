@@ -8,7 +8,7 @@ import { Divider } from 'antd'
 import dayjs from 'dayjs'
 import { Loading } from './loading'
 
-import globalContext from '../../_ori/ui/globalContext'
+import globalContext from '../globalContext'
 
 // @ts-ignore
 import css from './last-update-info.less'

@@ -5,7 +5,7 @@ import API from '../../api/index'
 import axios from 'axios';
 import SDKModal from '../sdkModal/SDKModal';
 import {getUrlParam, safeParse} from '../util';
-
+import GlobalContext from '../globalContext';
 import css from './css.less'
 
 type T_Props = {
@@ -133,9 +133,11 @@ export default function View({onLoad, className = ''}: T_Props) {
   }, [user, fileId, content, config, installedApps])
 
   return (
-    <div className={`${css.view} ${className}`}>
-      {jsx}
-      {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
-    </div>
+    <GlobalContext.Provider value={{fileContent: content, user, fileId}}>
+      <div className={`${css.view} ${className}`}>
+        {jsx}
+        {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
+      </div>
+    </GlobalContext.Provider>
   )
 }
