@@ -9,6 +9,7 @@ import {getUrlParam, safeParse} from '../util';
 import css from './css.less'
 
 type T_Props = {
+  className?: string;
   onLoad: (props: {
     fileId: number;
     user: any;
@@ -24,7 +25,7 @@ const DefaultConfig: IConfig = {
   system: {}
 }
 
-export default function View({onLoad}: T_Props) {
+export default function View({onLoad, className = ''}: T_Props) {
   const [jsx, setJSX] = useState('加载中..')
   const [user, setUser] = useState<any>({});
   const [config, setConfig] = useState<IConfig>(DefaultConfig);
@@ -53,89 +54,88 @@ export default function View({onLoad}: T_Props) {
   }, [fileId])
 
   useLayoutEffect(() => {
-    const nodes = onLoad({
-      user,
-      get installedApps() {
-        return installedApps;
-      },
-      get fileId() {
-        return fileId;
-      },
-      get fileContent() {
-        /** 防止外层对 content 进行修改 */
-        return content ? JSON.parse(JSON.stringify(content)) : {};
-      },
-      get config() {
-        return JSON.parse(JSON.stringify(config));
-      },
-      get meta() {
-        return appMeta
-      },
-      openUrl({
-        url,
-        onFailed,
-        params = {},
-        onSuccess
-      }: { url: string, params: any, onSuccess: Function, onFailed: Function }) {
-        const [schema, removeSchemaPart] = url.split('://');
-        const [pathPart] = removeSchemaPart?.split('?');
-        const [namespace, action] = pathPart?.split('/');
-        let urlSchema = '';
-        installedApps?.forEach((app: IInstalledApp) => {
-          if (app.namespace === namespace) {
-            app?.exports?.forEach(e => {
-              if (e.name === action) {
-                urlSchema = e.path;
-              }
-            })
-          }
-        });
-
-        if (!urlSchema) {
-          onFailed?.({
-            code: -1,
-            message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
-          })
-        } else {
-          if (urlSchema.endsWith('html')) {
-            setSDKModalInfo({
-              open: true,
-              params,
-              url: urlSchema,
-              onSuccess,
-              onFailed,
-              onClose: () => setSDKModalInfo({open: false}),
-            });
-          } else if (urlSchema.endsWith('js')) {
-            axios.get(urlSchema).then((res) => {
-              try {
-                eval(res.data);
-                let fn;
-                if (window?.[action]?.default) {
-                  fn = window?.[action]?.default;
-                } else {
-                  fn = window?.[action];
+    if(user && content && installedApps && config) {
+      const nodes = onLoad({
+        user,
+        get installedApps() {
+          return installedApps;
+        },
+        get fileId() {
+          return fileId;
+        },
+        get fileContent() {
+          /** 防止外层对 content 进行修改 */
+          return content ? JSON.parse(JSON.stringify(content)) : {};
+        },
+        get config() {
+          return JSON.parse(JSON.stringify(config));
+        },
+        get meta() {
+          return appMeta
+        },
+        openUrl({
+          url,
+          onFailed,
+          params = {},
+          onSuccess
+        }: { url: string, params: any, onSuccess: Function, onFailed: Function }) {
+          const [schema, removeSchemaPart] = url.split('://');
+          const [pathPart] = removeSchemaPart?.split('?');
+          const [namespace, action] = pathPart?.split('/');
+          let urlSchema = '';
+          installedApps?.forEach((app: IInstalledApp) => {
+            if (app.namespace === namespace) {
+              app?.exports?.forEach(e => {
+                if (e.name === action) {
+                  urlSchema = e.path;
                 }
-                fn({...params, onSuccess, onFailed});
-              } catch (e) {
-                console.log(e);
-              }
+              })
+            }
+          });
+          if (!urlSchema) {
+            onFailed?.({
+              code: -1,
+              message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
             })
           } else {
-            console.log('invalid url schema');
+            if (urlSchema.endsWith('html')) {
+              setSDKModalInfo({
+                open: true,
+                params,
+                url: urlSchema,
+                onSuccess,
+                onFailed,
+                onClose: () => setSDKModalInfo({open: false}),
+              });
+            } else if (urlSchema.endsWith('js')) {
+              axios.get(urlSchema).then((res) => {
+                try {
+                  eval(res.data);
+                  let fn;
+                  if (window?.[action]?.default) {
+                    fn = window?.[action]?.default;
+                  } else {
+                    fn = window?.[action];
+                  }
+                  fn({...params, onSuccess, onFailed});
+                } catch (e) {
+                  console.log(e);
+                }
+              })
+            } else {
+              console.log('invalid url schema');
+            }
           }
-        }
-      },
-    })
-    if(user && content && installedApps && config) {
+        },
+      })
       setJSX(nodes as any)
     }
   }, [user, fileId, content, config, installedApps])
 
   return (
-    <>
+    <div className={`${css.view} ${className}`}>
       {jsx}
       {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
-    </>
+    </div>
   )
 }
