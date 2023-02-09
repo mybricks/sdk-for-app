@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const save = (params: {userId, fileId, shareType, name, content, icon, namespace?, type?}): Promise<{}> => {
+const save = (params: {userId, fileId, shareType?, name?, content, icon?, namespace?, type?}): Promise<{}> => {
   return new Promise((resolve, reject) => {
     axios({ 
       method: 'post', 
