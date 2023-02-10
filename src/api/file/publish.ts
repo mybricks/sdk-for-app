@@ -10,10 +10,10 @@ const publish = (params: {userId, fileId, extName: string, content: string, comm
       if (data?.code === 1) {
         resolve(data?.data);
       } else {
-        reject('保存失败');
+        reject('发布失败');
       }
     }).catch(e => {
-      reject('保存失败' + e.message);
+      reject('发布失败' + e.message);
     })
   })
 }
