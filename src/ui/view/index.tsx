@@ -39,10 +39,10 @@ export default function View({onLoad, className = ''}: T_Props) {
     (async () => {
       try {
         const loginUser: any = await API.User.getLoginUser()
-        setUser(user => ({...loginUser, isAdmin: loginUser?.isAdmin}));
+        setUser({...loginUser, isAdmin: loginUser?.isAdmin});
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
-        const data = await API.File.getFullFile({userId: user.email, fileId})
+        const data = await API.File.getFullFile({userId: loginUser.email, fileId})
         // @ts-ignore
         setContent({...data, content: safeParse(data.content)});
         const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system'])
