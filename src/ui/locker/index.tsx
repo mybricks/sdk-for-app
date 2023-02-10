@@ -9,7 +9,7 @@ import React, {
 import axios from 'axios';
 import { Popover } from 'antd'
 
-import GlobalContext from '../../_ori/ui/globalContext';
+import GlobalContext from '../globalContext';
 
 import css from './index.less'
 
