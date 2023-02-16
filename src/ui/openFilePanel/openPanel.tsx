@@ -4,6 +4,7 @@ import { Modal } from 'antd'
 import styles from './openPanel.less'
 import API from '../../api/index'
 
+const folderExtnames = ['folder', 'folder-project', 'folder-module']
 
 // @ts-ignore
 const RightOutlined = window?.icons?.RightOutlined
@@ -138,12 +139,12 @@ const FilePanel = ({
   onChange,
   canChooseDirectories,
   allowedFileExtNames,
+  filterCondition
 }: FilePanelProps) => {
   const [filesMap, setFilesMap] = useState({})
   const [curPath, setCurPath] = useState([] as Path[])
   const [curUser, setCurUser] = useState({})
   const [appMap, setAppMap] = useState<AppMapCacheType>(AppMapCache)
-
   const onChangeRef = useRef(null)
 
   useEffect(() => {
@@ -167,17 +168,14 @@ const FilePanel = ({
     ;(async () => {
       const loginUser: any = await API.User.getLoginUser()
       setCurUser(loginUser)
-      const data = await API.File.getAll({ email: loginUser?.email })
+      const {map, path} = await API.File.getFileTreeMapByFile(filterCondition)
       setFilesMap((c) => {
         return {
           ...c,
-          ['000']: {
-            _origin: {},
-            type: PathType.Files,
-            data,
-          },
+          ...map
         }
       })
+      setCurPath(path)
     })()
   }, [])
 
@@ -190,7 +188,7 @@ const FilePanel = ({
       if (!hasCached) {
         /** 异步请求数据  */
         switch (true) {
-          case extName === 'folder': {
+          case folderExtnames.includes(extName): {
             const _fileId = `folder_${fileId}`
 
             /** 先设置成加载中  */
@@ -201,7 +199,9 @@ const FilePanel = ({
             })
             ;(async () => {
               // @ts-ignore
-              const data = await API.File.getAll({ parentId: file.id, email: curUser?.email })
+              // const data = await API.File.getAll({ parentId: file.id, email: curUser?.email })
+              const data = await API.File.getFiles({parentId: file.id, extNames: [filterCondition.extName].concat(folderExtnames)})
+
               setFilesMap((c) => {
                 return {
                   ...c,
@@ -276,8 +276,10 @@ const FilePanel = ({
                   return {
                     ...c,
                     [fileId]: {
-                      type: PathType.FileDetail,
-                      data: file,
+                      // type: PathType.FileDetail,
+                      // data: file,
+                      type: PathType.Versions,
+                      data: [],
                       _origin: file,
                     },
                   }
@@ -290,7 +292,8 @@ const FilePanel = ({
                     path[level] = {
                       fileId,
                       loading: false,
-                      type: PathType.FileDetail,
+                      // type: PathType.FileDetail,
+                      type: PathType.Versions
                     }
                     return path.slice(0, level + 1)
                   }
@@ -364,41 +367,61 @@ const FilePanel = ({
 
   const FilesRender = useCallback(
     ({ files, selectedPath, level }) => {
-      return (
-        <div className={styles.filesRender}>
-          {(files ?? []).map((file) => {
-            const disabled =
-              Array.isArray(allowedFileExtNames) &&
-              allowedFileExtNames.length > 0
-                ? !(allowedFileExtNames.concat('folder')).includes(file.extName)
-                : false
-            return (
-              <div
-                className={`${styles.file} ${
-                  file?.id === selectedPath?.fileId ? styles.selected : ''
-                } ${disabled ? styles.disabled : ''}`}
-                onClick={() => !disabled && handleFileSelected(file, level)}
-              >
-                <div className={styles.fileLeft}>
-                  {appMap?.[file?.extName] && (
-                    <img className={styles.fileIcon} src={appMap[file?.extName]?.icon} />
-                  )}
-                  <span
-                    className={styles.fileName}
-                  >{`${file?.name}${file?.extName === 'folder' ? '' : '.' + file?.extName}`}</span>
+      const finalFiles = files ?? []
+      let JSX = <div className={styles.noFilesRender}>空文件夹</div>
+      if (finalFiles.length) {
+        JSX = (
+          <div className={styles.filesRender}>
+            {(files ?? []).map((file) => {
+              const disabled =
+                Array.isArray(allowedFileExtNames) &&
+                allowedFileExtNames.length > 0
+                  ? !(allowedFileExtNames.concat(folderExtnames)).includes(file.extName)
+                  : false
+
+              let selected = curPath.findIndex((path) => (`folder_${file.id}` === path.fileId || file.id === path.fileId))
+
+              let css = ''
+
+              if (selected !== -1) {
+                if (selected === curPath.length - 1) {
+                  css = styles.selected
+                } else {
+                  css = styles.notCurSelected
+                }
+              }
+
+              return (
+                <div
+                  className={`${styles.file} ${
+                    // file?.id === selectedPath?.fileId ? styles.selected : ''
+                    css
+                  } ${disabled ? styles.disabled : ''}`}
+                  onClick={() => !disabled && handleFileSelected(file, level)}
+                >
+                  <div className={styles.fileLeft}>
+                    {appMap?.[file?.extName] && (
+                      <img className={styles.fileIcon} src={appMap[file?.extName]?.icon} />
+                    )}
+                    <span
+                      className={styles.fileName}
+                    >{`${file?.name}${folderExtnames.includes(file?.extName) ? '' : '.' + file?.extName}`}</span>
+                  </div>
+                  <div className={styles.fileRight}>
+                    {folderExtnames.includes(file?.extName) && (
+                      <RightOutlined className={styles.fileArrow} />
+                    )}
+                  </div>
                 </div>
-                <div className={styles.fileRight}>
-                  {file?.extName === 'folder' && (
-                    <RightOutlined className={styles.fileArrow} />
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      )
+              )
+            })}
+          </div>
+        )
+      }
+
+      return JSX
     },
-    [handleFileSelected, appMap, allowedFileExtNames]
+    [handleFileSelected, appMap, allowedFileExtNames, curPath]
   )
 
   const LoadingRender = useCallback(() => {
@@ -435,26 +458,33 @@ const FilePanel = ({
   }, [appMap])
 
   const VersionsRender = useCallback(({ versions, selectedPath, level }) => {
-    return (
-      <div className={styles.versionsRender}>
-        {(versions ?? []).map((version) => {
-          return (
-            <div
-              className={`${styles.version} ${
-                `version_${version?.id}` === selectedPath?.fileId
-                  ? styles.selected
-                  : ''
-              }`}
-              onClick={() => handleVersionSelected(version, level)}
-            >
+    const finalVersions = versions ?? []
+    let JSX = <div className={styles.noVersionsRender}>当前页面没有发布内容</div>
+
+    if (finalVersions.length) {
+      JSX = (
+        <div className={styles.versionsRender}>
+          {finalVersions.map((version) => {
+            return (
               <div
-                className={styles.versionName}
-              >{`${version.type}@${version.version}`}</div>
-            </div>
-          )
-        })}
-      </div>
-    )
+                className={`${styles.version} ${
+                  `version_${version?.id}` === selectedPath?.fileId
+                    ? styles.selected
+                    : ''
+                }`}
+                onClick={() => handleVersionSelected(version, level)}
+              >
+                <div
+                  className={styles.versionName}
+                >{`${version.type}@${version.version}`}</div>
+              </div>
+            )
+          })}
+        </div>
+      )
+    }
+
+    return JSX
   }, [])
 
   const VersionDetailRender = useCallback(({ version }) => {
@@ -619,6 +649,7 @@ const openFilePanel = ({
   canChooseDirectories = false,
   allowsMultipleSelection = false,
   allowedFileExtNames,
+  filterCondition
 }: openPanelProps) => {
   let selectedFile
   return new Promise((resolve, reject) => {
@@ -636,6 +667,7 @@ const openFilePanel = ({
           onChange={(file) => {
             selectedFile = file
           }}
+          filterCondition={filterCondition}
         />
       ),
       okText: '选择',

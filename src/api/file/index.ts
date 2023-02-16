@@ -6,6 +6,8 @@ import getVersions from './getVersions'
 import getFullFile from './getFullFile'
 import save from './save'
 import publish from './publish'
+import getFileTreeMapByFile from './getFileTreeMapByFile'
+import getFiles from './getFiles'
 
 import saveMock from "./mock/save";
 import publishMock from "./mock/publish";
@@ -18,6 +20,8 @@ export const File = isEnvOfDevAndBrowser() ? {
   publish: publishMock,
   getPublishContent,
   getVersions,
+  getFileTreeMapByFile,
+  getFiles
 } : {
   getFullFile,
   getAll,
@@ -25,4 +29,6 @@ export const File = isEnvOfDevAndBrowser() ? {
   publish,
   getPublishContent,
   getVersions,
+  getFileTreeMapByFile,
+  getFiles
 };
