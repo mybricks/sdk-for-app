@@ -4,7 +4,7 @@ import Workflows from './workflows'
 import Button from './button'
 
 import LastUpdate from './last-update-info';
-import { GoBack } from '../../_ori/ui/Icons'
+import { GoBack } from '../Icons'
 
 import styles from './index.less'
 

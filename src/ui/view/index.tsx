@@ -128,6 +128,7 @@ export default function View({onLoad, className = ''}: T_Props) {
           }
         },
       })
+      console.log('SDK 初始化', user, fileId)
       setJSX(nodes as any)
     }
   }, [user, fileId, content, config, installedApps])
