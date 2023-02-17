@@ -181,7 +181,7 @@ const FilePanel = ({
 
   const handleFileSelected = useCallback(
     (file, level) => {
-      const { id: fileId, extName } = file ?? {}
+      const { id: fileId, extName, groupId } = file ?? {}
       const hasCached = !!filesMap[fileId]
 
       /** 需要异步加载*/
@@ -200,7 +200,7 @@ const FilePanel = ({
             ;(async () => {
               // @ts-ignore
               // const data = await API.File.getAll({ parentId: file.id, email: curUser?.email })
-              const data = await API.File.getFiles({parentId: file.id, extNames: [filterCondition.extName].concat(folderExtnames)})
+              const data = await API.File.getFiles({parentId: file.id, groupId, extNames: [filterCondition.extName].concat(folderExtnames)})
 
               setFilesMap((c) => {
                 return {
