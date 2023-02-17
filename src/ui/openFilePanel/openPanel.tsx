@@ -200,7 +200,7 @@ const FilePanel = ({
             ;(async () => {
               // @ts-ignore
               // const data = await API.File.getAll({ parentId: file.id, email: curUser?.email })
-              const data = await API.File.getFiles({parentId: file.id, groupId, extNames: [filterCondition.extName].concat(folderExtnames)})
+              const data = await API.File.getFiles({parentId: file.id, groupId, extNames: [filterCondition.extName].concat(folderExtnames).join(',')})
 
               setFilesMap((c) => {
                 return {

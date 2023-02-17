@@ -1,6 +1,6 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "0.0.55",
+  "version": "0.0.56",
   "description": "SDK for application UI",
   "main": "index.min.js",
   "scripts": {
