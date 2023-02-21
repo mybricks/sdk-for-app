@@ -40,6 +40,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   useMemo(() => {
     (async () => {
       try {
+        console.log('开始初始化基本数据')
         const loginUser: any = await API.User.getLoginUser()
         setUser({...loginUser, isAdmin: loginUser?.isAdmin});
         const apps: any = await API.App.getInstalledList()
@@ -54,6 +55,7 @@ export default function View({onLoad, className = ''}: T_Props) {
           setHierarchy(hierarchyRes)
         }
       } catch(e: any) {
+        console.log(e)
         message.error(`应用初始化数据失败, ${e.message}`);
       }
     })()
