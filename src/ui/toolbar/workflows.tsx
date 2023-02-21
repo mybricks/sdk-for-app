@@ -8,7 +8,7 @@ interface WorkflowOptions {
   [keyname: string]: {
     fileId: number
     version: string
-	  type?: string
+	  isModule: boolean;
   }
 }
 
@@ -21,7 +21,7 @@ interface WorkflowsProps {
 
 export default ({disabled, options, onClick, children}: WorkflowsProps) => {
   const _options = useMemo(() => {
-    return Object.keys(options ?? {}).filter(key => options?.[key]?.type !== 'project').map((keyName) => {
+    return Object.keys(options ?? {}).filter(key => !options?.[key]?.isModule).map((keyName) => {
       return {
         label: decodeURI(keyName ?? ''),
         value: decodeURI(keyName ?? ''),
