@@ -8,6 +8,7 @@ import save from './save'
 import publish from './publish'
 import getFileTreeMapByFile from './getFileTreeMapByFile'
 import getFiles from './getFiles'
+import getHierarchy from './getHierarchy'
 
 import saveMock from "./mock/save";
 import publishMock from "./mock/publish";
@@ -21,7 +22,8 @@ export const File = isEnvOfDevAndBrowser() ? {
   getPublishContent,
   getVersions,
   getFileTreeMapByFile,
-  getFiles
+  getFiles,
+  getHierarchy,
 } : {
   getFullFile,
   getAll,
@@ -30,5 +32,6 @@ export const File = isEnvOfDevAndBrowser() ? {
   getPublishContent,
   getVersions,
   getFileTreeMapByFile,
+  getHierarchy,
   getFiles
 };

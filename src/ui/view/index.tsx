@@ -18,6 +18,7 @@ type T_Props = {
     config: any
     meta: any
     openUrl: (param: any) => any
+    projectId: any
   }) => {}
 }
 
@@ -34,6 +35,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   const [content, setContent] = useState<FileContent | null>(null);
   const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
   const appMeta = API.App.getAppMeta();
+  const [hierarchy, setHierarchy] = useState({projectId: null}) // 初始化赋值
 
   useMemo(() => {
     (async () => {
@@ -47,6 +49,10 @@ export default function View({onLoad, className = ''}: T_Props) {
         setContent({...data, content: safeParse(data.content)});
         const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system'])
         setConfig(typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig));
+        const hierarchyRes = await API.File.getHierarchy({fileId})
+        if(hierarchyRes?.projectId) {
+          setHierarchy(hierarchyRes)
+        }
       } catch(e: any) {
         message.error(`应用初始化数据失败, ${e.message}`);
       }
@@ -127,11 +133,14 @@ export default function View({onLoad, className = ''}: T_Props) {
             }
           }
         },
+        get projectId() {
+          return hierarchy?.projectId
+        }
       })
       console.log('SDK 初始化', user, fileId)
       setJSX(nodes as any)
     }
-  }, [user, fileId, content, config, installedApps])
+  }, [user, fileId, content, config, installedApps, hierarchy])
 
   return (
     <GlobalContext.Provider value={{fileContent: content, user, fileId}}>
