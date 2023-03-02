@@ -27,7 +27,7 @@ const DefaultConfig: IConfig = {
 }
 
 export default function View({onLoad, className = ''}: T_Props) {
-  const [jsx, setJSX] = useState('加载中..')
+  const [jsx, setJSX] = useState(<Loading />)
   const [user, setUser] = useState<any>({});
   const [config, setConfig] = useState<IConfig>(DefaultConfig);
   const [installedApps, setInstalledApps] = useState([]);
@@ -151,5 +151,15 @@ export default function View({onLoad, className = ''}: T_Props) {
         {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
       </div>
     </GlobalContext.Provider>
+  )
+}
+
+function Loading() {
+  return (
+    <div className={css.loadingContainer}>
+      <div className={css.loadingText}>
+        加载中，请稍后...
+      </div>
+    </div>
   )
 }
