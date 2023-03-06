@@ -1,12 +1,10 @@
-import axios from 'axios';
+import { getAxiosInstance } from '../util'
 
 const publish = (params: {userId, fileId, extName: string, content: string, commitInfo: string, type: string }): Promise<{}> => {
   return new Promise((resolve, reject) => {
-    axios({
-      method: 'post',
-      url: '/paas/api/workspace/publish',
-      data: params
-    }).then(({data}) => {
+    getAxiosInstance()
+    .post('/paas/api/workspace/publish', params)
+    .then(({data}) => {
       if (data?.code === 1) {
         resolve(data?.data);
       } else {

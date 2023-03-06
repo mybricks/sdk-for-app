@@ -1,5 +1,3 @@
-import { message } from 'antd';
-
 import fn from "../exec";
 
 const exec: typeof fn = async (option, params) => {
@@ -12,7 +10,7 @@ const exec: typeof fn = async (option, params) => {
 
     console.log(data, "请求体");
 
-    message.info(`发布内容已打印至控制台`);
+    console.log(`发布内容已打印至控制台`);
 
     resolve(data);
   });

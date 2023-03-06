@@ -1,14 +1,16 @@
-import axios from "axios";
+import { getAxiosInstance } from '../util'
 
 const getSetting = async (namespaces: string[]) => {
   return new Promise((resolve, reject) => {
-    axios({
-      method: 'post',
-      url: '/paas/api/config/get',
-      data: {
-        scope: namespaces
-      }
-    }).then(({data: configData}) => {
+    if(!namespaces || namespaces.length === 0) {
+      resolve([]);
+      return
+    }
+    getAxiosInstance()
+    .post('/paas/api/config/get', {
+      scope: namespaces
+    })
+    .then(({data: configData}) => {
       if (configData.code === 1) {
         const config = configData?.data;
         resolve(config)

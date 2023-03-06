@@ -1,15 +1,11 @@
-import axios from 'axios';
+import { getAxiosInstance } from '../util'
 
 const getAll = (params?: { parentId?: any, email?: string }): Promise<any[]> => {
   return new Promise((resolve, reject) => {
     const { parentId, email } = params || {}
-    axios({ 
-      method: 'get', 
-      url: '/paas/api/workspace/getAll',
-      params: {
-        userId: email,
-        parentId,
-      }
+    getAxiosInstance().get('/paas/api/workspace/getAll',{
+      userId: email,
+      parentId,
     }).then(({ data }) => {
       if (data?.data) {
         resolve(data?.data || [])

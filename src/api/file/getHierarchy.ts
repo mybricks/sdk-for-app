@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { getAxiosInstance } from '../util'
 
 interface Params {
   fileId: number | string
@@ -7,12 +7,9 @@ interface Params {
 const getHierarchy = (params: Params): Promise<{ projectId, hierarchy }> => {
   return new  Promise((resolve, reject) => {
     const { fileId } = params ?? {}
-    axios({ 
-      method: 'get', 
-      url: '/paas/api/file/getParentModuleAndProjectInfo',
-      params: {
-        id: fileId
-      }
+    getAxiosInstance()
+    .get('/paas/api/file/getParentModuleAndProjectInfo', {
+      id: fileId
     }).then(({ data }) => {
       if (data?.code === 1) {
         resolve(data?.data || {})

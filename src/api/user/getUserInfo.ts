@@ -1,4 +1,4 @@
-import axios from "axios";
+import { getAxiosInstance } from '../util'
 import type { T_UserInfo } from "./type";
 
 /**
@@ -11,10 +11,9 @@ const getUserInfo: (email: string) => Promise<T_UserInfo> = async (email: string
       reject('email不能为空')
       return
     }
-    axios({
-      method: "get",
-      url: `/paas/api/user/queryBy?email=${email}`,
-    }).then(({ data }) => {
+    getAxiosInstance()
+    .get(`/paas/api/user/queryBy?email=${email}`)
+    .then(({ data }) => {
       if (data?.data) {
         resolve(data?.data?.[0])
       } else {

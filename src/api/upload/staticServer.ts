@@ -1,17 +1,24 @@
-import axios from 'axios'
+import { getAxiosInstance } from '../util'
+import { isEnvOfServer } from '../../env'
 
 export default function staticServer({content, folderPath, fileName}) {
-  const blob = new Blob([content])
-  const formData = new FormData()
+  let blob;
+  let formData;
+  if(isEnvOfServer()) {
+    blob = Buffer.from([content])
+    const FormData = require('form-data')
+    formData = new FormData()
+  } else {
+    blob = new Blob([content])
+    formData = new FormData()
+  }
   formData.append('file', blob, fileName)
   formData.append('folderPath', folderPath)
 
   return new Promise((resolve, reject) => {
-    axios({
-      method: "post",
-      url: '/paas/api/flow/saveFile',
-      data: formData
-    }).then(({ data }) => {
+    getAxiosInstance()
+    .post('/paas/api/flow/saveFile', formData)
+    .then(({ data }) => {
       if (data.code === 1 && data.data) {
         resolve(data.data)
       } else {

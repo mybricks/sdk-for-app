@@ -1,18 +1,15 @@
-import axios from "axios";
+import { getAxiosInstance } from '../util'
 
 const saveSetting = async (namespace: string, config: any, email) => {
   return new Promise((resolve, reject) => {
     if(!email) {
       reject('请传入email')
     }
-    axios({
-      method: "post",
-      url: "/paas/api/config/update",
-      data: {
-        namespace: namespace,
-        userId: email,
-        config,
-      },
+    getAxiosInstance()
+    .post('/paas/api/config/update', {
+      namespace: namespace,
+      userId: email,
+      config,
     }).then(({ data }) => {
       const { code } = data ?? {};
       if (code === 1) {

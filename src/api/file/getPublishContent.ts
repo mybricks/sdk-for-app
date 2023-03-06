@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { getAxiosInstance } from '../util'
 
 interface VersionItem {
   id: number
@@ -16,16 +16,12 @@ interface VersionDetailItem extends VersionItem {
   }
 }
 
-
 export default (params: { pubId: number | string }): Promise<VersionDetailItem[]> => {
   return new Promise((resolve, reject) => {
     const { pubId } = params ?? {}
-    axios({ 
-      method: 'get', 
-      url: '/paas/api/workspace/publish/content',
-      params: {
-        id: pubId,
-      }
+    getAxiosInstance()
+    .get('/paas/api/workspace/publish/content', {
+      id: pubId,
     }).then(({ data }) => {
       if (data?.data) {
         let content = data?.data?.content ?? {}

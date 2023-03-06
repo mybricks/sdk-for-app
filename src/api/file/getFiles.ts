@@ -1,12 +1,10 @@
-import axios from 'axios';
+import { getAxiosInstance } from '../util'
 
 const getAll = (params): Promise<any[]> => {
   return new Promise((resolve, reject) => {
-    axios({ 
-      method: 'get', 
-      url: '/paas/api/file/getFiles',
-      params
-    }).then(({ data }) => {
+    getAxiosInstance()
+    .get('/paas/api/file/getFiles', params)
+    .then(({ data }) => {
       if (data.code === 1 && data.data) {
         resolve(data.data)
       } else {

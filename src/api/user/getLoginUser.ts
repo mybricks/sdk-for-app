@@ -1,14 +1,13 @@
-import axios from "axios";
-import { message } from "antd";
+import { getAxiosInstance } from '../util'
 
 import { T_UserInfo } from "./type";
 
 const getLoginUser: () => Promise<T_UserInfo> = async () => {
   return new Promise((resolve, reject) => {
-    axios({
-      method: "post",
-      url: `/paas/api/user/signed`,
-    }).then(({ data }) => {
+    getAxiosInstance()
+    .post(`/paas/api/user/signed`)
+    .then(({ data }) => {
+      console.log('接口返回', data)
       resolve(data.data)
       // if (data?.data) {
       //   resolve(data.data)

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { getAxiosInstance } from '../util'
 
 type T_FullFile = {
   content: string;
@@ -25,11 +25,9 @@ type T_FullFile = {
 
 const getFullFile = (params: { userId: string, fileId: number }): Promise<T_FullFile> => {
   return new Promise((resolve, reject) => {
-    axios({
-      method: 'get',
-      url: '/paas/api/workspace/getFullFile',
-      params: params
-    }).then(({ data }) => {
+    getAxiosInstance()
+    .get('/paas/api/workspace/getFullFile', params)
+    .then(({ data }) => {
       if (data?.code === 1) {
         resolve(data?.data || {})
       } else {

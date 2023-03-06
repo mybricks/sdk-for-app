@@ -1,5 +1,4 @@
-import axios from "axios";
-
+import { getAxiosInstance } from '../util'
 
 interface InstalledApp {
   title: string,
@@ -13,10 +12,9 @@ interface InstalledApp {
 
 const getInstalledList = async () => {
   return new Promise((resolve, reject) => {
-    axios({ 
-      method: 'get', 
-      url: '/paas/api/apps/getInstalledList',
-    }).then(({ data }) => {
+    getAxiosInstance()
+    .get('/paas/api/apps/getInstalledList')
+    .then(({ data }) => {
       if (data?.data) {
         resolve(data?.data || [])
       } else {

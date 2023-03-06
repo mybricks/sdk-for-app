@@ -5,7 +5,11 @@ export function isEnvOfDev() {
 }
 
 export function isEnvOfBrowser() {
-  return window !== void 0
+  return typeof window !== 'undefined'
+}
+
+export function isEnvOfServer() {
+  return typeof process !== 'undefined'
 }
 
 export function isEnvOfDevAndBrowser() {
