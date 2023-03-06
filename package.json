@@ -5,7 +5,8 @@
   "main": "index.min.js",
   "scripts": {
     "build": "webpack --config ./scripts/webpack.build.js",
-    "dev": "webpack-dev-server --config ./scripts/webpack.dev.js"
+    "dev": "webpack-dev-server --config ./scripts/webpack.dev.js",
+    "publishToNpm": "npm publish"
   },
   "repository": {
     "type": "git",
