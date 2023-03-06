@@ -14,7 +14,7 @@ import saveMock from "./mock/save";
 import publishMock from "./mock/publish";
 import getFullFileMock from "./mock/getFullFile";
 
-export const File = isEnvOfDevAndBrowser() ? {
+export const File: any = isEnvOfDevAndBrowser() ? {
   getFullFile: getFullFileMock,
   getAll,
   save: saveMock,

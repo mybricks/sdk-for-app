@@ -22,7 +22,7 @@ export default (params: { pubId: number | string }): Promise<VersionDetailItem[]
     getAxiosInstance()
     .get('/paas/api/workspace/publish/content', {
       id: pubId,
-    }).then(({ data }) => {
+    }).then(({ data }: any) => {
       if (data?.data) {
         let content = data?.data?.content ?? {}
         try {

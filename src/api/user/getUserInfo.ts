@@ -13,7 +13,7 @@ const getUserInfo: (email: string) => Promise<T_UserInfo> = async (email: string
     }
     getAxiosInstance()
     .get(`/paas/api/user/queryBy?email=${email}`)
-    .then(({ data }) => {
+    .then(({ data }: any) => {
       if (data?.data) {
         resolve(data?.data?.[0])
       } else {

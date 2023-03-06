@@ -1,6 +1,6 @@
 import { getAxiosInstance } from '../util'
 
-const saveSetting = async (namespace: string, config: any, email) => {
+const saveSetting = async (namespace: string, config: any, email: any) => {
   return new Promise((resolve, reject) => {
     if(!email) {
       reject('请传入email')
@@ -10,7 +10,7 @@ const saveSetting = async (namespace: string, config: any, email) => {
       namespace: namespace,
       userId: email,
       config,
-    }).then(({ data }) => {
+    }).then(({ data }: any) => {
       const { code } = data ?? {};
       if (code === 1) {
         resolve(true)

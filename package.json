@@ -1,12 +1,12 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "0.0.67",
+  "version": "0.0.68",
   "description": "SDK for application UI",
   "main": "index.min.js",
   "scripts": {
-    "build": "webpack --config ./scripts/webpack.build.js",
-    "dev": "webpack-dev-server --config ./scripts/webpack.dev.js",
-    "publishToNpm": "npm publish"
+    "build:api": "npm run rimraf && tsc --build tsconfig.json",
+    "clean": "rimraf  ./src/*.js ./src/**.js ./src/**/*.js ./src/**/**/*.js ./src/**/**/**/*.js ./src/*.d.ts ./src/**.d.ts ./src/**/*.d.ts ./src/**/**/*.d.ts ./src/**/**/**/*.d.ts",
+    "publishToNpm": "npm run build:api && npm publish && npm run clean"
   },
   "repository": {
     "type": "git",

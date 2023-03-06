@@ -6,7 +6,7 @@ const getLoginUser: () => Promise<T_UserInfo> = async () => {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .post(`/paas/api/user/signed`)
-    .then(({ data }) => {
+    .then(({ data }: any) => {
       console.log('接口返回', data)
       resolve(data.data)
       // if (data?.data) {
@@ -17,7 +17,7 @@ const getLoginUser: () => Promise<T_UserInfo> = async () => {
       //     location.href = `/?redirectUrl=${encodeURIComponent(location.href)}`
       //   }, 1000)
       // }
-    }).catch((e) => {
+    }).catch((e: any) => {
       console.error(e)
       reject('获取用户信息失败失败')
     });

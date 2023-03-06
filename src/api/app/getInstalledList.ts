@@ -14,13 +14,13 @@ const getInstalledList = async () => {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .get('/paas/api/apps/getInstalledList')
-    .then(({ data }) => {
+    .then(({ data }: any) => {
       if (data?.data) {
         resolve(data?.data || [])
       } else {
         reject('查询已安装应用失败')
       }
-    }).catch(e => {
+    }).catch((e: any) => {
       reject(e.message || '查询已安装应用失败')
     });
   })

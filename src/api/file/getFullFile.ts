@@ -27,7 +27,7 @@ const getFullFile = (params: { userId: string, fileId: number }): Promise<T_Full
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .get('/paas/api/workspace/getFullFile', params)
-    .then(({ data }) => {
+    .then(({ data }: any) => {
       if (data?.code === 1) {
         resolve(data?.data || {})
       } else {

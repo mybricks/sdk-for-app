@@ -1,9 +1,10 @@
+// @ts-ignore
 import { getAxiosInstance } from '../util'
 import { isEnvOfServer } from '../../env'
 
-export default function staticServer({content, folderPath, fileName}) {
+export default function staticServer({content, folderPath, fileName}: any) {
   let blob;
-  let formData;
+  let formData: any;
   if(isEnvOfServer()) {
     blob = Buffer.from([content])
     const FormData = require('form-data')
@@ -18,7 +19,7 @@ export default function staticServer({content, folderPath, fileName}) {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .post('/paas/api/flow/saveFile', formData)
-    .then(({ data }) => {
+    .then(({ data }: any) => {
       if (data.code === 1 && data.data) {
         resolve(data.data)
       } else {

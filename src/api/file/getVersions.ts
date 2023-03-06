@@ -14,7 +14,7 @@ const getVersions = (params: Params): Promise<any[]> => {
       fileId,
       pageIndex,
       pageSize
-    }).then(({ data }) => {
+    }).then(({ data }: any) => {
       if (data?.data) {
         resolve(data?.data || [])
       } else {

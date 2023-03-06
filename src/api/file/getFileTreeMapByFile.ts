@@ -1,10 +1,10 @@
 import { getAxiosInstance } from '../util'
 
-export default (params): Promise<any> => {
+export default (params: any) => {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .get('/paas/api/file/getFileTreeMapByFile', params)
-    .then(({ data }) => {
+    .then(({ data }: any) => {
       if (data.code === 1 && data.data) {
         resolve(data.data)
       } else {

@@ -8,6 +8,7 @@ const save: typeof fn = (params) => {
     const localData = JSON.parse(window.localStorage.getItem(localKey) || "{}");
 
     Object.keys(params).forEach((key) => {
+      // @ts-ignore
       const value = params[key];
 
       if (typeof value !== 'undefined') {

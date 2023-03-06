@@ -11,6 +11,7 @@ const getSetting: typeof fn = async (namespaces: string[]) => {
       },
     };
     namespaces.forEach((namespace) => {
+      // @ts-ignore
       final[namespace] = {
         config: {},
       };

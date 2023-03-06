@@ -4,7 +4,7 @@ import axios from "axios";
  * 获取文件内容
  * @param fileId 文件id
  */
-const exec = async ({ fileId, version }: { fileId: string; version: string }, params) => {
+const exec = async ({ fileId, version }: { fileId: string; version: string }, params: any) => {
   return new Promise((resolve, reject) => {
     axios({
       method: "post",
@@ -14,7 +14,7 @@ const exec = async ({ fileId, version }: { fileId: string; version: string }, pa
         version,
         injectParam: params,
       },
-    }).then(({ data }) => {
+    }).then(({ data }: any) => {
       const { code, msg, message } = data ?? {};
       if (code === 1) {
         resolve(true)
