@@ -7,8 +7,12 @@ let AXIOS_INSTANCE: any = null
 function init() {
   if(!AXIOS_INSTANCE) {
     if(isEnvOfServer()) {
+      let baseURL = process.env.NODE_ENV === 'development' ? 'http://localhost:3100/' : 'https://my.mybricks.world/';
+      if(process.env.MYBRICKS_PLATFORM_ADDRESS) {
+        baseURL = process.env.MYBRICKS_PLATFORM_ADDRESS
+      }
       AXIOS_INSTANCE = axios.create({
-        baseURL: process.env.NODE_ENV === 'development' ? 'http://localhost:3100/' : 'https://my.mybricks.world',
+        baseURL: baseURL,
         // headers: {'X-Custom-Header': 'foobar'}
         // proxy: {
         //   protocol: 'http',
