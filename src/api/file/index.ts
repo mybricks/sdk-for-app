@@ -13,6 +13,7 @@ import getHierarchy from './getHierarchy'
 import saveMock from "./mock/save";
 import publishMock from "./mock/publish";
 import getFullFileMock from "./mock/getFullFile";
+import getFileInfoByBaseFileIdAndRelativePath from './getFileInfoByBaseFileIdAndRelativePath'
 
 export const File: any = isEnvOfDevAndBrowser() ? {
   getFullFile: getFullFileMock,
@@ -33,5 +34,6 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   getVersions,
   getFileTreeMapByFile,
   getHierarchy,
-  getFiles
+  getFiles,
+  getFileInfoByBaseFileIdAndRelativePath
 };

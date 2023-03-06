@@ -6,7 +6,8 @@ export default function staticServer({content, folderPath, fileName}: any) {
   let blob;
   let formData: any;
   if(isEnvOfServer()) {
-    blob = Buffer.from([content])
+    // @ts-ignore
+    blob = new Buffer.from(content)
     const FormData = require('form-data')
     formData = new FormData()
   } else {

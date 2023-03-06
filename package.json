@@ -1,11 +1,11 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "0.0.68",
+  "version": "0.0.73",
   "description": "SDK for application UI",
   "main": "index.min.js",
   "scripts": {
     "build:api": "npm run clean && tsc --build tsconfig.json",
-    "clean": "npx rimraf ./src/*.js ./src/**.js ./src/**/*.js ./src/**/**/*.js ./src/**/**/**/*.js ./src/*.d.ts ./src/**.d.ts ./src/**/*.d.ts ./src/**/**/*.d.ts ./src/**/**/**/*.d.ts",
+    "clean": "npx rimraf tsconfig.tsbuildinfo ./src/*.js ./src/**.js ./src/**/*.js ./src/**/**/*.js ./src/**/**/**/*.js ./src/*.d.ts ./src/**.d.ts ./src/**/*.d.ts ./src/**/**/*.d.ts ./src/**/**/**/*.d.ts ",
     "publishToNpm": "npm run build:api && npm publish && npm run clean"
   },
   "repository": {
