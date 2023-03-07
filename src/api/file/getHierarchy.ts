@@ -8,9 +8,7 @@ const getHierarchy = (params: Params): Promise<{ projectId: any, hierarchy: any 
   return new  Promise((resolve, reject) => {
     const { fileId } = params ?? {}
     getAxiosInstance()
-    .get('/paas/api/file/getParentModuleAndProjectInfo', {
-      id: fileId
-    }).then(({ data }: any) => {
+    .get(`/paas/api/file/getParentModuleAndProjectInfo?id=${fileId}`).then(({ data }: any) => {
       if (data?.code === 1) {
         resolve(data?.data || {})
       } else {
