@@ -29,13 +29,13 @@ const DefaultConfig: IConfig = {
 export default function View({onLoad, className = ''}: T_Props) {
   const [jsx, setJSX] = useState(<Loading />)
   const [user, setUser] = useState<any>({});
-  const [config, setConfig] = useState<IConfig>(DefaultConfig);
+  const [config, setConfig] = useState<IConfig | null>(null);
   const [installedApps, setInstalledApps] = useState([]);
   const [sdkModalInfo, setSDKModalInfo] = useState<any>({});
   const [content, setContent] = useState<FileContent | null>(null);
   const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
   const appMeta = API.App.getAppMeta();
-  const [hierarchy, setHierarchy] = useState({projectId: null}) // 初始化赋值
+  const [hierarchy, setHierarchy] = useState(null) // 初始化赋值
 
   useMemo(() => {
     (async () => {
@@ -51,9 +51,10 @@ export default function View({onLoad, className = ''}: T_Props) {
         const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system'])
         setConfig(typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig));
         const hierarchyRes = await API.File.getHierarchy({fileId})
-        if(hierarchyRes?.projectId) {
-          setHierarchy(hierarchyRes)
-        }
+        // if(hierarchyRes?.projectId) {
+        //   setHierarchy(hierarchyRes)
+        // }
+        setHierarchy(hierarchyRes || {})
       } catch(e: any) {
         console.log(e)
         message.error(`应用初始化数据失败, ${e.message}`);
@@ -62,7 +63,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   }, [fileId])
 
   useLayoutEffect(() => {
-    if(user && content && installedApps && config) {
+    if(user && content && installedApps && config && hierarchy) {
       const nodes = onLoad({
         user,
         get installedApps() {
