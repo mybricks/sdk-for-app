@@ -7,19 +7,21 @@ import React, {
 } from 'react'
 
 import axios from 'axios';
-import { Popover } from 'antd'
+import { Spin, Popover, message } from 'antd'
 
 import GlobalContext from '../globalContext';
 
+// @ts-ignore
 import css from './index.less'
 
 /** 用户信息 */
 interface User {
   /** 头像 */
   avatar?: string
+  /** 名称 */
+  name?: string
   /** 邮箱/账号 */
-  email: string
-
+  userId: string
   /**
    * 状态
    * 0 在线
@@ -27,6 +29,8 @@ interface User {
    */
   status?: Status
 }
+
+type RoleDescription = 1 | 2 | 3
 
 type Status = -1 | 0 | 1
 
@@ -51,21 +55,20 @@ function Locker(props: LockerProps): JSX.Element {
   return render
 }
 
-function UI({user, fileId, lockerProps}) {
+function UI({user, fileId, lockerProps}: {user, fileId, lockerProps: LockerProps}) {
   const [lockerContext] = useState<{
     timer: number | null,
-    setTimer: ({user, fileId}) => void,
+    setTimer: () => void,
     clearTimer: () => void
   }>({
     timer: null,
-    setTimer({user, fileId}) {
-      const { email: userId } = user;
+    setTimer() {
       // 立即执行
-      polling({userId, fileId})
+      polling()
       if (!lockerContext.timer) {
         lockerContext.timer = window.setInterval(() => {
           // 轮询执行
-          polling({userId, fileId})
+          polling()
         }, 1 * 5 * 1000)
       }
     },
@@ -78,9 +81,11 @@ function UI({user, fileId, lockerProps}) {
   });
   /** 协作用户信息 */
   const [cooperationUsers, setCooperationUsers] = useState<User[]>([])
+  const [roleDescription, setRoleDescription] = useState<RoleDescription>(3)
+  const [operationLoading, setOperationLoading] = useState(false)
 
   useEffect(() => {
-    lockerContext.setTimer({user, fileId})
+    lockerContext.setTimer()
 
     return () => {
       lockerContext.clearTimer()
@@ -88,18 +93,71 @@ function UI({user, fileId, lockerProps}) {
   }, [])
 
   /** 轮询 */
-  const polling: (props: {userId: string, fileId: number}) => void = useCallback(({userId, fileId}) => {
-    getFileCooperationUsers({userId, fileId}).then((res) => {
-      // const rst: any = [];
-      // for (let i = 0; i < 21; i++) {
-      //   rst.push({...res[0], email: res[0].email + i})
-      // }
-      // setCooperationUsers(rst)
-      setCooperationUsers(res)
-    }).catch((e) => {
-      console.error(e)
+  const polling: () => Promise<{users: User[], roleDescription: RoleDescription}> = useCallback(() => {
+    return new Promise((resolve) => {
+      getFileCooperationUsers({userId: user.email, fileId}).then(({users, roleDescription}) => {
+        setCooperationUsers(users)
+        setRoleDescription(roleDescription)
+        lockerProps.statusChange?.((users.find((item) => item.userId === user.email))?.status || 0)
+        resolve({users, roleDescription})
+      }).catch((e) => {
+        console.error(e)
+      })
     })
   }, [])
+
+  const lockToggle = useCallback((cooperationUser) => {
+    setOperationLoading(true)
+    const status = cooperationUser.status === 1 ? 0 : 1
+    return new Promise(() => {
+      axios({
+        method: 'post',
+        url: '/api/file/toggleFileCooperationStatus',
+        data: {
+          userId: user.email,
+          fileId,
+          status
+        }
+      }).then(({data}) => {
+        if (data.data) {
+          if (status === 1) {
+            message.success('上锁成功')
+          } else {
+            message.success('解锁成功')
+          }
+        } else {
+          message.error(data.message)
+        }
+      }).finally(async () => {
+        polling()
+        setOperationLoading(false)
+      })
+    })
+  }, [])
+
+  const avatarClick = useCallback((cooperationUser) => {
+    if (operationLoading) return
+    const { email } = user
+    const { userId } = cooperationUser
+    if (email !== userId) return
+
+    if ([1, 2].includes(roleDescription)) {
+      lockToggle(cooperationUser)
+    } else {
+      setOperationLoading(true)
+      polling().then(async ({roleDescription}) => {
+        if ([1, 2].includes(roleDescription)) {
+          lockToggle(cooperationUser)
+        } else {
+          message.info('没有当前文件的操作权限')
+          setOperationLoading(false)
+        }
+      }).catch((e) => {
+        console.error(e)
+        setOperationLoading(false)
+      })
+    }
+  }, [operationLoading, roleDescription])
 
   /** 协作用户ui */
   const CooperationUsersList: JSX.Element = useMemo(() => {
@@ -116,22 +174,33 @@ function UI({user, fileId, lockerProps}) {
     /** 仅展示5个用户信息 */
     const showCooperationUsers = cooperationUsers.slice(0, 5)
 
+    const { email } = user
+
     return (
       <div className={css.cooperationUsersList}>
         {showCooperationUsers.map((user) => {
           return (
             <Popover
-              key={user.email}
+              key={user.userId}
               placement='bottom'
               overlayClassName={css.overlayUsersListPopover}
               content={() => {
                 return (
-                  <div className={css.userInfo}>{user.email}</div>
+                  <div className={css.userInfo}>{user.userId}</div>
                 )
               }}
             >
-              <div className={css.userAvatar}>
-                <img src={user.avatar || 'https://assets.mybricks.world/icon/220006.png'}/>
+              <div className={css.userAvatar} onClick={() => avatarClick(user)}>
+                <Spin spinning={operationLoading && email === user.userId} size={'small'}>
+                  {user.avatar ? (
+                    <img src={user.avatar}/>
+                  ) : (
+                    <div className={css.userCount}>{(user.name || user.userId).slice(0, 1)}</div>
+                  )}
+                  {user.status === 1 && <span className={css.activeDot}>
+                    <span className={css.animate}></span>
+                  </span>}
+                </Spin>
               </div>
             </Popover>
           )
@@ -145,7 +214,7 @@ function UI({user, fileId, lockerProps}) {
         )}
       </div>
     )
-  }, [cooperationUsers]);
+  }, [operationLoading, cooperationUsers]);
   
   return (
     <div className={css.locker}>
@@ -155,14 +224,14 @@ function UI({user, fileId, lockerProps}) {
 }
 
 /** 获取协作用户信息 */
-async function getFileCooperationUsers ({userId, fileId}): Promise<User[]> {
+async function getFileCooperationUsers ({userId, fileId}): Promise<{users: User[], roleDescription: RoleDescription}> {
   return new Promise((resolve, reject) => {
     axios({
       method: 'get',
       url: `/api/file/getCooperationUsers?userId=${userId}&fileId=${fileId}`
     }).then((res) => {
       const { code, data } = res.data || {}
-      if (res.status === 200 && code === 1 && Array.isArray(data)) {
+      if (res.status === 200 && code === 1) {
         resolve(data)
       } else {
         reject(res)

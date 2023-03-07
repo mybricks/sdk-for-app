@@ -15,18 +15,36 @@
       width: 26px;
       height: 26px;
       margin-left: 4px;
+      position: relative;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      .content {
+        height: 26px;
+        width: 26px;
+        border-radius: 50%;
+        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(235, 237, 240);
+        font-weight: 600;
+        color: rgb(149, 153, 158);
+      }
 
       img {
-        height: 100%;
-        width: 100%;
+        height: 26px;
+        width: 26px;
         border-radius: 50%;
         object-fit: cover;
         display: block;
       }
 
       .userCount {
-        width: 100%;
-        height: 100%;
+        width: 26px;
+        height: 26px;
         line-height: 100%;
         color: #5c6066;
         border-radius: 50%;
@@ -35,6 +53,48 @@
         justify-content: center;
         background-color: #e6e8eb;
         font-size: 12px;
+      }
+
+      .activeDot {
+        position: absolute;
+        // right: -2px;
+        // bottom: -2px;
+        right: 0px;
+        bottom: -1px;
+        width: 14px;
+        height: 6px;
+        // width: 16px;
+        // height: 10px;
+        background: #30C453;
+        border: 1px solid #FFFFFF;
+        // border: 2px solid #FFFFFF;
+        border-radius: 33px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        .animate {
+          // width: 6px;
+          // height: 3px;
+          width: 4px;
+          height: 2px;
+          background: #FFFFFF;
+          border-radius: 26px;
+          animation: infiniteLock 2.2s linear infinite;
+        }
+
+        @keyframes infiniteLock {
+          0% {
+            transform: translateX(-180%);
+          }
+          50% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(180%);
+          }
+        }
       }
     }
   }
