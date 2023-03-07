@@ -11,9 +11,11 @@ const getVersions = (params: Params): Promise<any[]> => {
     const { fileId, pageIndex = 1, pageSize = 100 } = params ?? {}
     getAxiosInstance()
     .get('/paas/api/workspace/publish/versions', {
-      fileId,
-      pageIndex,
-      pageSize
+      params: {
+        fileId,
+        pageIndex,
+        pageSize
+      }
     }).then(({ data }: any) => {
       if (data?.data) {
         resolve(data?.data || [])

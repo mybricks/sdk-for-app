@@ -21,7 +21,9 @@ export default (params: { pubId: number | string }): Promise<VersionDetailItem[]
     const { pubId } = params ?? {}
     getAxiosInstance()
     .get('/paas/api/workspace/publish/content', {
-      id: pubId,
+      params: {
+        id: pubId,
+      }
     }).then(({ data }: any) => {
       if (data?.data) {
         let content = data?.data?.content ?? {}

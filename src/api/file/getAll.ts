@@ -4,8 +4,10 @@ const getAll = (params?: { parentId?: any, email?: string }): Promise<any[]> => 
   return new Promise((resolve, reject) => {
     const { parentId, email } = params || {}
     getAxiosInstance().get('/paas/api/workspace/getAll',{
-      userId: email,
-      parentId,
+      params: {
+        userId: email,
+        parentId,
+      }
     }).then(({ data }: any) => {
       if (data?.data) {
         resolve(data?.data || [])
