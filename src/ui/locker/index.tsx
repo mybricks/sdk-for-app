@@ -35,6 +35,9 @@ type RoleDescription = 1 | 2 | 3
 type Status = -1 | 0 | 1
 
 export interface LockerProps {
+  /** 是否轮询，默认开启 */
+  pollable?: boolean
+  /** 编辑状态变更 1: 可编辑，其余均为查看 */
   statusChange?: (status: Status) => void
 }
 
@@ -48,8 +51,12 @@ function Locker(props: LockerProps): JSX.Element {
     if (isMock || !user?.email || !fileId) {
       return <></>
     }
+
+    const defaultProps = {
+      pollable: true
+    }
   
-    return <UI user={user} fileId={fileId} lockerProps={props}/>
+    return <UI user={user} fileId={fileId} lockerProps={{...defaultProps, ...props}}/>
   }, [])
 
   return render
@@ -65,7 +72,7 @@ function UI({user, fileId, lockerProps}: {user, fileId, lockerProps: LockerProps
     setTimer() {
       // 立即执行
       polling()
-      if (!lockerContext.timer) {
+      if (!lockerContext.timer && lockerProps.pollable) {
         lockerContext.timer = window.setInterval(() => {
           // 轮询执行
           polling()
