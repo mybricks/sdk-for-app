@@ -1,25 +1,38 @@
-import * as React from 'react'
-import { Button } from 'antd'
+import React from 'react'
+
+import { LoadingOutlined } from '@ant-design/icons'
+
 import css from './index.less'
 
-interface ButtonProps {
+interface SaveButtonProps {
   disabled?: boolean
   loading?: boolean
+  /** 右上角小红点提示可以保存 */
+  dotTip?: boolean
   onClick?: () => void
   children?: any
+  type?: 'primary'
 }
 
-export default ({ disabled = false, loading = false, onClick, children }: ButtonProps) => {
+export default ({
+  disabled = false,
+  loading = false,
+  onClick,
+  children,
+  type,
+}: SaveButtonProps) => {
   return (
-    <Button
+    <button
       disabled={disabled}
-      loading={loading}
-      className={css.button}
-      size="small"
-      onClick={onClick}
+      className={`${css.button} ${type === 'primary' ? css.mainButton : ''} ${loading ? css.loading : ''}`}
+      onClick={() => {
+        if (!loading) {
+          onClick?.()
+        }
+      }}
     >
-      <div />
+      <LoadingOutlined style={{marginRight: 4, display: loading ? 'inline-block' : 'none'}}/>
       {children}
-    </Button>
+    </button>
   )
 }
