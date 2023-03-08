@@ -14,6 +14,7 @@ import saveMock from "./mock/save";
 import publishMock from "./mock/publish";
 import getFullFileMock from "./mock/getFullFile";
 import getFileInfoByBaseFileIdAndRelativePath from './getFileInfoByBaseFileIdAndRelativePath'
+import batchPublishService from './batchPublishService'
 
 export const File: any = isEnvOfDevAndBrowser() ? {
   getFullFile: getFullFileMock,
@@ -30,6 +31,7 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   getAll,
   save,
   publish,
+  batchPublishService,
   getPublishContent,
   getVersions,
   getFileTreeMapByFile,
