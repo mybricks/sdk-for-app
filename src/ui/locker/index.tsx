@@ -92,7 +92,7 @@ function UI({user, fileId, lockerProps}: {user, fileId, lockerProps: LockerProps
   const [operationLoading, setOperationLoading] = useState(false)
 
   useEffect(() => {
-    lockerContext.setTimer()
+    location.href.indexOf('DEBUG') === -1 ? lockerContext.setTimer() : null
 
     return () => {
       lockerContext.clearTimer()
