@@ -49,6 +49,9 @@ function Locker(props: LockerProps): JSX.Element {
 
   const render = useMemo(() => {
     if (isMock || !user?.email || !fileId) {
+      if (isMock) {
+        props.statusChange?.(1)
+      }
       return <></>
     }
 
