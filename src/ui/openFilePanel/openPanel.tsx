@@ -113,6 +113,7 @@ interface openPanelProps {
   allowedFileExtNames?: string[]
   onOk?: (urls: FileUrl[]) => void
   onCancel?: () => void
+  getInitialFiles?: ({ email }) => Promise<{type: PathType, data: any[]}>
 }
 
 enum PathType {
@@ -120,6 +121,7 @@ enum PathType {
   FileDetail = '_fileDetail_',
   VersionDetail = '_versionDetail_',
   Versions = '_versions_',
+  ModuleSnapshot = '_moduleSnapshot_'
 }
 
 interface Path {
@@ -135,11 +137,22 @@ interface FilePanelProps extends openPanelProps {
 type AppMapCacheType = { [keyName: string]: any } | null
 let AppMapCache: AppMapCacheType = null
 
+const _ROOT_ID_ = '000'
+
+const defaultGetInitialFiles = async ({ email }) => {
+  const data = await API.File.getFiles({ creatorId: email })
+
+  return {
+    type: PathType.Files,
+    data
+  }
+}
+
 const FilePanel = ({
   onChange,
   canChooseDirectories,
   allowedFileExtNames,
-  filterCondition
+  getInitialFiles = defaultGetInitialFiles,
 }: FilePanelProps) => {
   const [filesMap, setFilesMap] = useState({})
   const [curPath, setCurPath] = useState([] as Path[])
@@ -168,14 +181,25 @@ const FilePanel = ({
     ;(async () => {
       const loginUser: any = await API.User.getLoginUser()
       setCurUser(loginUser)
-      const {map, path} = await API.File.getFileTreeMapByFile(filterCondition)
-      setFilesMap((c) => {
-        return {
-          ...c,
-          ...map
-        }
-      })
-      setCurPath(path)
+
+      let { data, type } = await getInitialFiles({ email: loginUser?.email })
+
+      if (type === PathType.ModuleSnapshot) {
+        data = data.map(item => {
+          return {
+            ...item,
+            extName: 'module'
+          }
+        })
+      }
+
+      setFilesMap(c => ({
+        ...c,
+        [_ROOT_ID_]: {
+          data,
+          type,
+        },
+      }))
     })()
   }, [])
 
@@ -200,7 +224,7 @@ const FilePanel = ({
             ;(async () => {
               // @ts-ignore
               // const data = await API.File.getAll({ parentId: file.id, email: curUser?.email })
-              const data = await API.File.getFiles({parentId: file.id, groupId, extNames: [filterCondition.extName].concat(folderExtnames).join(',')})
+              const data = await API.File.getFiles({parentId: file.id, groupId })
 
               setFilesMap((c) => {
                 return {
@@ -524,17 +548,182 @@ const FilePanel = ({
     )
   }, [])
 
+  const ModuleSnapshotFilesRender = useCallback(({ data, selectedPath, level }) => {
+    if (Array.isArray(data) && data.length > 0) {
+
+      return (
+        <div className={styles.commonListRender}>
+          {
+            data.map(item => {
+              const disabled =
+                Array.isArray(allowedFileExtNames) &&
+                allowedFileExtNames.length > 0
+                  ? !(allowedFileExtNames.concat('module').concat(folderExtnames)).includes(item?.extName)
+                  : false
+              
+                let selected = curPath.findIndex((path) => (`folder_${item?.id}` === path.fileId || item.id === path.fileId))
+
+                let css = ''
+  
+                if (selected !== -1) {
+                  if (selected === curPath.length - 1) {
+                    css = styles.selected
+                  } else {
+                    css = styles.notCurSelected
+                  }
+                }
+              return (
+                <div
+                  className={`${styles.commonItem} ${css} ${disabled ? styles.disabled : ''}`}
+                  onClick={() => !disabled && handleModuleSnapshotFilesSelected(item, level)}
+                >
+                  <div className={styles.left}>
+                  {item?.extName && appMap?.[item?.extName] && (
+                      <img className={styles.icon} src={appMap[item?.extName]?.icon} />
+                    )}
+                    <span
+                      className={styles.name}
+                    >{`${item?.name}${folderExtnames.includes(item?.extName) ? '' : item?.extName ? '.' + item?.extName : ''}`}</span>
+                  </div>
+                  <div className={styles.right}>
+                    {folderExtnames.includes(item?.extName) && (
+                      <RightOutlined className={styles.fileArrow} />
+                    )}
+                  </div>
+                </div>
+              )
+            })
+          }
+        </div>
+      )
+    }
+    return <div className={styles.noVersionsRender}>当前模块无内容</div>
+  }, [appMap, curPath])
+
+  const handleModuleSnapshotFilesSelected = useCallback(
+    (file, level) => {
+      const { id: fileId, extName } = file ?? {}
+      const hasCached = !!filesMap[fileId]
+
+      /** 需要异步加载*/
+      if (!hasCached) {
+        /** 异步请求数据  */
+        switch (true) {
+          case folderExtnames.concat('module').includes(extName): {
+            const _fileId = `folder_${fileId}`
+
+            /** 先设置成加载中  */
+            setCurPath((c) => {
+              const path = Array.from(c)
+              path[level] = { fileId: _fileId, loading: true, type: undefined }
+              return path.slice(0, level + 1)
+            })
+            ;(async () => {
+              // @ts-ignore
+              // const data = await API.File.getAll({ parentId: file.id, email: curUser?.email })
+              const params = { moduleId: file?.moduleId ?? file.id }
+              if (extName === 'folder') {
+                params.parentId = file.fileId
+              }
+              let data = await API.Module.getFiles(params)
+
+              /** 数据结构抹平 */
+              data = data.map(item => ({
+                ...item,
+                name: item?.fileName,
+              }))
+
+              setFilesMap((c) => {
+                return {
+                  ...c,
+                  [_fileId]: {
+                    type: PathType.ModuleSnapshot,
+                    data,
+                    _origin: file,
+                  },
+                }
+              })
+
+              setCurPath((c) => {
+                /** 如果当前用户并没有切换别的文件的话，准备切换成列表 */
+                if (c[level].fileId === _fileId) {
+                  const path = Array.from(c)
+                  path[level] = {
+                    fileId: _fileId,
+                    loading: false,
+                    type: PathType.ModuleSnapshot,
+                  }
+                  return path.slice(0, level + 1)
+                }
+                /** 如果当前用户已经切换了别的文件，则不变 */
+                return c
+              })
+            })()
+
+            break
+          }
+
+          default: {
+            /** 先设置成加载中  */
+            setCurPath((c) => {
+              const path = Array.from(c)
+              path[level] = { fileId: fileId, loading: true, type: undefined }
+              return path.slice(0, level + 1)
+            })
+
+             /** 文件没有发布版本，展示文件详情 */
+            setFilesMap((c) => {
+              return {
+                ...c,
+                [fileId]: {
+                  type: PathType.FileDetail,
+                  data: file,
+                  _origin: file,
+                },
+              }
+            })
+
+            setCurPath((c) => {
+              /** 如果当前用户并没有切换别的文件的话，准备切换成列表 */
+              if (c[level].fileId === fileId) {
+                const path = Array.from(c)
+                path[level] = {
+                  fileId,
+                  loading: false,
+                  type: PathType.FileDetail,
+                }
+                return path.slice(0, level + 1)
+              }
+              /** 如果当前用户已经切换了别的文件，则不变 */
+              return c
+            })
+            break
+          }
+        }
+        return
+      }
+
+      /** 不需要异步加载 */
+      setCurPath((c) => {
+        const path = Array.from(c)
+        path[level] = { fileId, loading: false, type: filesMap[fileId]?.type }
+        return path.slice(0, level + 1)
+      })
+    },
+    [filesMap]
+  )
+
   const pathesData = useMemo((): Path[] => {
     const pathes = [
       {
-        fileId: '000',
+        fileId: _ROOT_ID_,
         loading: false,
-        type: PathType.Files,
+        type: filesMap[_ROOT_ID_]?.type,
       },
       ...curPath,
     ]
     return pathes as Path[]
-  }, [curPath])
+  }, [curPath, filesMap])
 
   useEffect(() => {
     onChangeRef.current = onChange
@@ -604,6 +793,16 @@ const FilePanel = ({
               return <LoadingRender />
             }
 
+            case path.type === PathType.ModuleSnapshot: {
+              return (
+                <ModuleSnapshotFilesRender
+                  data={filesMap[path.fileId]?.data}
+                  selectedPath={selectedPath}
+                  level={level}
+                />
+              )
+            }
+
             case path.type === PathType.Files: {
               return (
                 <FilesRender
@@ -644,12 +843,12 @@ const FilePanel = ({
   )
 }
 
-const openFilePanel = ({
+const openFilePanel = async ({
   canChooseFiles = true,
   canChooseDirectories = false,
   allowsMultipleSelection = false,
   allowedFileExtNames,
-  filterCondition
+  getInitialFiles,
 }: openPanelProps) => {
   let selectedFile
   return new Promise((resolve, reject) => {
@@ -667,7 +866,7 @@ const openFilePanel = ({
           onChange={(file) => {
             selectedFile = file
           }}
-          filterCondition={filterCondition}
+          getInitialFiles={getInitialFiles}
         />
       ),
       okText: '选择',
