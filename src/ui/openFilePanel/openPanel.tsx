@@ -7,7 +7,7 @@ import API from '../../api/index'
 const folderExtnames = ['folder', 'folder-project', 'folder-module']
 
 // @ts-ignore
-const RightOutlined = window?.icons?.RightOutlined
+const RightOutlined = window?.icons?.RightOutlined ?? (() => <span></span>)
 
 interface ModalProps {
   /** 对话框是否可见 */
@@ -578,7 +578,7 @@ const FilePanel = ({
                   onClick={() => !disabled && handleModuleSnapshotFilesSelected(item, level)}
                 >
                   <div className={styles.left}>
-                  {item?.extName && appMap?.[item?.extName] && (
+                    {item?.extName && appMap?.[item?.extName] && (
                       <img className={styles.icon} src={appMap[item?.extName]?.icon} />
                     )}
                     <span
@@ -587,7 +587,7 @@ const FilePanel = ({
                   </div>
                   <div className={styles.right}>
                     {folderExtnames.includes(item?.extName) && (
-                      <RightOutlined className={styles.fileArrow} />
+                      <RightOutlined className={styles.arrow} />
                     )}
                   </div>
                 </div>

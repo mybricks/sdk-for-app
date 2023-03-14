@@ -2,7 +2,7 @@ import React, {useMemo} from 'react'
 import {Dropdown, Button, Menu} from 'antd'
 import css from './index.less'
 
-const DownOutlined = window?.icons?.DownOutlined
+const DownOutlined = window?.icons?.DownOutlined ?? (() => <span></span>)
 
 interface WorkflowOptions {
   [keyname: string]: {
