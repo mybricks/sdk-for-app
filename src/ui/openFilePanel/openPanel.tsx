@@ -749,7 +749,7 @@ const FilePanel = ({
 
       /** FileDetail的上一层是File */
       if (cur.type === PathType.FileDetail) {
-        const { id, name, extName, icon, type } =
+        const { id, name, extName, icon, type, fileId } =
           filesMap[cur.fileId]?._origin || {}
         return {
           ...acc,
@@ -758,6 +758,7 @@ const FilePanel = ({
           extName,
           icon,
           type,
+          fileId
         }
       }
 
