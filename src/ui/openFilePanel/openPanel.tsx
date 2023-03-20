@@ -57,6 +57,7 @@ interface ModalProps {
   children?: React.ReactNode
   /** @deprecated Please use `open` instead. */
   visible?: boolean
+	okButtonProps?: Record<string, unknown>;
 }
 
 interface FModalProps extends ModalProps {
@@ -87,9 +88,9 @@ function Wrapper(Component: React.FC<ModalProps>) {
     document.body.removeChild(container)
   }
   const show = function (props: FModalProps) {
-    document.body.appendChild(container)
+    document.body.appendChild(container);
     ReactDOM.render(
-      <Component {...props} onCancel={hide}>
+      <Component {...props} onCancel={props.onCancel || hide}>
         {props?.content}
       </Component>,
       container
@@ -110,10 +111,13 @@ interface openPanelProps {
   canChooseFiles?: boolean
   canChooseDirectories?: boolean
   allowsMultipleSelection?: boolean
-  allowedFileExtNames?: string[]
+  allowedFileExtNames?: string[];
+	parentId?: number;
+	fileId?: number;
+	options?: { showVersion?: boolean };
   onOk?: (urls: FileUrl[]) => void
   onCancel?: () => void
-  getInitialFiles?: ({ email }) => Promise<{type: PathType, data: any[]}>
+  getInitialFiles?: ({ email, fileId, parentId }) => Promise<{type: PathType, data: any[]}>
 }
 
 enum PathType {
@@ -139,8 +143,8 @@ let AppMapCache: AppMapCacheType = null
 
 const _ROOT_ID_ = '000'
 
-const defaultGetInitialFiles = async ({ email }) => {
-  const data = await API.File.getFiles({ creatorId: email })
+const defaultGetInitialFiles = async ({ email, parentId, fileId }: any) => {
+  const data = await API.File.getFileList({ creatorId: email, parentId, fileId })
 
   return {
     type: PathType.Files,
@@ -152,8 +156,12 @@ const FilePanel = ({
   onChange,
   canChooseDirectories,
   allowedFileExtNames,
+	fileId,
+  parentId,
+	options,
   getInitialFiles = defaultGetInitialFiles,
 }: FilePanelProps) => {
+	const { showVersion = true } = options || {};
   const [filesMap, setFilesMap] = useState({})
   const [curPath, setCurPath] = useState([] as Path[])
   const [curUser, setCurUser] = useState({})
@@ -182,7 +190,7 @@ const FilePanel = ({
       const loginUser: any = await API.User.getLoginUser()
       setCurUser(loginUser)
 
-      let { data, type } = await getInitialFiles({ email: loginUser?.email })
+      let { data, type } = await getInitialFiles({ email: loginUser?.email, fileId, parentId })
 
       if (type === PathType.ModuleSnapshot) {
         data = data.map(item => {
@@ -267,7 +275,7 @@ const FilePanel = ({
               const data = await API.File.getVersions({ fileId })
               const hasVersions = Array.isArray(data) && data.length > 0
 
-              if (hasVersions) {
+              if (hasVersions && showVersion) {
                 /** 文件有发布版本的话，展示发布列表 */
                 setFilesMap((c) => {
                   return {
@@ -300,10 +308,10 @@ const FilePanel = ({
                   return {
                     ...c,
                     [fileId]: {
-                      // type: PathType.FileDetail,
-                      // data: file,
-                      type: PathType.Versions,
-                      data: [],
+                      type: PathType.FileDetail,
+                      data: file,
+                      // type: PathType.Versions,
+                      // data: [],
                       _origin: file,
                     },
                   }
@@ -316,8 +324,8 @@ const FilePanel = ({
                     path[level] = {
                       fileId,
                       loading: false,
-                      // type: PathType.FileDetail,
-                      type: PathType.Versions
+                      type: PathType.FileDetail,
+                      // type: PathType.Versions
                     }
                     return path.slice(0, level + 1)
                   }
@@ -811,7 +819,7 @@ const FilePanel = ({
                   selectedPath={selectedPath}
                   level={level}
                 />
-              )
+              );
             }
 
             case path.type === PathType.Versions: {
@@ -850,10 +858,13 @@ const openFilePanel = async ({
   allowsMultipleSelection = false,
   allowedFileExtNames,
   getInitialFiles,
+	fileId,
+	parentId,
+	options
 }: openPanelProps) => {
-  let selectedFile
+  let selectedFile: any;
   return new Promise((resolve, reject) => {
-    SingleModal.show({
+	  SingleModal.show({
       wrapClassName: 'fangzhou-theme',
       title: '文件选择',
       closeIcon: '',
@@ -861,10 +872,14 @@ const openFilePanel = async ({
       maskClosable: false,
       className: styles.fileOpenModal,
       content: (
+	      // @ts-ignore
         <FilePanel
           allowedFileExtNames={allowedFileExtNames}
           canChooseDirectories={canChooseDirectories}
-          onChange={(file) => {
+          fileId={fileId}
+          options={options}
+	        parentId={parentId}
+          onChange={(file: any) => {
             selectedFile = file
           }}
           getInitialFiles={getInitialFiles}
@@ -872,17 +887,21 @@ const openFilePanel = async ({
       ),
       okText: '选择',
       cancelText: '取消',
+		  // okButtonProps: { disabled: !selectedFile },
       onOk: (e) => {
         if (Object.keys(selectedFile).length === 0) {
-          reject(new Error('未选择文件'))
+          // reject(new Error('未选择文件'))
+	        resolve(undefined);
           SingleModal.hide()
           return
         }
         resolve(selectedFile)
-        SingleModal.hide()
+        SingleModal.hide();
       },
       onCancel: () => {
-        reject(new Error('未选择文件'))
+        // reject(new Error('未选择文件'));
+	      resolve(undefined);
+	      SingleModal.hide();
       },
     })
   })
