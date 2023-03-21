@@ -138,6 +138,9 @@ export default function View({onLoad, className = ''}: T_Props) {
         },
         get projectId() {
           return hierarchy?.projectId
+        },
+        get moduleId() {
+          return hierarchy?.moduleId
         }
       })
       console.log('SDK 初始化', user, fileId)
