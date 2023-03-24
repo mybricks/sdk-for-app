@@ -17,6 +17,7 @@ import getFileInfoByBaseFileIdAndRelativePath from './getFileInfoByBaseFileIdAnd
 import batchPublishService from './batchPublishService'
 import getLatestModulePubByProjectId from "./getLatestModulePubByProjectId";
 import getFileList from "./getFileList";
+import getLatestPub from './getLatestPub'
 
 export const File: any = isEnvOfDevAndBrowser() ? {
   getFullFile: getFullFileMock,
@@ -30,6 +31,7 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   getFileList,
   getHierarchy,
 } : {
+  getLatestPub,
   getLatestModulePubByProjectId,
   getFullFile,
   getAll,
