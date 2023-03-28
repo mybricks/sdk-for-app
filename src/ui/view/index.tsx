@@ -6,6 +6,7 @@ import axios from 'axios';
 import SDKModal from '../sdkModal/SDKModal';
 import {getUrlParam, safeParse} from '../util';
 import GlobalContext from '../globalContext';
+// @ts-ignore
 import css from './css.less'
 
 type T_Props = {
@@ -19,6 +20,7 @@ type T_Props = {
     meta: any
     openUrl: (param: any) => any
     projectId: any
+    hasMaterialApp: boolean,
   }) => {}
 }
 
@@ -137,10 +139,12 @@ export default function View({onLoad, className = ''}: T_Props) {
           }
         },
         get projectId() {
+          // @ts-ignore
           return hierarchy?.projectId
         },
-        get moduleId() {
-          return hierarchy?.moduleId
+        get hasMaterialApp() {
+          // @ts-ignore
+          return (installedApps || [])?.some?.((app) => app?.namespace === 'mybricks-material')
         }
       })
       console.log('SDK 初始化', user, fileId)
