@@ -1,4 +1,4 @@
-import { isEnvOfDevAndBrowser } from "../../env";
+import { isEnvOfDevAndBrowser } from "../env";
 import { getAxiosInstance } from '../util'
 
 import getHierarchyMock from "./mock/getHierarchy";

@@ -1,4 +1,4 @@
-import { isEnvOfDevAndBrowser } from "../../env";
+import { isEnvOfDevAndBrowser } from "../env";
 
 import getUserInfo from "./getUserInfo";
 import getLoginUser from "./getLoginUser";

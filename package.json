@@ -1,12 +1,14 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "0.0.94",
+  "version": "0.0.98",
   "description": "SDK for application UI",
   "main": "index.min.js",
   "scripts": {
     "build:api": "npm run clean && tsc --build tsconfig.json",
     "clean": "npx rimraf tsconfig.tsbuildinfo ./src/*.js ./src/**.js ./src/**/*.js ./src/**/**/*.js ./src/**/**/**/*.js ./src/*.d.ts ./src/**.d.ts ./src/**/*.d.ts ./src/**/**/*.d.ts ./src/**/**/**/*.d.ts ",
-    "publishToNpm": "npm run build:api && npm publish && npm run clean"
+    "clean:temp": "rm -rf .temp",
+    "generate:npm": "mkdir .temp && cp package.json ./.temp/package.json && cp -r src/** ./.temp && cd .temp && npm publish",
+    "publishToNpm": "npm run build:api && npm run generate:npm && npm run clean && npm run clean:temp"
   },
   "repository": {
     "type": "git",
@@ -17,7 +19,8 @@
     "registry": "https://registry.npmjs.org"
   },
   "files": [
-    "src",
+    "api",
+    "ui",
     "package.json"
   ],
   "author": "CheMingjun",

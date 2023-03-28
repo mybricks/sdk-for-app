@@ -1,4 +1,4 @@
-import { isEnvOfDevAndBrowser } from "../../env";
+import { isEnvOfDevAndBrowser } from "../env";
 
 import getInstalledList from "./getInstalledList";
 import getAppMeta from "./getAppMeta";

@@ -1,6 +1,6 @@
 // @ts-ignore
 import axios from "axios";
-import { isEnvOfServer } from '../env'
+import { isEnvOfServer } from './env'
 
 let AXIOS_INSTANCE: any = null
 

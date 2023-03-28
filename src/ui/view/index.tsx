@@ -1,6 +1,6 @@
 import React, {forwardRef, ForwardRefRenderFunction, useImperativeHandle, useLayoutEffect, useMemo, useState} from "react";
 import {message} from 'antd';
-import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from '../../type'
+import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from '../type'
 import API from '../../api/index'
 import axios from 'axios';
 import SDKModal from '../sdkModal/SDKModal';

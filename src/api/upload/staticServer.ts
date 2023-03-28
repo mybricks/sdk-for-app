@@ -1,6 +1,6 @@
 // @ts-ignore
 import { getAxiosInstance } from '../util'
-import { isEnvOfServer } from '../../env'
+import { isEnvOfServer } from '../env'
 
 export default function staticServer({content, folderPath, fileName}: any) {
   let blob;

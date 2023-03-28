@@ -1,4 +1,4 @@
-import { isEnvOfDevAndBrowser } from "../../env";
+import { isEnvOfDevAndBrowser } from "../env";
 
 import getAll from "./getAll";
 import getPublishContent from './getPublishContent'
