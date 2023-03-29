@@ -73,3 +73,19 @@ export interface ViewRef {
     config?: { skipMessage?: boolean }
   ): Promise<void>;
 }
+
+export type T_Props = {
+  className?: string;
+  onLoad: (props: {
+    fileId: number;
+    user: any;
+    installedApps: any[];
+    fileContent: any;
+    config: any
+    meta: any
+    openUrl: (param: any) => any
+    projectId: any
+    hasMaterialApp: boolean,
+    openPreview(param: { dumpJson: any, comlibs: any[] }): void
+  }) => {}
+}

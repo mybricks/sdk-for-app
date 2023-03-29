@@ -1,28 +1,14 @@
 import React, {forwardRef, ForwardRefRenderFunction, useImperativeHandle, useLayoutEffect, useMemo, useState} from "react";
 import {message} from 'antd';
-import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE } from '../type'
+import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE, T_Props } from '../type'
 import API from '../../api/index'
 import axios from 'axios';
 import SDKModal from '../sdkModal/SDKModal';
 import {getUrlParam, safeParse} from '../util';
 import GlobalContext from '../globalContext';
+import PreviewStorage from './previewStorage'
 // @ts-ignore
 import css from './css.less'
-
-type T_Props = {
-  className?: string;
-  onLoad: (props: {
-    fileId: number;
-    user: any;
-    installedApps: any[];
-    fileContent: any;
-    config: any
-    meta: any
-    openUrl: (param: any) => any
-    projectId: any
-    hasMaterialApp: boolean,
-  }) => {}
-}
 
 const DefaultConfig: IConfig = {
   system: {}
@@ -145,9 +131,16 @@ export default function View({onLoad, className = ''}: T_Props) {
         get hasMaterialApp() {
           // @ts-ignore
           return (installedApps || [])?.some?.((app) => app?.namespace === 'mybricks-material')
+        },
+        openPreview({ dumpJson, comlibs }) {
+          const previewStorage = new PreviewStorage({ fileId})
+          previewStorage.savePreviewPageData({
+            dumpJson,
+            comlibs
+          })
+          window.open(`./preview.html?fileId=${fileId}`)
         }
       })
-      console.log('SDK 初始化', user, fileId)
       setJSX(nodes as any)
     }
   }, [user, fileId, content, config, installedApps, hierarchy])
