@@ -86,6 +86,6 @@ export type T_Props = {
     openUrl: (param: any) => any
     projectId: any
     hasMaterialApp: boolean,
-    openPreview(param: { dumpJson: any, comlibs: any[] }): void
+    openPreview(param: { toJSON: any, comlibs: any[] }): void
   }) => {}
 }

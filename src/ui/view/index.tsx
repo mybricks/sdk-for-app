@@ -132,10 +132,10 @@ export default function View({onLoad, className = ''}: T_Props) {
           // @ts-ignore
           return (installedApps || [])?.some?.((app) => app?.namespace === 'mybricks-material')
         },
-        openPreview({ dumpJson, comlibs }) {
-          const previewStorage = new PreviewStorage({ fileId})
+        openPreview({ toJSON, comlibs }) {
+          const previewStorage = new PreviewStorage({ fileId })
           previewStorage.savePreviewPageData({
-            dumpJson,
+            dumpJson: toJSON,
             comlibs
           })
           window.open(`./preview.html?fileId=${fileId}`)
