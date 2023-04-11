@@ -16,7 +16,7 @@ import getFullFileMock from "./mock/getFullFile";
 import getFileInfoByBaseFileIdAndRelativePath from './getFileInfoByBaseFileIdAndRelativePath'
 import batchPublishService from './batchPublishService'
 import getLatestModulePubByProjectId from "./getLatestModulePubByProjectId";
-import getFileList from "./getFileList";
+import getFileRoot from "./getFileRoot";
 import getLatestPub from './getLatestPub'
 
 export const File: any = isEnvOfDevAndBrowser() ? {
@@ -28,7 +28,7 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   getVersions,
   getFileTreeMapByFile,
   getFiles,
-  getFileList,
+  getFileRoot,
   getHierarchy,
 } : {
   getLatestPub,
@@ -43,6 +43,6 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   getFileTreeMapByFile,
   getHierarchy,
   getFiles,
-	getFileList,
+	getFileRoot,
   getFileInfoByBaseFileIdAndRelativePath
 };

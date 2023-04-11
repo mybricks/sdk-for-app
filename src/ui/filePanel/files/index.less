@@ -1,0 +1,75 @@
+.fileContainer {
+  flex: 1;
+  flex-shrink: 0;
+  overflow: auto;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    font-style: italic;
+    color: #AAA;
+    font-size: 12px;
+    width: 100%;
+    height: 100%;
+  }
+
+  .file {
+    align-items: center;
+    width: 120px;
+    height: 100px;
+    cursor: pointer;
+    display: inline-flex;
+    flex-direction: column;
+    white-space: nowrap;
+    border: 1px solid #EEE;
+    border-radius: 5px;
+    margin: 5px;
+
+    &.noAllow {
+      cursor: not-allowed;
+      opacity: .6;
+
+      &:hover {
+        outline: none;
+      }
+    }
+
+    &.selected, &.selected:hover {
+      outline: 2px solid #fa6400;
+    }
+
+    &:hover {
+      outline: 1px solid #DDD;
+    }
+
+    .icon {
+      width: 100%;
+      height: 68px;
+      background-color: #FAFAFA;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .name {
+      text-align: center;
+      height: 32px;
+      line-height: 32px;
+      width: 100%;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 0 4px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+  }
+}

@@ -1,19 +1,19 @@
 import { getAxiosInstance } from '../util'
 
-const getAll = (params: any) => {
+const getFileRoot = (params: any) => {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
-    .get('/paas/api/file/getFileList', {
+    .get('/paas/api/file/getFileRoot', {
       params
     })
     .then(({ data }: any) => {
       if (data.code === 1 && data.data) {
         resolve(data.data)
       } else {
-        reject('获取文件列表失败')
+        reject('获取文件根目录失败')
       }
     })
   })
 }
 
-export default getAll
+export default getFileRoot
