@@ -24,7 +24,7 @@ const File: FC<FilesProps> = props => {
 			onDoubleClick={isAllowed ? () => doubleClickFile(file) : undefined}
 		>
 			<div className={styles.icon}>
-				<img src={iconSrc} width={50} height={50}  alt="" />
+				<img src={iconSrc} width={40} height={40}  alt="" />
 			</div>
 			<div className={styles.name}>{file.name}</div>
 		</div>
