@@ -1,14 +1,19 @@
+.container::-webkit-scrollbar {
+  display: none;
+}
+
 .container {
   position: relative;
   height: auto;
   min-height: 0;
   margin-right: 0;
   margin-bottom: 0;
-  width: 212px;
+  width: 280px;
   flex-shrink: 0;
   padding: 6px;
   background-color: #f8fafb;
   overflow: auto;
+  scrollbar-width: none;
 
   .content {
     display: block;

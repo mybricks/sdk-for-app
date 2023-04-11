@@ -1,3 +1,7 @@
+.fileContainer::-webkit-scrollbar {
+  display: none;
+}
+
 .fileContainer {
   flex: 1;
   flex-shrink: 0;
@@ -5,11 +9,8 @@
   position: relative;
   display: flex;
   flex-wrap: wrap;
-
-  ::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
+  scrollbar-width: none;
+  align-content: flex-start;
 
   .loading {
     display: flex;

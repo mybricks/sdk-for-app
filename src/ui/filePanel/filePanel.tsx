@@ -237,7 +237,7 @@ const FilePanel: FC<FilePanelProps> = props => {
 		<Modal
 		  visible
 		  getContainer={root}
-		  width={800}
+		  width={962}
 		  wrapClassName="fangzhou-theme"
 		  className={styles.filePanelModal}
 		  title="文件选择"
