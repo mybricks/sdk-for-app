@@ -244,6 +244,7 @@ const FilePanel: FC<FilePanelProps> = props => {
 		  onCancel={onClose}
 		  maskClosable
 		  closable
+		  cancelText="取消"
 		  okText="选择"
 		  okButtonProps={{ disabled: !selectedFile }}
 		  onOk={onOk}
