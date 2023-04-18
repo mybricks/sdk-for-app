@@ -204,6 +204,11 @@ const FilePanel: FC<FilePanelProps> = props => {
 	
 	const doubleClickFile = useCallback((item: any) => {
 		if (!['folder', 'folder-project', 'folder-module', 'my-file', 'group'].includes(item.extName)) {
+			
+			if (allowedFileExtNames.includes(item.extName)) {
+				curOnOk?.(item);
+			}
+			
 			return;
 		}
 		
@@ -214,7 +219,7 @@ const FilePanel: FC<FilePanelProps> = props => {
 		}
 		
 		getFiles(item, getParams(item)).then(() => setDataSource([...dataSource]));
-	}, [dataSource, handlePath, getParams, allowedFileExtNames]);
+	}, [dataSource, handlePath, getParams, allowedFileExtNames, curOnOk]);
 	
 	const clickSwitcher = useCallback((item: any) => {
 		if (Array.isArray(item.dataSource)) {
