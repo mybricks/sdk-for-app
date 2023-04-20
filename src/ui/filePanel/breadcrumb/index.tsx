@@ -1,7 +1,5 @@
 import React, { FC } from 'react';
 import {Breadcrumb} from 'antd';
-// @ts-ignore
-import {evt, observe} from '@mybricks/rxui';
 
 import styles from './index.less';
 

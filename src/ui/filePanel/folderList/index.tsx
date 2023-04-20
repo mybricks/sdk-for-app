@@ -1,6 +1,4 @@
 import React, {CSSProperties, useMemo} from 'react';
-// @ts-ignore
-import {evt, observe} from '@mybricks/rxui';
 import {LoadingOutlined, CaretRightOutlined} from '@ant-design/icons';
 // @ts-ignore
 import css from './index.less';
@@ -60,12 +58,21 @@ function Leaf({ item, clickWrapper, clickSwitcher, count, active, appMap }: any)
 	const RenderWrapper = useMemo(() => {
 		return (
 			<div className={`${css.tree} ${isActive ? css.active : ''}`} style={{padding: `0 0 0 ${25 * count}px`}}>
-				<li onClick={evt(() => clickWrapper(item)).stop}>
+				<li onClick={event => {
+					event.stopPropagation();
+					clickWrapper(item);
+				}}>
 					{clickSwitcher ? (
 						<span className={css.switcher}>
 	            {loading
 		            ? <LoadingOutlined/>
-		            : <CaretRightOutlined className={open ? css.open : ''} onClick={evt(() => clickSwitcher(item)).stop}/>
+		            : <CaretRightOutlined
+			              className={open ? css.open : ''}
+			              onClick={event => {
+				              event.stopPropagation();
+				              clickSwitcher(item);
+			              }}
+		            />
 	            }
           </span>
 					) : null}
