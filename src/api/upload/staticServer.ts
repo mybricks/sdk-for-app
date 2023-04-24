@@ -12,7 +12,8 @@ export default function staticServer({content, folderPath, fileName}: any) {
     formData = new FormData()
   } else {
     blob = new Blob([content])
-    formData = new FormData()
+    // fix 客户端调用会报错
+    formData = new window.FormData()
   }
   formData.append('file', blob, fileName)
   formData.append('folderPath', folderPath)
