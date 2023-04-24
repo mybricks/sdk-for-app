@@ -1,13 +1,15 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "SDK for application UI",
   "scripts": {
     "build:api": "npm run clean && tsc --build tsconfig.json",
     "clean": "npx rimraf tsconfig.tsbuildinfo ./src/*.js ./src/**.js ./src/**/*.js ./src/**/**/*.js ./src/**/**/**/*.js ./src/api/*.d.ts ./src/api/**.d.ts ./src/api/**/*.d.ts ./src/api/**/**/*.d.ts ./src/api/**/**/**/*.d.ts ",
     "clean:temp": "rm -rf .temp",
     "generate:npm": "mkdir .temp && cp package.json ./.temp/package.json && cp -r src/** ./.temp && cd .temp && npm publish",
-    "publishToNpm": "npm run build:api && npm run generate:npm && npm run clean && npm run clean:temp"
+    "generate:npm-beta": "mkdir .temp && cp package.json ./.temp/package.json && cp -r src/** ./.temp && cd .temp && npm publish --tag beta --registry=https://registry.npmjs.org --access=public",
+    "publishToNpm": "npm run build:api && npm run generate:npm && npm run clean && npm run clean:temp",
+    "publishToNpm:beta": "npm run build:api && npm run generate:npm-beta && npm run clean && npm run clean:temp"
   },
   "repository": {
     "type": "git",
@@ -61,6 +63,7 @@
   },
   "dependencies": {
     "dayjs": "^1.11.7",
-    "form-data": "^4.0.0"
+    "form-data": "^4.0.0",
+    "html-to-image": "^1.11.11"
   }
 }
