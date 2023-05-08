@@ -128,6 +128,10 @@ export default function View({onLoad, className = ''}: T_Props) {
           // @ts-ignore
           return hierarchy?.projectId
         },
+        get moduleId() {
+          // @ts-ignore
+          return hierarchy?.moduleId
+        },
         get hasMaterialApp() {
           // @ts-ignore
           return (installedApps || [])?.some?.((app) => app?.namespace === 'mybricks-material')
