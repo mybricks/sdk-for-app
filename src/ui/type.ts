@@ -81,12 +81,12 @@ export type T_Props = {
     user: any;
     installedApps: any[];
     fileContent: any;
-    config: any
-    meta: any
-    openUrl: (param: any) => any
-    projectId: any
-    moduleId: any
-    hasMaterialApp: boolean,
-    openPreview(param: { toJSON: any, comlibs: any[] }): void
+    config: any;
+    meta: any;
+    openUrl: (param: any) => any;
+    projectId: any;
+	  moduleId: any;
+    hasMaterialApp: boolean;
+    openPreview(param: { toJSON: any, comlibs: any[] }): void;
   }) => {}
 }
