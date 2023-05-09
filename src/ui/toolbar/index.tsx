@@ -1,10 +1,10 @@
-import React, { useEffect, useContext } from 'react'
-import Save from './save'
-import Workflows from './workflows'
-import Button from './button'
+import React, { useCallback } from 'react'
 
-import LastUpdate from './last-update-info';
+import Save from './save'
+import Button from './button'
 import { GoBack } from '../Icons'
+import Workflows from './workflows'
+import LastUpdate from './last-update-info'
 
 import styles from './index.less'
 
@@ -30,12 +30,23 @@ const Toolbar = ({
   updateInfo,
   children,
 }: ToolbarProps) => {
+
+  const handleBack = useCallback(() => {
+    if (window.history.length > 1) {
+      // 如果历史记录中有上一个页面，则返回上一个页面
+      window.history.back()
+    } else {
+      // 否则跳转到首页
+      window.location.href = '/workspace.html'
+    }
+  }, [])
+
   return (
     <div className={styles.toolbar}>
       <div className={styles.left}>
         <div className={styles.leftContent}>
           {backIcon ? (
-            <div className={styles.back} onClick={() => window.history.back()}>
+            <div className={styles.back} onClick={handleBack}>
               {GoBack}
             </div>
           ) : (
