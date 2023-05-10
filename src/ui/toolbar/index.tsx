@@ -32,8 +32,8 @@ const Toolbar = ({
 }: ToolbarProps) => {
 
   const handleBack = useCallback(() => {
-    if (window.history.length > 1) {
-      // 如果历史记录中有上一个页面，则返回上一个页面
+    if (document.referrer.startsWith(location.origin)) {
+      // 同域直接返回
       window.history.back()
     } else {
       // 否则跳转到首页
