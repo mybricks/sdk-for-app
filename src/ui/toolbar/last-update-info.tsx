@@ -26,11 +26,11 @@ export default function LastUpdate({
   const { fileContent } = useContext(globalContext)
 
   const _content = useMemo(() => {
-    return content || fileContent?._saveTime
+    return content || (fileContent?._saveTime
       ? `改动已保存-${UpdateTime(fileContent?._saveTime)}`
       : `${fileContent?.updatorName ?? ''}保存于${UpdateTime(
           fileContent?._updateTime
-        )}`
+        )}`)
   }, [content, fileContent?._saveTime, fileContent?.updatorName, fileContent?._updateTime])
 
   const Tip = useMemo(() => {
