@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 
 import Save from './save'
+import Publish from './publish'
 import Button from './button'
 import { GoBack } from '../Icons'
 import Workflows from './workflows'
@@ -68,6 +69,8 @@ const Toolbar = ({
 Toolbar.LastUpdate = LastUpdate
 
 Toolbar.Save = Save
+
+Toolbar.Publish = Publish
 
 Toolbar.Button = Button
 
