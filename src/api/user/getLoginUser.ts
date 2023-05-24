@@ -2,10 +2,10 @@ import { getAxiosInstance } from '../util'
 
 import { T_UserInfo } from "./type";
 
-const getLoginUser: () => Promise<T_UserInfo> = async () => {
+const getLoginUser: (params?: any) => Promise<T_UserInfo> = async (params = {}) => {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
-    .post(`/paas/api/user/signed`)
+    .post(`/paas/api/user/signed`, params)
     .then(({ data }: any) => {
       console.log('接口返回', data)
       resolve(data.data)

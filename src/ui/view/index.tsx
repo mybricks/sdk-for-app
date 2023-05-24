@@ -29,7 +29,7 @@ export default function View({onLoad, className = ''}: T_Props) {
     (async () => {
       try {
         console.log('开始初始化基本数据')
-        const loginUser: any = await API.User.getLoginUser()
+        const loginUser: any = await API.User.getLoginUser({fileId})
         setUser({...loginUser, isAdmin: loginUser?.isAdmin});
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
