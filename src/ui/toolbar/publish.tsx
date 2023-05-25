@@ -18,16 +18,17 @@ export default ({
   onClick,
   envList = []
 }: SaveButtonProps) => {
-
   const menu = useMemo(() => {
 		return (
 			<Menu>
         {
           envList?.map(env => {
             return (
-              <Menu.Item onClick={() => {
-                onClick ? onClick(env.type) : null
-              }}>
+              <Menu.Item 
+                disabled={disabled}
+                onClick={() => {
+                  onClick ? onClick(env.type) : null
+                }}>
                 <p>{env.label}</p>
               </Menu.Item>
             )
@@ -45,8 +46,8 @@ export default ({
         placement="bottomRight"
       >
         <Button
+          disabled={disabled}
           loading={loading}
-          disabled={!disabled}
         >
           <div className={css.publishBtn}>
             发布
