@@ -36,7 +36,7 @@ export default ({
         }
 			</Menu>
 		);
-	}, []);
+	}, [disabled]);
 
   return (
     <>
