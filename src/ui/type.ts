@@ -86,6 +86,7 @@ export type T_Props = {
     openUrl: (param: any) => any;
     projectId: any;
 	  moduleId: any;
+    hierarchy: any;
     hasMaterialApp: boolean;
     openPreview(param: { toJSON: any, comlibs: any[] }): void;
   }) => {}
