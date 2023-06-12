@@ -76,52 +76,63 @@ export default function View({onLoad, className = ''}: T_Props) {
           params = {},
           onSuccess
         }: { url: string, params: any, onSuccess: Function, onFailed: Function }) {
-          const [schema, removeSchemaPart] = url.split('://');
-          const [pathPart] = removeSchemaPart?.split('?');
-          const [namespace, action] = pathPart?.split('/');
-          let urlSchema = '';
-          installedApps?.forEach((app: IInstalledApp) => {
-            if (app.namespace === namespace) {
-              app?.exports?.forEach(e => {
-                if (e.name === action) {
-                  urlSchema = e.path;
-                }
-              })
-            }
-          });
-          if (!urlSchema) {
-            onFailed?.({
-              code: -1,
-              message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
-            })
-          } else {
-            if (urlSchema.endsWith('html')) {
-              setSDKModalInfo({
-                open: true,
-                params,
-                url: urlSchema,
-                onSuccess,
-                onFailed,
-                onClose: () => setSDKModalInfo({open: false}),
-              });
-            } else if (urlSchema.endsWith('js')) {
-              axios.get(urlSchema).then((res) => {
-                try {
-                  eval(res.data);
-                  let fn;
-                  if (window?.[action]?.default) {
-                    fn = window?.[action]?.default;
-                  } else {
-                    fn = window?.[action];
+          if(url.startsWith('MYBRICKS://')) {
+            const [schema, removeSchemaPart] = url.split('://');
+            const [pathPart] = removeSchemaPart?.split('?');
+            const [namespace, action] = pathPart?.split('/');
+            let urlSchema = '';
+            installedApps?.forEach((app: IInstalledApp) => {
+              if (app.namespace === namespace) {
+                app?.exports?.forEach(e => {
+                  if (e.name === action) {
+                    urlSchema = e.path;
                   }
-                  fn({...params, onSuccess, onFailed});
-                } catch (e) {
-                  console.log(e);
-                }
+                })
+              }
+            });
+            if (!urlSchema) {
+              onFailed?.({
+                code: -1,
+                message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
               })
             } else {
-              console.log('invalid url schema');
+              if (urlSchema.endsWith('html')) {
+                setSDKModalInfo({
+                  open: true,
+                  params,
+                  url: urlSchema,
+                  onSuccess,
+                  onFailed,
+                  onClose: () => setSDKModalInfo({open: false}),
+                });
+              } else if (urlSchema.endsWith('js')) {
+                axios.get(urlSchema).then((res) => {
+                  try {
+                    eval(res.data);
+                    let fn;
+                    if (window?.[action]?.default) {
+                      fn = window?.[action]?.default;
+                    } else {
+                      fn = window?.[action];
+                    }
+                    fn({...params, onSuccess, onFailed});
+                  } catch (e) {
+                    console.log(e);
+                  }
+                })
+              } else {
+                console.log('invalid url schema');
+              }
             }
+          } else if(url.startsWith('http')) {
+            setSDKModalInfo({
+              open: true,
+              params,
+              url: url,
+              onSuccess,
+              onFailed,
+              onClose: () => setSDKModalInfo({open: false}),
+            });
           }
         },
         get projectId() {
