@@ -4,6 +4,7 @@ import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE, T_Pr
 import API from '../../api/index'
 import axios from 'axios';
 import SDKModal from '../sdkModal/SDKModal';
+import { ComponentSelector } from '../componentSelector/index';
 import {getUrlParam, safeParse} from '../util';
 import GlobalContext from '../globalContext';
 import PreviewStorage from './previewStorage'
@@ -20,6 +21,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   const [config, setConfig] = useState<IConfig | null>(null);
   const [installedApps, setInstalledApps] = useState([]);
   const [sdkModalInfo, setSDKModalInfo] = useState<any>({});
+  const [materialSelectorInfo, setMaterialSelectorInfo] = useState<any>({});
   const [content, setContent] = useState<FileContent | null>(null);
   const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
   const appMeta = API.App.getAppMeta();
@@ -124,9 +126,9 @@ export default function View({onLoad, className = ''}: T_Props) {
               }
             }
           } else if(url.startsWith('http')) {
-            setSDKModalInfo({
+            setMaterialSelectorInfo({
               open: true,
-              params,
+              ...params,
               url: url,
               onSuccess,
               onFailed,
@@ -167,6 +169,7 @@ export default function View({onLoad, className = ''}: T_Props) {
       <div className={`${css.view} ${className}`}>
         {jsx}
         {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
+        {materialSelectorInfo.open ? <ComponentSelector {...materialSelectorInfo} /> : null}
       </div>
     </GlobalContext.Provider>
   )
