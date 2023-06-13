@@ -129,6 +129,7 @@ export const ComponentSelector: FC<ComponentSelectorProps> = props => {
 			footer={footer}
 			visible
 			onCancel={onClose}
+		  destroyOnClose
 			maskClosable={true}
 			closable={true}
 			wrapClassName={cx(styles.materialModal, 'fangzhou-theme')}

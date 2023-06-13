@@ -132,7 +132,7 @@ export default function View({onLoad, className = ''}: T_Props) {
               url: url,
               onSuccess,
               onFailed,
-              onClose: () => setSDKModalInfo({open: false}),
+              onClose: () => setMaterialSelectorInfo({open: false}),
             });
           }
         },
