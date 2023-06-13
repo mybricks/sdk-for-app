@@ -38,11 +38,10 @@ export default function View({onLoad, className = ''}: T_Props) {
         setContent({...data, content: safeParse(data.content)});
         const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system'])
         setConfig(typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig));
-        const hierarchyRes = await API.File.getHierarchy({fileId})
-        // if(hierarchyRes?.projectId) {
-        //   setHierarchy(hierarchyRes)
-        // }
-        setHierarchy(hierarchyRes || {})
+        if(fileId && fileId != 0) {
+          const hierarchyRes = await API.File.getHierarchy({fileId})
+          setHierarchy(hierarchyRes || {})
+        }
       } catch(e: any) {
         console.log(e)
         message.error(`应用初始化数据失败, ${e.message}`);

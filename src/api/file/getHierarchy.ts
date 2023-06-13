@@ -12,11 +12,7 @@ const getHierarchy = isEnvOfDevAndBrowser() ? getHierarchyMock : (params: Params
     const { fileId } = params ?? {}
     getAxiosInstance()
       .get(`/paas/api/file/getParentModuleAndProjectInfo?id=${fileId}`).then(({ data }: any) => {
-        if (data?.code === 1) {
-          resolve(data?.data || {})
-        } else {
-          reject('查询文件失败')
-        }
+        resolve(data?.data || {})
       })
   })
 }
