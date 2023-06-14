@@ -36,6 +36,8 @@ export default function View({onLoad, className = ''}: T_Props) {
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
         const data = await API.File.getFullFile({userId: loginUser?.email, fileId})
+        const app = apps?.find(app => app.namespace === appMeta?.namespace)
+        document.title = (app?.title ? `${app.title}-` : '') + data.name
         // @ts-ignore
         setContent({...data, content: safeParse(data.content)});
         const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system'])
