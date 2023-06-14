@@ -18,7 +18,7 @@ const generateComboUrl = (components: Array<{ namespace: string; version: string
 import styles from './index.less';
 
 export const ComponentSelector: FC<ComponentSelectorProps> = props => {
-	const { defaultSelected, materialType, extName, modalType, onClose, materialId, onSuccess, selectorTitle, combo, root } = props;
+	const { defaultSelected, materialType, extName, modalType, onClose, materialId, onSuccess, selectorTitle, combo, root, url } = props;
 	const iframeRef: any = useRef<HTMLIFrameElement>();
 	const [spinning, setSpinning] = useState(false);
 	const sceneId = useMemo(() => {
@@ -81,8 +81,7 @@ export const ComponentSelector: FC<ComponentSelectorProps> = props => {
 
 	const iframeUrl = useMemo(() => {
 		// return `${location.origin}/page/paas/material?isSelector=true&type=${materialType}&sceneId=${sceneId}&modal=${String(modalType || '')}&materialId=${String(materialId || '')}`;
-		// return 'https://fangzhou.corp.kuaishou.com/page/paas/material?isSelector=true&type=component&sceneId=2,11&modal=&materialId=',
-		return 'https://eshop-fangzhou.staging.kuaishou.com/page/paas/material?isSelector=true&type=component&sceneId=2&modal=&materialId=';
+		return url
 	}, []);
 
 	const onOk = useCallback(async () => {

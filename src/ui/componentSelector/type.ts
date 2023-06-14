@@ -29,4 +29,5 @@ export type ComponentSelectorProps = CommonParams<{
 	title: string;
 	namespace: string;
 	version: string;
+	url?: string
 }>;
