@@ -1,6 +1,12 @@
 import { getAxiosInstance } from '../util'
 
-const publish = (params: {userId: string, fileId: any, extName: string, content: string, commitInfo: string, type: string }): Promise<{}> => {
+/**
+ * 发布
+ *
+ * @param {{userId: string, fileId: any, extName: string, content: string, commitInfo: string, type: string }} params
+ * @returns {Promise<{}>}
+ */
+function publish(params: {userId: string, fileId: any, extName: string, content: string, commitInfo: string, type: string }): Promise<{}> {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .post('/paas/api/workspace/publish', params)

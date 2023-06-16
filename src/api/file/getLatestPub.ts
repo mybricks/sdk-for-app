@@ -1,6 +1,12 @@
 import { getAxiosInstance } from '../util'
 
-const publish = (params: {fileId: number, type?: string }): Promise<{}> => {
+/**
+ * 获取最新的发布记录
+ *
+ * @param {{fileId: number, type?: string }} params
+ * @returns {Promise<{}>}
+ */
+function getLatestPub(params: {fileId: number, type?: string }): Promise<{}> {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .post('/paas/api/file/getLatestPub', params)
@@ -16,4 +22,4 @@ const publish = (params: {fileId: number, type?: string }): Promise<{}> => {
   })
 }
 
-export default publish;
+export default getLatestPub;

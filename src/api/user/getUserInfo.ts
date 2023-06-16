@@ -2,10 +2,12 @@ import { getAxiosInstance } from '../util'
 import type { T_UserInfo } from "./type";
 
 /**
- * 获取文件内容
- * @param fileId 文件id
+ * 获取用户信息
+ *
+ * @param {string} email 用户邮箱
+ * @returns {Promise<T_UserInfo>}
  */
-const getUserInfo: (email: string) => Promise<T_UserInfo> = async (email: string) => {
+async function getUserInfo(email: string): Promise<T_UserInfo> {
   return new Promise((resolve, reject) => {
     if (!email) {
       reject('email不能为空')

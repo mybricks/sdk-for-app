@@ -1,6 +1,12 @@
 import { getAxiosInstance } from '../util'
 
-const save = (params: {userId: any, fileId: any, shareType?: any, name?: any, content: any, icon?: any, namespace?: any, type?: any}): Promise<{}> => {
+/**
+ * 保存
+ *
+ * @param {{userId: any, fileId: any, shareType?: any, name?: any, content: any, icon?: any, namespace?: any, type?: any}} params
+ * @returns {Promise<{}>}
+ */
+function save(params: {userId: any, fileId: any, shareType?: any, name?: any, content: any, icon?: any, namespace?: any, type?: any}): Promise<{}> {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .post('/paas/api/workspace/saveFile', params)

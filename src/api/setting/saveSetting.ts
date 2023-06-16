@@ -1,6 +1,14 @@
 import { getAxiosInstance } from '../util'
 
-const saveSetting = async (namespace: string, config: any, email: any) => {
+/**
+ * 保存应用配置
+ *
+ * @param {string} namespace 应用namespace
+ * @param {*} config 应用配置JSON字符串
+ * @param {*} email 用户email
+ * @returns
+ */
+async function saveSetting(namespace: string, config: string, email: any) {
   return new Promise((resolve, reject) => {
     if(!email) {
       reject('请传入email')

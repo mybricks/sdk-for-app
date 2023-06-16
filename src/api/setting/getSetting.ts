@@ -1,6 +1,13 @@
 import { getAxiosInstance } from '../util'
 
-const getSetting = async (namespaces: string[]) => {
+
+/**
+ * 获取应用配置
+ *
+ * @param {string[]} namespaces
+ * @returns
+ */
+async function getSetting(namespaces: string[]) {
   return new Promise((resolve, reject) => {
     if(!namespaces || namespaces.length === 0) {
       resolve([]);
