@@ -34,8 +34,11 @@ const Toolbar = ({
 
   const handleBack = useCallback(() => {
     if (document.referrer.startsWith(location.origin)) {
-      // 同域直接返回
-      window.history.back()
+      if (window.history.length <= 1) {
+        window.location.href = '/workspace.html'
+      } else {
+        window.history.back()
+      }
     } else {
       // 否则跳转到首页
       window.location.href = '/workspace.html'
