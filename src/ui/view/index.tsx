@@ -25,7 +25,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   const [content, setContent] = useState<FileContent | null>(null);
   const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
   const appMeta = API.App.getAppMeta();
-  const [hierarchy, setHierarchy] = useState(null) // 初始化赋值
+  const [hierarchy, setHierarchy] = useState({}) // 初始化赋值
 
   useMemo(() => {
     (async () => {
