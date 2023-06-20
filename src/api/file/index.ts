@@ -6,6 +6,7 @@ import getVersions from './getVersions'
 import getFullFile from './getFullFile'
 import save from './save'
 import create from './create'
+import getDeliveryChannel from './getDeliveryChannel'
 import deleteFile from './delete'
 import publish from './publish'
 import getFileTreeMapByFile from './getFileTreeMapByFile'
@@ -40,6 +41,7 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   save,
   create,
   delete: deleteFile,
+  getDeliveryChannel,
   publish,
   batchPublishService,
   getPublishContent,
