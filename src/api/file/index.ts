@@ -6,6 +6,8 @@ import getVersions from './getVersions'
 import getFullFile from './getFullFile'
 import save from './save'
 import create from './create'
+import createByTemplate from './createByTemplate'
+import getTemplates from './getTemplates'
 import getDeliveryChannel from './getDeliveryChannel'
 import deleteFile from './delete'
 import publish from './publish'
@@ -38,8 +40,10 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   getLatestModulePubByProjectId,
   getFullFile,
   getAll,
+  getTemplates,
   save,
   create,
+  createByTemplate,
   delete: deleteFile,
   getDeliveryChannel,
   publish,
