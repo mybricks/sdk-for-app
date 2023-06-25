@@ -1,12 +1,19 @@
 import { getAxiosInstance } from '../util'
 
-const getAll = (params?: { parentId?: any, email?: string }): Promise<any[]> => {
+/**
+ * 获取文件列表
+ *
+ * @param {{ parentId?: any, email?: string, groupId?: string }} [params]
+ * @returns {Promise<any[]>}
+ */
+function getAll(params?: { parentId?: any, email?: string, groupId?: string }): Promise<any[]> {
   return new Promise((resolve, reject) => {
-    const { parentId, email } = params || {}
+    const { parentId, email, groupId } = params || {}
     getAxiosInstance().get('/paas/api/workspace/getAll',{
       params: {
         userId: email,
         parentId,
+        groupId
       }
     }).then(({ data }: any) => {
       if (data?.data) {
