@@ -12,6 +12,8 @@ const getFileRoot = (params: any) => {
       } else {
         reject('获取文件根目录失败')
       }
+    }).catch((e: any) => {
+      reject(e.msg || '获取文件root失败')
     })
   })
 }

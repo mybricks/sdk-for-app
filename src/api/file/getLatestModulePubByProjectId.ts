@@ -10,7 +10,9 @@ const getLatestModulePubByProjectId = (params: {projectId: number, extNameList?:
       } else {
         reject('获取失败');
       }
-    });
+    }).catch((e: any) => {
+      reject(e.msg || '获取项目信息失败')
+    })
   });
 }
 

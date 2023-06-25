@@ -12,6 +12,8 @@ export default (params: any) => {
       } else {
         reject('获取文件树失败')
       }
+    }).catch((e: any) => {
+      reject(e.msg || '获取文件树失败')
     })
   })
 }

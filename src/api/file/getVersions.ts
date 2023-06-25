@@ -22,6 +22,8 @@ const getVersions = (params: Params): Promise<any[]> => {
       } else {
         reject('查询文件失败')
       }
+    }).catch((e: any) => {
+      reject(e.msg || '查询版本信息失败')
     })
   })
 }

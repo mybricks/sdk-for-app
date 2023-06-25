@@ -35,6 +35,8 @@ function create(params: {
       } else {
         reject(data.msg || '新建失败');
       }
+    }).catch((e: any) => {
+      reject(e.msg || '新建页面失败')
     });
   });
 }

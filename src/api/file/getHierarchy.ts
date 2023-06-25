@@ -11,8 +11,12 @@ const getHierarchy = isEnvOfDevAndBrowser() ? getHierarchyMock : (params: Params
   return new Promise((resolve, reject) => {
     const { fileId } = params ?? {}
     getAxiosInstance()
-      .get(`/paas/api/file/getParentModuleAndProjectInfo?id=${fileId}`).then(({ data }: any) => {
+      .get(`/paas/api/file/getParentModuleAndProjectInfo?id=${fileId}`)
+      .then(({ data }: any) => {
         resolve(data?.data || {})
+      })
+      .catch((e: any) => {
+        reject(e.msg || '查询层级结构失败')
       })
   })
 }

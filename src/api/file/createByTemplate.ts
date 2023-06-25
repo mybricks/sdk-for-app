@@ -33,6 +33,8 @@ function createFileBaseTemplate(params: {
       } else {
         reject(data.msg || '新建失败');
       }
+    }).catch((e: any) => {
+      reject(e.msg || '基于模版新建失败')
     });
   });
 }

@@ -30,6 +30,8 @@ function getTemplates(params: { templateGuideType: string, extName: string }): P
       } else {
         reject(data?.msg || '获取模板列表失败')
       }
+    }).catch((e: any) => {
+      reject(e.msg || '查询模版列表失败')
     })
   })
 }

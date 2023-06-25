@@ -21,7 +21,7 @@ const getInstalledList = async () => {
         reject('查询已安装应用失败')
       }
     }).catch((e: any) => {
-      reject(e.message || '查询已安装应用失败')
+      reject(e.msg || '查询已安装应用失败')
     });
   })
 

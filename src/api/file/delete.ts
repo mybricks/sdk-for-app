@@ -22,6 +22,8 @@ function deleteFile(params: {
       } else {
         reject(data.msg || '删除失败');
       }
+    }).catch((e: any) => {
+      reject(e.msg || '删除文件失败')
     });
   });
 }

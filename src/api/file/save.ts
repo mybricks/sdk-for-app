@@ -16,7 +16,9 @@ function save(params: {userId: any, fileId: any, shareType?: any, name?: any, co
       } else {
         reject('保存失败');
       }
-    });
+    }).catch((e: any) => {
+      reject(e.msg || '保存失败')
+    })
   });
 }
 

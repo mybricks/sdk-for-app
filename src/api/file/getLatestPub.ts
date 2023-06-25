@@ -17,7 +17,7 @@ function getLatestPub(params: {fileId: number, type?: string }): Promise<{}> {
         reject('获取失败');
       }
     }).catch((e: any) => {
-      reject('获取失败' + e.message);
+      reject(e.msg || '获取最新发布记录失败')
     })
   })
 }

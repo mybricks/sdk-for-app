@@ -12,6 +12,8 @@ const getAll = (params: any) => {
       } else {
         reject('获取文件列表失败')
       }
+    }).catch((e: any) => {
+      reject(e.msg || '获取文件列表失败')
     })
   })
 }

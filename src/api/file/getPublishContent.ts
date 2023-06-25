@@ -35,6 +35,8 @@ export default (params: { pubId: number | string }): Promise<VersionDetailItem[]
       } else {
         reject('查询发布内容失败')
       }
+    }).catch((e: any) => {
+      reject(e.msg || '获取发布内容失败')
     })
   })
 

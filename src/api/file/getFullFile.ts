@@ -84,6 +84,8 @@ function getFullFile(params: { userId: string, fileId: number }): Promise<{
       } else {
         reject('查询文件失败')
       }
+    }).catch((e: any) => {
+      reject(e.msg || '查询文件详情失败')
     })
   })
 }

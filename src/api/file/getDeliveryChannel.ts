@@ -19,6 +19,8 @@ function getDeliveryChannel(params: { fileId: number }): Promise<any> {
       } else {
         reject('查询文件失败')
       }
+    }).catch((e: any) => {
+      reject(e.msg || '查询投放地址失败')
     })
   })
 }
