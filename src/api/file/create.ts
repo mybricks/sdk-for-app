@@ -1,20 +1,19 @@
 import { getAxiosInstance } from '../util'
 
-
 /**
  * 新建文件
  *
  * @param {{
- *   name: string, 文件名称
- *   creatorId: string, 新建人邮箱前缀
- *   creatorName: string, 新建人名称
- *   extName: string, 文件后缀
- *   groupId?: number, 所属协作组ID
- *   description?: string, 文件描述
- *   parentId?: number, 所属文件夹ID
- *   icon?: string, 文件图标
+ *   name: string,
+ *   creatorId: string,
+ *   creatorName: string,
+ *   extName: string,
+ *   groupId?: number,
+ *   description?: string,
+ *   parentId?: number,
+ *   icon?: string,
  * }} params
- * @returns {Promise<{}>}
+ * @returns {Promise<{ id: number }>}
  */
 function create(params: {
   name: string,
@@ -25,7 +24,7 @@ function create(params: {
   description?: string,
   parentId?: number,
   icon?: string,
-}): Promise<{}> {
+}): Promise<{ id: number }> {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .post('/paas/api/file/create', params)
