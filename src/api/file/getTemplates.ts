@@ -16,15 +16,20 @@ interface ITemplatesResponseDTO {
  * @param {{ templateGuideType: string, extName: string }} params
  * @returns {Promise<any[]>}
  */
-function getTemplates(params: { templateGuideType: string, extName: string }): Promise<ITemplatesResponseDTO[]> {
+
+/**
+ * 
+ *
+ * @param {{ 
+ *  sceneId: number  8表示H5模版
+ * }} params
+ * @returns {Promise<ITemplatesResponseDTO[]>}
+ */
+function getTemplates(params: { sceneId: number}): Promise<ITemplatesResponseDTO[]> {
   return new Promise((resolve, reject) => {
-    const { extName, templateGuideType } = params || {}
-    getAxiosInstance().get('/api/material/template/list',{
-      params: {
-        extName: extName,
-        templateGuideType: templateGuideType,
-      }
-    }).then(({ data }: any) => {
+    getAxiosInstance()
+    .post('/api/material/template/queryListBySceneId', params)
+    .then(({ data }: any) => {
       if (data?.data) {
         resolve(data?.data || [])
       } else {
