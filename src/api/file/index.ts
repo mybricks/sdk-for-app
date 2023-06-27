@@ -6,6 +6,7 @@ import getVersions from './getVersions'
 import getFullFile from './getFullFile'
 import save from './save'
 import create from './create'
+import updateDeliveryChannel from "./updateDeliveryChannel";
 import createByTemplate from './createByTemplate'
 import getTemplates from './getTemplates'
 import getDeliveryChannel from './getDeliveryChannel'
@@ -46,6 +47,7 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   createByTemplate,
   delete: deleteFile,
   getDeliveryChannel,
+  updateDeliveryChannel,
   publish,
   batchPublishService,
   getPublishContent,
