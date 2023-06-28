@@ -1,5 +1,43 @@
 .locker {
   margin-right: 5px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  box-sizing: border-box;
+  white-space: nowrap;
+  font-size: 12px;
+  color: #999;
+
+  .accessLevelMount {
+    padding: 0 4px;
+    height: 24px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 24px;
+    color: #95999e;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-family: PingFangSC, PingFangSC-Regular;
+
+    .icon {
+      font-size: 10px;
+      margin-top: 0px !important;
+      margin-left: 5px;
+      transition: transform 0.3s, -webkit-transform 0.3s;
+    }
+
+    &:hover {
+      border-radius: 4px;
+      background: #ebedf0;
+
+      .icon {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
   .cooperationUsersList {
     display: flex;
 
@@ -117,5 +155,198 @@
     .ant-popover-inner-content {
       padding: 0 !important;
     }
+  }
+}
+
+.accessLevelGroup {
+  margin: -8px -16px;
+  font-size: 14px;
+  color: #1f2329;
+  font-family: PingFangSC, sans-serif;
+
+  .accessLevelGroupItem {
+    padding: 2px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .leftIcon {
+      display: flex;
+      margin-right: 8px;
+    }
+
+    .rightIcon {
+      position: absolute;
+      margin-left: 20px;
+      right: 10px;
+    }
+
+    font-size: 14px;
+
+    .optionLeft {
+      .accessLevelDescription {
+        font-size: 12px;
+        color: #95999e;
+      }
+    }
+
+    .optionRight {
+      display: flex;
+      align-items: center;
+      // cursor: pointer;
+      color: #0c63fa;
+
+      .applyBtn {
+        cursor: pointer;
+        visibility: hidden;
+      }
+    }
+
+    &:hover {
+      background-color: #3d5c800d;
+      .applyBtn {
+        visibility: visible;
+      }
+    }
+  }
+
+  .accessLevelSelected {
+    color: #0c63fa;
+  }
+
+  .accessLevelGroupItemDivider {
+    color: #95999e;
+    height: 32px;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 0 !important;
+    padding: 6px 11px !important;
+  }
+}
+
+.accessLevelGroup2 {
+  .accessLevelGroupItem {
+    cursor: pointer;
+  }
+}
+
+.permissionApplyTitle {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 18px;
+  color: #95999e;
+
+  :global {
+    .ant-popover-open {
+      border-radius: 4px;
+      background: #ebedf0;
+
+      [title='icon'] {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .permissionApplyTitleSpecial {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 4px;
+    box-sizing: border-box;
+    border-radius: 4px;
+
+    margin: 0 4px;
+    color: #0c63fa;
+    cursor: pointer;
+
+    .avatar {
+      max-width: 160px;
+      overflow: hidden;
+      margin-right: 4px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #0c63fa;
+
+      img {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    .currentManagerUserName {
+      max-width: 160px;
+      overflow: hidden;
+      margin-right: 4px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #0c63fa;
+    }
+
+    .icon {
+      font-size: 10px;
+      color: #0c63fa;
+      transition: transform 0.3s, -webkit-transform 0.3s;
+    }
+  }
+}
+
+.filterGroup {
+  margin: -8px -16px;
+  font-size: 14px;
+  color: #1f2329;
+  font-family: PingFangSC, sans-serif;
+
+  .filterGroupTitle {
+    color: #95999e;
+    padding-left: 11px;
+  }
+
+  .filterGroupItem {
+    height: 32px !important;
+    margin: 0 !important;
+    padding: 6px 11px !important;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #3d5c800d;
+    }
+
+    .leftIcon {
+      display: flex;
+      margin-right: 8px;
+    }
+
+    .rightIcon {
+      position: absolute;
+      margin-left: 20px;
+      right: 10px;
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      width: 24px;
+      height: 24px;
+      margin: 0px 4px;
+    }
+  }
+
+  .filterGroupItemDivider {
+    color: #95999e;
+    height: 32px;
+    font-size: 14px;
+    line-height: 20px;
+    margin: 0 !important;
+    padding: 6px 11px !important;
   }
 }

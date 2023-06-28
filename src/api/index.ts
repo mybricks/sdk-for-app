@@ -6,6 +6,7 @@ import { App } from './app'
 import { Upload } from './upload'
 import { Domain } from './domain'
 import { Module } from './module';
+import { UserGroup } from './userGroup'
 
 export default {
   Domain,
@@ -15,5 +16,6 @@ export default {
   File,
   Task,
   Upload,
-  Module
+  Module,
+  UserGroup
 }

@@ -24,6 +24,10 @@ import batchPublishService from './batchPublishService'
 import getLatestModulePubByProjectId from "./getLatestModulePubByProjectId";
 import getFileRoot from "./getFileRoot";
 import getLatestPub from './getLatestPub'
+import getFile from './getFile'
+import getCooperationUser from './getCooperationUser'
+import createCooperationUser from './createCooperationUser'
+import updateCooperationUser from './updateCooperationUser'
 
 export const File: any = isEnvOfDevAndBrowser() ? {
   getFullFile: getFullFileMock,
@@ -56,5 +60,9 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   getHierarchy,
   getFiles,
 	getFileRoot,
-  getFileInfoByBaseFileIdAndRelativePath
+  getFileInfoByBaseFileIdAndRelativePath,
+  getFile,
+  getCooperationUser,
+  createCooperationUser,
+  updateCooperationUser
 };
