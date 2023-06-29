@@ -345,7 +345,6 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
       url: `/api/file/getAuthorizedUsers?groupId=${groupId}&fileId=${id}`
     }).then(({data: {code, data}}) => {
       if (code === 1 && Array.isArray(data) && data.length) {
-        data = data.concat({name: 'leon', avatar: null, email: 'leon@leon'})
         data.forEach((d, idx) => {
           if (!idx) {
             d.selected = true
