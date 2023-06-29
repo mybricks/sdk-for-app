@@ -276,7 +276,8 @@ function LockerInfo ({roleDescription, fileContent, userId, useGroup}) {
           setOpen(bool)
         }}
         content={() => {
-          const options = ROLE_DESCRIPTION_OPTIONS.slice(3 - roleDescription)
+          const options = ROLE_DESCRIPTION_OPTIONS.slice(3 - (roleDescription === 1 ? 2 : roleDescription))
+
           return (
             <div className={css.accessLevelGroup}>
               {options.map((option, idx) => {
@@ -305,7 +306,7 @@ function LockerInfo ({roleDescription, fileContent, userId, useGroup}) {
         }}
       >
         <div className={css.accessLevelMount}>
-          <span>{ROLE_DESCRIPTION_NUM_TO_EXP[roleDescription]}</span>
+          <span>{ROLE_DESCRIPTION_NUM_TO_EXP[roleDescription === 1 ? 2 : roleDescription]}</span>
           <DownOutlined className={css.icon} title={'icon'}/>
         </div>
       </Popover>
@@ -410,7 +411,8 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
       admins: admins.filter(admin => currentType === 'file' ? admin.selected : admin.roleDescription === '1' && admin.selected).map(admin => admin.email),
       roleDescription: currentAccessLevel,
       reason: formValues.reason,
-      userId
+      userId,
+      pageUrl: location.href
     }
 
     if (currentType === 'file') {
@@ -522,7 +524,14 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
                               }
                             }}>
                               <Checkbox checked={selecteds[idx]}/>
-                              <span><img src={avatar}/></span>
+                              <span>
+                                {avatar ? (
+                                  <img src={avatar}/>
+                                ) : (
+                                  <div className={css.userCount}>{(name || email).slice(0, 1)}</div>
+                                )}
+                              </span>
+                              
                               <span>{name || email}</span>
                             </div>
                           )
