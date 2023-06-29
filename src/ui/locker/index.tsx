@@ -168,12 +168,12 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     const { userId } = cooperationUser
     if (email !== userId) return
 
-    if ([1, 2].includes(roleDescription)) {
+    if ([1, 2, '1', '2'].includes(roleDescription)) {
       lockToggle(cooperationUser)
     } else {
       setOperationLoading(true)
       polling().then(async ({roleDescription}) => {
-        if ([1, 2].includes(roleDescription)) {
+        if ([1, 2, '1', '2'].includes(roleDescription)) {
           lockToggle(cooperationUser)
         } else {
           message.info('没有当前文件的操作权限')
@@ -222,7 +222,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
                   {user.avatar ? (
                     <img src={user.avatar}/>
                   ) : (
-                    <div className={css.userCount}>{(user.name || user.userId).slice(0, 1)}</div>
+                    <div className={css.userCount}>{(user.name || user.userId || user.email).slice(0, 1)}</div>
                   )}
                   {user.status === 1 && <span className={css.activeDot}>
                     <span className={css.animate}></span>
@@ -444,7 +444,7 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
     let selecteds = []
     let selectedCount = 0
 
-    const selectAdmins = admins.filter(admin => currentType === 'group' ? admin.roleDescription === '1' : true)
+    const selectAdmins = admins.filter(admin => currentType === 'group' ? [1, '1'].includes(admin.roleDescription) : true)
 
     selectAdmins.forEach(admin => {
       const { selected } = admin
@@ -524,15 +524,24 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
                               }
                             }}>
                               <Checkbox checked={selecteds[idx]}/>
-                              <span>
+                              {/* <span>
                                 {avatar ? (
                                   <img src={avatar}/>
                                 ) : (
                                   <div className={css.userCount}>{(name || email).slice(0, 1)}</div>
                                 )}
-                              </span>
+                              </span> */}
+
+                              <div className={css.userAvatar2}>
+                                {avatar ? (
+                                  <img src={avatar}/>
+                                ) : (
+                                  <div className={css.userCount}>{(name || email).slice(0, 1)}</div>
+                                )}
+                              </div>
+                        
                               
-                              <span>{name || email}</span>
+                              <span className={css.filterGroupUserName}>{name || email}</span>
                             </div>
                           )
                         })}
@@ -542,8 +551,12 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
                 >
                   <div className={css.permissionApplyTitleSpecial}>
                     <span>
-                      <div className={css.avatar}>
-                        <img src={firstSelect?.avatar && firstSelect?.avatar}/>
+                      <div className={css.userAvatar2}>
+                        {firstSelect?.avatar ? (
+                          <img src={firstSelect?.avatar}/>
+                        ) : (
+                          <div className={css.userCount}>{(firstSelect?.name || firstSelect?.userId || firstSelect?.email)?.slice(0, 1)}</div>
+                        )}
                       </div>
                     </span>
                     <span className={css.currentManagerUserName}>

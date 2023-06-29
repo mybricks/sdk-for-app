@@ -11,7 +11,7 @@ const getCooperationUser = ({email, groupId, fileId}: {email: string, groupId?: 
         getAxiosInstance()
           .get(`/paas/api/userGroup/getUser?email=${email}&id=${groupId}`)
           .then(({ data }: any) => {
-            if (data.code === 1 && data.data) {
+            if (data.code === 1) {
               resolve(data.data)
             } else {
               reject('获取协作用户信息失败')
@@ -23,7 +23,7 @@ const getCooperationUser = ({email, groupId, fileId}: {email: string, groupId?: 
         getAxiosInstance()
           .get(`/paas/api/userFile/getUser?email=${email}&id=${fileId}`)
           .then(({ data }: any) => {
-            if (data.code === 1 && data.data) {
+            if (data.code === 1) {
               resolve(data.data)
             } else {
               reject('获取协作用户信息失败')
