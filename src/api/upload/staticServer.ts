@@ -17,7 +17,7 @@ export default function staticServer({content, folderPath, fileName, noHash = fa
   }
   formData.append('file', blob, fileName)
   formData.append('folderPath', folderPath)
-  formData.append('noHash', noHash)
+  formData.append('noHash', JSON.stringify(noHash))
 
   return new Promise((resolve, reject) => {
     getAxiosInstance()
