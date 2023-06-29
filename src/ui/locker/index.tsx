@@ -379,7 +379,7 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
           open: true,
           loading: true,
           currentAccessLevel: open,
-          currentType: fileContent.groupId ? 'group' : 'file',
+          currentType: (fileContent.groupId && useGroup) ? 'group' : 'file',
         }
       })
       adminsInit()
@@ -467,6 +467,8 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
 
     if (fileContent.groupId && useGroup) {
       typeOptions.unshift({title: '当前协作组(推荐)', type: 'group', description: '当前文件所在协作组内所有文件的权限'})
+    } else {
+
     }
 
     return (
