@@ -44,7 +44,7 @@ export default function View({onLoad, className = ''}: T_Props) {
         setConfig(typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig));
         if(fileId && fileId != 0) {
           const hierarchyRes = await API.File.getHierarchy({fileId})
-          setHierarchy(hierarchyRes || {})
+          setHierarchy(hierarchyRes || { projectId: undefined })
         }
       } catch(e: any) {
         console.log(e)
@@ -54,7 +54,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   }, [fileId])
 
   useLayoutEffect(() => {
-    if(user && content && installedApps && config && hierarchy) {
+    if(user && content && installedApps && config && !!Object.keys(hierarchy).length) {
       const nodes = onLoad({
         user,
         get installedApps() {
