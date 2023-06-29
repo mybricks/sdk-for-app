@@ -2,7 +2,7 @@
 import { getAxiosInstance } from '../util'
 import { isEnvOfServer } from '../env'
 
-export default function staticServer({content, folderPath, fileName}: any) {
+export default function staticServer({content, folderPath, fileName, noHash = false}: any) {
   let blob;
   let formData: any;
   if(isEnvOfServer()) {
@@ -17,6 +17,7 @@ export default function staticServer({content, folderPath, fileName}: any) {
   }
   formData.append('file', blob, fileName)
   formData.append('folderPath', folderPath)
+  formData.append('noHash', noHash)
 
   return new Promise((resolve, reject) => {
     getAxiosInstance()
