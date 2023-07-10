@@ -3,6 +3,10 @@ import { getAxiosInstance } from '../util'
 import { T_UserInfo } from "./type";
 
 const getLoginUser: (params?: any) => Promise<T_UserInfo> = async (params = {}) => {
+  let newParams = params ? {...params} : {}
+  if(localStorage.getItem('HAINIU_UserInfo')) {
+    newParams.HAINIU_UserInfo = localStorage.getItem('HAINIU_UserInfo')
+  }
   return new Promise((resolve, reject) => {
     getAxiosInstance()
     .post(`/paas/api/user/signed`, params)
