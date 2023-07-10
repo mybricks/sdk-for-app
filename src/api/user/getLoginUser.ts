@@ -9,7 +9,7 @@ const getLoginUser: (params?: any) => Promise<T_UserInfo> = async (params = {}) 
   }
   return new Promise((resolve, reject) => {
     getAxiosInstance()
-    .post(`/paas/api/user/signed`, params)
+    .post(`/paas/api/user/signed`, newParams)
     .then(({ data }: any) => {
       console.log('接口返回', data)
       resolve(data.data)
