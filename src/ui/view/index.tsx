@@ -37,11 +37,15 @@ export default function View({onLoad, className = ''}: T_Props) {
         setInstalledApps(apps);
         const data = await API.File.getFullFile({userId: loginUser?.email, fileId})
         const app = apps?.find(app => app.namespace === appMeta?.namespace)
-        document.title = data.name + (app?.title ? ` - ${app.title}` : '')
+
         // @ts-ignore
         setContent({...data, content: safeParse(data.content)});
         const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system'])
-        setConfig(typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig));
+        const allConfig = typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig);
+
+        setConfig(allConfig);
+        document.title = data.name + ` - ${allConfig?.system?.config?.title || app?.title || 'Mybricks-通用无代码开发平台'}`;
+        document.querySelector('#favicon')?.setAttribute('href', allConfig?.system?.config?.favicon || '/favicon.ico');
         if(fileId && fileId != 0) {
           const hierarchyRes = await API.File.getHierarchy({fileId})
           setHierarchy(hierarchyRes || { projectId: undefined })
