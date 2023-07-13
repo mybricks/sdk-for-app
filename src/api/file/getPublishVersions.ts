@@ -4,17 +4,19 @@ interface Params {
   fileId: number | string
   pageIndex?: number
   pageSize?: number
+  type?: string
 }
 
-const getVersions = (params: Params): Promise<any[]> => {
+const getPublishVersions = (params: Params): Promise<any[]> => {
   return new  Promise((resolve, reject) => {
-    const { fileId, pageIndex = 1, pageSize = 100 } = params ?? {}
+    const { fileId, pageIndex = 1, pageSize = 100, type } = params ?? {}
     getAxiosInstance()
     .get('/paas/api/workspace/publish/versions', {
       params: {
         fileId,
         pageIndex,
-        pageSize
+        pageSize,
+        type
       }
     }).then(({ data }: any) => {
       if (data?.data) {
@@ -27,4 +29,4 @@ const getVersions = (params: Params): Promise<any[]> => {
     })
   })
 }
-export default getVersions
+export default getPublishVersions

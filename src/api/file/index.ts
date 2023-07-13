@@ -2,7 +2,7 @@ import { isEnvOfDevAndBrowser } from "../env";
 
 import getAll from "./getAll";
 import getPublishContent from './getPublishContent'
-import getVersions from './getVersions'
+import getPublishVersions from './getPublishVersions'
 import getFullFile from './getFullFile'
 import save from './save'
 import create from './create'
@@ -35,7 +35,7 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   save: saveMock,
   publish: publishMock,
   getPublishContent,
-  getVersions,
+  getPublishVersions,
   getFileTreeMapByFile,
   getFiles,
   getFileRoot,
@@ -55,7 +55,7 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   publish,
   batchPublishService,
   getPublishContent,
-  getVersions,
+  getPublishVersions,
   getFileTreeMapByFile,
   getHierarchy,
   getFiles,
