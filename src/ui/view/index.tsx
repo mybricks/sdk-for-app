@@ -40,7 +40,7 @@ export default function View({onLoad, className = ''}: T_Props) {
 
         // @ts-ignore
         setContent({...data, content: safeParse(data.content)});
-        const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system'])
+        const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system', 'mybricks-material'])
         const allConfig = typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig);
 
         setConfig(allConfig);
@@ -76,6 +76,10 @@ export default function View({onLoad, className = ''}: T_Props) {
         },
         get meta() {
           return appMeta
+        },
+        get defaultComlibs() {
+          const comlibInfo = config['mybricks-material']?.config?.apps?.find((app) => app.namespace === appMeta?.namespace)?.comlibInfo || []
+          return comlibInfo
         },
         openUrl({
           url,
