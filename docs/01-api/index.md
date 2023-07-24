@@ -18,6 +18,31 @@ import API from '@mybricks/sdk-for-app/api';
 
 在我们看来任意搭建资产皆为**文件**，因此围绕着文件域，我们构建了涵盖了 查询、保存、发布全链路的API供开发者调用。（以下API使用详细姿势，可参考SDK的ts定义，再次不再赘述）
 
+
+### 新建页面
+此接口会在指定协作组或文件夹内（如有）新建一个搭建页面
+
+```ts
+const data = await API.File.create({ 
+  name: xxx, // 页面名称
+  creatorId: xxx,
+  creatorName: xxx,
+  extName: xxx,
+  groupId?: xxx,
+  parentId?: xxx,
+})
+```
+
+### 删除页面
+删除指定文件
+
+```ts
+const data = await API.File.deleteFile({ 
+  fileId: xxx,
+  updatorId: xxx
+})
+```
+
 ### 查询页面搭建数据
 此接口会返回基本页面数据以及最新的保存数据（如有）
 
@@ -59,5 +84,16 @@ const res = await API.File.getPublishVersions({
   pageIndex,
   pageSize,
   type
+});
+```
+
+### 查询历史保存版本
+查询历史保存版本
+
+```ts
+const res = await API.File.getSaveVersions({
+  fileId,
+  pageIndex,
+  pageSize
 });
 ```

@@ -28,6 +28,7 @@ import getFile from './getFile'
 import getCooperationUser from './getCooperationUser'
 import createCooperationUser from './createCooperationUser'
 import updateCooperationUser from './updateCooperationUser'
+import getSaveVersions from './getSaveVersions'
 
 export const File: any = isEnvOfDevAndBrowser() ? {
   getFullFile: getFullFileMock,
@@ -56,6 +57,7 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   batchPublishService,
   getPublishContent,
   getPublishVersions,
+  getSaveVersions,
   getFileTreeMapByFile,
   getHierarchy,
   getFiles,

@@ -1,13 +1,22 @@
 import { getAxiosInstance } from '../util'
 
-interface Params {
-  fileId: number | string
-  pageIndex?: number
-  pageSize?: number
+/**
+ * 查询发布版本
+ *
+ * @param {({
+ *   fileId: number | string,
+ *   pageIndex?: number,
+ *   pageSize?: number,
+ *   type?: string
+ * })} params
+ * @returns {Promise<{ code: number, data: any[], total: number }>}
+ */
+function getPublishVersions(params: {
+  fileId: number | string,
+  pageIndex?: number,
+  pageSize?: number,
   type?: string
-}
-
-const getPublishVersions = (params: Params): Promise<any[]> => {
+}): Promise<{ code: number, data: any[], total: number }> {
   return new  Promise((resolve, reject) => {
     const { fileId, pageIndex = 1, pageSize = 100, type } = params ?? {}
     getAxiosInstance()
@@ -20,12 +29,12 @@ const getPublishVersions = (params: Params): Promise<any[]> => {
       }
     }).then(({ data }: any) => {
       if (data?.data) {
-        resolve(data?.data || [])
+        resolve(data)
       } else {
-        reject('查询文件失败')
+        reject('查询发布版本失败')
       }
     }).catch((e: any) => {
-      reject(e.msg || '查询版本信息失败')
+      reject(e.msg || '查询发布版本失败')
     })
   })
 }

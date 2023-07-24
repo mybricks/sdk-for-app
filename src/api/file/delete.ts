@@ -1,7 +1,7 @@
 import { getAxiosInstance } from '../util'
 
 /**
- * 新建文件
+ * 删除指定文件
  *
  * @param {{
  *   fileId: number, 文件id
