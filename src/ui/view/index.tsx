@@ -19,6 +19,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   const [jsx, setJSX] = useState(<Loading />)
   const [user, setUser] = useState<any>({});
   const [config, setConfig] = useState<IConfig | null>(null);
+  const [defaultComlibs, setDefaultComlibs] = useState<any>([]);
   const [installedApps, setInstalledApps] = useState([]);
   const [sdkModalInfo, setSDKModalInfo] = useState<any>({});
   const [materialSelectorInfo, setMaterialSelectorInfo] = useState<any>({});
@@ -42,6 +43,12 @@ export default function View({onLoad, className = ''}: T_Props) {
         setContent({...data, content: safeParse(data.content)});
         const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system', 'mybricks-material'])
         const allConfig = typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig);
+        const componentLibraryNamespaceList = allConfig?.['mybricks-material']?.config?.apps?.find((app) => app.namespace === appMeta?.namespace)?.componentLibraryNamespaceList
+
+        if (Array.isArray(componentLibraryNamespaceList) && componentLibraryNamespaceList.length) {
+          const latestComponentLibrarys = await API.Material.getLatestComponentLibrarys(componentLibraryNamespaceList)
+          setDefaultComlibs(latestComponentLibrarys)
+        }
 
         setConfig(allConfig);
         document.title = data.name + ` - ${allConfig?.system?.config?.title || app?.title || 'Mybricks-通用无代码开发平台'}`;
@@ -78,8 +85,7 @@ export default function View({onLoad, className = ''}: T_Props) {
           return appMeta
         },
         get defaultComlibs() {
-          const comlibInfo = config['mybricks-material']?.config?.apps?.find((app) => app.namespace === appMeta?.namespace)?.comlibInfo || []
-          return comlibInfo
+          return defaultComlibs
         },
         openUrl({
           url,
