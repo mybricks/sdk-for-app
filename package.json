@@ -1,6 +1,6 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "0.1.62",
+  "version": "0.1.63",
   "description": "SDK for application UI",
   "scripts": {
     "build:api": "npm run clean && tsc --build tsconfig.json",
@@ -26,6 +26,9 @@
   ],
   "author": "CheMingjun",
   "license": "ISC",
+  "peerDependencies": {
+    "axios": ">=1.2.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.18.9",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
