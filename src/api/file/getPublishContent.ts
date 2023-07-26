@@ -16,7 +16,13 @@ interface VersionDetailItem extends VersionItem {
   }
 }
 
-export default (params: { pubId: number | string }): Promise<VersionDetailItem[]> => {
+/**
+ * 查询某一历史版本的发布内容
+ *
+ * @param {({ pubId: number | string })} params
+ * @returns {Promise<VersionDetailItem[]>}
+ */
+function getPublishContent(params: { pubId: number | string }): Promise<VersionDetailItem[]> {
   return new Promise((resolve, reject) => {
     const { pubId } = params ?? {}
     getAxiosInstance()
@@ -41,3 +47,5 @@ export default (params: { pubId: number | string }): Promise<VersionDetailItem[]
   })
 
 }
+
+export default getPublishContent

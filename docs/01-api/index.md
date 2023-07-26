@@ -75,7 +75,7 @@ const res = await API.File.publish({
 ```
 
 
-### 查询历史发布版本
+### 查询历史发布版本列表
 查询不同环境下历史发布版本
 
 ```ts
@@ -87,7 +87,16 @@ const res = await API.File.getPublishVersions({
 });
 ```
 
-### 查询历史保存版本
+### 查询某一历史发布版本详情
+查询某一历史发布版本详情
+
+```ts
+const res = await API.File.getPublishContent({
+  pubId: xxx
+});
+```
+
+### 查询历史保存版本列表
 查询历史保存版本
 
 ```ts
