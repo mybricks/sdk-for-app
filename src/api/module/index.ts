@@ -1,5 +1,7 @@
 import getFiles from './getFiles'
 
-export const Module = {
+const Module = {
   getFiles
 }
+
+export { Module }

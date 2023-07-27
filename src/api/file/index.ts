@@ -1,5 +1,3 @@
-import { isEnvOfDevAndBrowser } from "../env";
-
 import getAll from "./getAll";
 import getPublishContent from './getPublishContent'
 import getPublishVersions from './getPublishVersions'
@@ -16,9 +14,6 @@ import getFileTreeMapByFile from './getFileTreeMapByFile'
 import getFiles from './getFiles'
 import getHierarchy from './getHierarchy'
 
-import saveMock from "./mock/save";
-import publishMock from "./mock/publish";
-import getFullFileMock from "./mock/getFullFile";
 import getFileInfoByBaseFileIdAndRelativePath from './getFileInfoByBaseFileIdAndRelativePath'
 import batchPublishService from './batchPublishService'
 import getLatestModulePubByProjectId from "./getLatestModulePubByProjectId";
@@ -30,18 +25,7 @@ import createCooperationUser from './createCooperationUser'
 import updateCooperationUser from './updateCooperationUser'
 import getSaveVersions from './getSaveVersions'
 
-export const File: any = isEnvOfDevAndBrowser() ? {
-  getFullFile: getFullFileMock,
-  getAll,
-  save: saveMock,
-  publish: publishMock,
-  getPublishContent,
-  getPublishVersions,
-  getFileTreeMapByFile,
-  getFiles,
-  getFileRoot,
-  getHierarchy,
-} : {
+const File = {
   getLatestPub,
   getLatestModulePubByProjectId,
   getFullFile,
@@ -67,4 +51,6 @@ export const File: any = isEnvOfDevAndBrowser() ? {
   getCooperationUser,
   createCooperationUser,
   updateCooperationUser
-};
+}
+
+export { File }

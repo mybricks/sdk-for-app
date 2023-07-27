@@ -1,5 +1,7 @@
 import getLatestComponentLibrarys from './getLatestComponentLibrarys'
 
-export const Material = {
+const Material = {
   getLatestComponentLibrarys
 }
+
+export { Material }

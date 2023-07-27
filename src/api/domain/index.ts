@@ -1,5 +1,7 @@
 import batchCreateService from './batchCreateService'
 
-export const Domain = {
+const Domain = {
   batchCreateService
 }
+
+export { Domain }

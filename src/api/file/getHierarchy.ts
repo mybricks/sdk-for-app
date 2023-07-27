@@ -1,13 +1,8 @@
-import { isEnvOfDevAndBrowser } from "../env";
 import { getAxiosInstance } from '../util'
 
-import getHierarchyMock from "./mock/getHierarchy";
-
-interface Params {
+const getHierarchy = (params: {
   fileId: number | string
-}
-
-const getHierarchy = isEnvOfDevAndBrowser() ? getHierarchyMock : (params: Params): Promise<{ projectId: any, hierarchy: any }> => {
+}): Promise<{ projectId: any, hierarchy: any }> => {
   return new Promise((resolve, reject) => {
     const { fileId } = params ?? {}
     getAxiosInstance()

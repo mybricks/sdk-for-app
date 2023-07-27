@@ -1,7 +1,9 @@
 import staticServer from './staticServer'
 import uploadFlowContainer from './uploadFlowContainer'
 
-export const Upload = {
+const Upload = {
   staticServer,
   uploadFlowContainer
 }
+
+export { Upload }

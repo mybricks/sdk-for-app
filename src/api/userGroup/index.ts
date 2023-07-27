@@ -1,5 +1,7 @@
 import getUserGroup from './getUserGroup'
 
-export const UserGroup = {
+const UserGroup = {
   getUserGroup
 }
+
+export { UserGroup }

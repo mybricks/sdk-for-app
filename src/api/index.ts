@@ -7,9 +7,8 @@ import { Upload } from './upload'
 import { Domain } from './domain'
 import { Module } from './module';
 import { UserGroup } from './userGroup'
-import { Material } from './material'
 
-export default {
+const API = {
   Domain,
   App,
   Setting,
@@ -18,6 +17,7 @@ export default {
   Task,
   Upload,
   Module,
-  UserGroup,
-  Material
+  UserGroup
 }
+
+export default API
