@@ -5,11 +5,11 @@ export function isEnvOfDev() {
 }
 
 export function isEnvOfBrowser() {
-  return typeof window !== 'undefined'
+  return typeof MutationObserver !== 'undefined'
 }
 
 export function isEnvOfServer() {
-  return typeof process !== 'undefined'
+  return typeof MutationObserver === 'undefined'
 }
 
 /** 是否处于调试组件库模式 */
