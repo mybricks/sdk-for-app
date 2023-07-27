@@ -53,4 +53,4 @@ const File = {
   updateCooperationUser
 }
 
-export { File }
+export default File

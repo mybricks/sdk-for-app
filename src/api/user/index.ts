@@ -6,4 +6,4 @@ const User = {
   getLoginUser
 }
 
-export { User }
+export default User

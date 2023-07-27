@@ -4,4 +4,4 @@ const Domain = {
   batchCreateService
 }
 
-export { Domain }
+export default Domain

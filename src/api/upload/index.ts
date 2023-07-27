@@ -6,4 +6,4 @@ const Upload = {
   uploadFlowContainer
 }
 
-export { Upload }
+export default Upload

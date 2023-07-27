@@ -4,4 +4,4 @@ const Task = {
   exec,
 }
 
-export { Task }
+export default Task

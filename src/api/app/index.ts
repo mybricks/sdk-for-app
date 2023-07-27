@@ -8,6 +8,4 @@ const App = {
   getPreviewImage
 }
 
-export {
-  App
-}
+export default App

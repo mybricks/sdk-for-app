@@ -4,4 +4,4 @@ const UserGroup = {
   getUserGroup
 }
 
-export { UserGroup }
+export default UserGroup

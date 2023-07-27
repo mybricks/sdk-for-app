@@ -4,4 +4,4 @@ const Module = {
   getFiles
 }
 
-export { Module }
+export default Module

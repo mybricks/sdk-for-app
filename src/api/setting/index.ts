@@ -6,4 +6,4 @@ const Setting = {
   saveSetting
 }
 
-export { Setting }
+export default Setting
