@@ -37,7 +37,7 @@ const data = await API.File.create({
 删除指定文件
 
 ```ts
-const data = await API.File.deleteFile({ 
+const data = await API.File.delete({ 
   fileId: xxx,
   updatorId: xxx
 })
