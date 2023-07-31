@@ -108,7 +108,9 @@ const res = await API.File.getSaveVersions({
 ```
 
 ## User
-获取用户详情
+
+### 获取用户详情
+根据用户邮箱获取用户详情数据
 
 ```ts
 const res = await API.User.getUserInfo('xxx@xxx.com');
