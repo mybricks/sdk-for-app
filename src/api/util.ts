@@ -21,14 +21,15 @@ function init() {
         // },
       });
     } else {
-      AXIOS_INSTANCE = axios.create({
-        // headers: {'X-Custom-Header': 'foobar'}
-        // proxy: {
-        //   protocol: 'http',
-        //   host: '127.0.0.1',
-        //   port: 9000,
-        // },
-      });
+      // @ts-ignore
+      if(window.MYBRICKS_PLATFORM_ADDRESS) {
+        AXIOS_INSTANCE = axios.create({
+          // @ts-ignore
+          baseURL: window.MYBRICKS_PLATFORM_ADDRESS,
+        });
+      } else {
+        AXIOS_INSTANCE = axios.create({});
+      }
     }
   }
 }
