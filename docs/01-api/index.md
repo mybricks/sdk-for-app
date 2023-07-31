@@ -106,3 +106,10 @@ const res = await API.File.getSaveVersions({
   pageSize
 });
 ```
+
+## User
+获取用户详情
+
+```ts
+const res = await API.User.getUserInfo(email);
+```
