@@ -4,4 +4,4 @@ const Material = {
   getLatestComponentLibrarys
 }
 
-export { Material }
+export default Material

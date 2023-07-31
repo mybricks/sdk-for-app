@@ -7,6 +7,7 @@ import Upload from './upload'
 import Domain from './domain'
 import Module from './module';
 import UserGroup from './userGroup'
+import Material from './material';
 
 const API = {
   Domain,
@@ -17,7 +18,8 @@ const API = {
   Task,
   Upload,
   Module,
-  UserGroup
+  UserGroup,
+  Material
 }
 
 export default API
