@@ -4,5 +4,5 @@ export type T_UserInfo = {
   email: string;
   isAdmin: boolean;
   createTime: string;
-  licenseCode: string;
+  avatar: string;
 };
