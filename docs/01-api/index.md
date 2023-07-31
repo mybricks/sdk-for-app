@@ -111,5 +111,5 @@ const res = await API.File.getSaveVersions({
 获取用户详情
 
 ```ts
-const res = await API.User.getUserInfo(email);
+const res = await API.User.getUserInfo('xxx@xxx.com');
 ```
