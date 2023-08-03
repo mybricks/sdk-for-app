@@ -126,7 +126,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
 
   useEffect(() => {
     if (file) {
-      if (file.version !== fileContent.version && !showVersionComparison) {
+      if (file.updatorId && (file.version !== fileContent.version) && !showVersionComparison) {
         setShowVersionComparison(true)
         const title = '当前保存版本过低，建议刷新后再试'
         const content = (
