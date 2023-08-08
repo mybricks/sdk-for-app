@@ -113,8 +113,8 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
   const [cooperationUsers, setCooperationUsers] = useState<User[]>([])
   const [roleDescription, setRoleDescription] = useState<RoleDescription>(3)
   const [operationLoading, setOperationLoading] = useState(false)
-  const [showVersionComparison, setShowVersionComparison] = useState(false)
-  const [file, setFile] = useState(null)
+  // const [showVersionComparison, setShowVersionComparison] = useState(false)
+  // const [file, setFile] = useState(null)
 
   useEffect(() => {
     location.href.indexOf('DEBUG') === -1 ? lockerContext.setTimer() : null
@@ -124,40 +124,40 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     }
   }, [])
 
-  useEffect(() => {
-    if (file) {
-      if (file.updatorId && (file.version !== fileContent.version) && !showVersionComparison) {
-        setShowVersionComparison(true)
-        const title = '当前保存版本过低，建议刷新后再试'
-        const content = (
-          <>
-            <div>当前最新保存版本号为<b>{file.version}</b></div>
-            <div>由 <b>{file.updatorName || file.updatorId || file.creatorName || file.creatorId}</b> 保存于 <b>{unifiedTime(file.updateTime || file.createTime)}</b></div>
-            <div>若继续使用当前版本，保存时将覆盖最新版本</div>
-          </>
-        )
-        Modal.confirm({
-          className: 'fangzhou-theme',
-          title,
-          content,
-          centered: true,
-          okText: '刷新页面',
-          cancelText: '继续使用当前版本',
-          keyboard: false,
-          getContainer: () => document.body,
-          onOk: () => {
-            window.location.reload()
-            // Notification({message: title, description: content})
-          },
-          onCancel: () => {
-            fileContent.version = file.version
-            Notification({message: title, description: content})
-            setShowVersionComparison(false)
-          }
-        })
-      }
-    }
-  }, [file, showVersionComparison])
+  // useEffect(() => {
+  //   if (file) {
+  //     if (file.updatorId && (file.version !== fileContent.version) && !showVersionComparison) {
+  //       setShowVersionComparison(true)
+  //       const title = '当前保存版本过低，建议刷新后再试'
+  //       const content = (
+  //         <>
+  //           <div>当前最新保存版本号为<b>{file.version}</b></div>
+  //           <div>由 <b>{file.updatorName || file.updatorId || file.creatorName || file.creatorId}</b> 保存于 <b>{unifiedTime(file.updateTime || file.createTime)}</b></div>
+  //           <div>若继续使用当前版本，保存时将覆盖最新版本</div>
+  //         </>
+  //       )
+  //       Modal.confirm({
+  //         className: 'fangzhou-theme',
+  //         title,
+  //         content,
+  //         centered: true,
+  //         okText: '刷新页面',
+  //         cancelText: '继续使用当前版本',
+  //         keyboard: false,
+  //         getContainer: () => document.body,
+  //         onOk: () => {
+  //           window.location.reload()
+  //           // Notification({message: title, description: content})
+  //         },
+  //         onCancel: () => {
+  //           fileContent.version = file.version
+  //           Notification({message: title, description: content})
+  //           setShowVersionComparison(false)
+  //         }
+  //       })
+  //     }
+  //   }
+  // }, [file, showVersionComparison])
 
   /** 轮询 */
   const polling: () => Promise<{users: User[], roleDescription: RoleDescription}> = useCallback(() => {
@@ -167,7 +167,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
         setRoleDescription(roleDescription)
         lockerProps.statusChange?.((users.find((item) => item.userId === user.email))?.status || 0)
         resolve({users, roleDescription})
-        setFile(file)
+        // setFile(file)
       }).catch((e) => {
         console.error(e)
       })
