@@ -174,6 +174,19 @@ export default function View({onLoad, className = ''}: T_Props) {
             comlibs
           })
           window.open(`./preview.html?fileId=${fileId}`)
+        },
+        report({ jsonData }) {
+          try {
+            axios.post('/paas/api/system/channel', {
+              type: 'report',
+              payload: {
+                namespace: appMeta?.namespace,
+                content: jsonData
+              }
+            })
+          } catch(e) {
+            console.log(e)
+          }
         }
       })
       setJSX(nodes as any)

@@ -89,6 +89,7 @@ export type T_Props = {
     hierarchy: any;
     hasMaterialApp: boolean;
     openPreview(param: { toJSON: any, comlibs: any[] }): void;
+    report(param: { jsonData: any }): void;
     defaultComlibs: Array<any>
   }) => {}
 }
