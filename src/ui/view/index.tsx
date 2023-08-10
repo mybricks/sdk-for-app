@@ -32,7 +32,18 @@ export default function View({onLoad, className = ''}: T_Props) {
     (async () => {
       try {
         console.log('开始初始化基本数据')
-        const loginUser: any = await API.User.getLoginUser({fileId})
+        const loginUserRes: any = await axios.post('/paas/api/user/signed', {fileId})
+        if(loginUserRes?.data?.code !== 1) {
+          message.warn(loginUserRes.msg || '登录信息已过期，请重新登录', 2)
+          setTimeout(() => {
+            if(location.href.indexOf('jumped') === -1) {
+              document.cookie = 'mybricks-login-user=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
+              location.href = `/?jumped=true&redirectUrl=${encodeURIComponent(location.href)}`
+            }
+          }, 2000)
+          return
+        }
+        const loginUser = loginUserRes?.data?.data;
         setUser({...loginUser, isAdmin: loginUser?.isAdmin});
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
