@@ -7,7 +7,7 @@ import { getAxiosInstance } from '../util'
  * @param {string[]} namespaces
  * @returns
  */
-async function getSetting(namespaces: string[]) {
+async function getSetting(namespaces: string[], options = {}) {
   return new Promise((resolve, reject) => {
     if(!namespaces || namespaces.length === 0) {
       resolve([]);
@@ -15,7 +15,8 @@ async function getSetting(namespaces: string[]) {
     }
     getAxiosInstance()
     .post('/paas/api/config/get', {
-      scope: namespaces
+      scope: namespaces,
+      ...options
     })
     .then(({data: configData}: any) => {
       if (configData.code === 1) {

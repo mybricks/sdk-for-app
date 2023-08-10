@@ -37,14 +37,40 @@ export default function View({onLoad, className = ''}: T_Props) {
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
         const data = await API.File.getFullFile({userId: loginUser?.email, fileId})
-        const app = apps?.find(app => app.namespace === appMeta?.namespace)
+        const app = apps?.find(app => app.namespace === appMeta?.namespace);
+        let hierarchyRes: Record<string, unknown> = { projectId: undefined, groupId: undefined };
 
+        if(fileId && fileId != 0) {
+          hierarchyRes = (await API.File.getHierarchy({fileId})) || hierarchyRes;
+          setHierarchy(hierarchyRes)
+        }
         // @ts-ignore
         setContent({...data, content: safeParse(data.content)});
-        const configRes = await API.Setting.getSetting([appMeta?.namespace, 'system', 'mybricks-material'])
+        const namespaces = [appMeta?.namespace, 'system', 'mybricks-material'];
+        const configRes = await API.Setting.getSetting(
+          namespaces,
+          hierarchyRes.groupId ? { type: 'group', id: hierarchyRes.groupId } : {}
+        );
         const allConfig = typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig);
-        const componentLibraryNamespaceList = allConfig?.['mybricks-material']?.config?.apps?.find((app) => app.namespace === appMeta?.namespace)?.componentLibraryNamespaceList
+        /** 合并协作组配置、全局配置 */
+        namespaces.forEach(namespace => {
+          const groupConfigNamespace = `${namespace}@group[${hierarchyRes.groupId}]`;
+          const groupConfig = allConfig[groupConfigNamespace] || {};
+          const globalConfig = allConfig[namespace] || {};
 
+          if (hierarchyRes.groupId) {
+            allConfig[namespace] = {
+              ...globalConfig,
+              ...groupConfig,
+              appNamespace: globalConfig.appNamespace || groupConfig.appNamespace || namespace,
+              config: { ...globalConfig.config || {}, ...groupConfig.config || {} }
+            };
+
+            delete allConfig[groupConfigNamespace];
+          }
+        });
+
+        const componentLibraryNamespaceList = allConfig?.['mybricks-material']?.config?.apps?.find((app) => app.namespace === appMeta?.namespace)?.componentLibraryNamespaceList
         if (Array.isArray(componentLibraryNamespaceList) && componentLibraryNamespaceList.length) {
           const latestComponentLibrarys = await API.Material.getLatestComponentLibrarys(componentLibraryNamespaceList)
           setDefaultComlibs(latestComponentLibrarys)
@@ -53,10 +79,6 @@ export default function View({onLoad, className = ''}: T_Props) {
         setConfig(allConfig);
         document.title = data.name + ` - ${allConfig?.system?.config?.title || app?.title || 'Mybricks-通用无代码开发平台'}`;
         document.querySelector('#favicon')?.setAttribute('href', allConfig?.system?.config?.favicon || '/favicon.ico');
-        if(fileId && fileId != 0) {
-          const hierarchyRes = await API.File.getHierarchy({fileId})
-          setHierarchy(hierarchyRes || { projectId: undefined })
-        }
       } catch(e: any) {
         console.log(e)
         message.error(`应用初始化数据失败, ${e.message}`);

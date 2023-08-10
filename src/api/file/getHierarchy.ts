@@ -2,7 +2,7 @@ import { getAxiosInstance } from '../util'
 
 const getHierarchy = (params: {
   fileId: number | string
-}): Promise<{ projectId: any, hierarchy: any }> => {
+}): Promise<{ projectId: any, hierarchy: any; groupId?: number }> => {
   return new Promise((resolve, reject) => {
     const { fileId } = params ?? {}
     getAxiosInstance()
