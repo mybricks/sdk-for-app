@@ -32,7 +32,10 @@ export default function View({onLoad, className = ''}: T_Props) {
     (async () => {
       try {
         console.log('开始初始化基本数据')
-        const loginUserRes: any = await axios.post('/paas/api/user/signed', {fileId})
+        const loginUserRes: any = await axios.post('/paas/api/user/signed', {
+          fileId,
+          HAINIU_UserInfo: localStorage.getItem('HAINIU_UserInfo')
+        })
         if(loginUserRes?.data?.code !== 1) {
           message.warn(loginUserRes.msg || '登录信息已过期，请重新登录', 2)
           setTimeout(() => {
