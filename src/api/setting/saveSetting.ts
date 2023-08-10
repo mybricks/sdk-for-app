@@ -8,7 +8,7 @@ import { getAxiosInstance } from '../util'
  * @param {*} email 用户email
  * @returns
  */
-async function saveSetting(namespace: string, config: string, email: any) {
+async function saveSetting(namespace: string, config: string, email: any, options = {}) {
   return new Promise((resolve, reject) => {
     if(!email) {
       reject('请传入email')
@@ -18,6 +18,7 @@ async function saveSetting(namespace: string, config: string, email: any) {
       namespace: namespace,
       userId: email,
       config,
+      ...options
     }).then(({ data }: any) => {
       const { code } = data ?? {};
       if (code === 1) {
