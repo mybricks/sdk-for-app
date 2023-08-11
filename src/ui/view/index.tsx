@@ -77,8 +77,13 @@ export default function View({onLoad, className = ''}: T_Props) {
               ...globalConfig,
               ...groupConfig,
               appNamespace: globalConfig.appNamespace || groupConfig.appNamespace || namespace,
-              config: { ...globalConfig.config || {}, ...groupConfig.config || {} }
             };
+
+            if (typeof groupConfig.config !== 'string' && typeof globalConfig.config !== 'string') {
+              allConfig[namespace].config = { ...globalConfig.config || {}, ...groupConfig.config || {} };
+            } else {
+              allConfig[namespace].config = groupConfig.config || globalConfig.config;
+            }
 
             delete allConfig[groupConfigNamespace];
           }
