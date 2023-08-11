@@ -63,7 +63,7 @@ export default function View({onLoad, className = ''}: T_Props) {
         const namespaces = [appMeta?.namespace, 'system', 'mybricks-material'];
         const configRes = await API.Setting.getSetting(
           namespaces,
-          hierarchyRes.groupId ? { type: 'group', id: hierarchyRes.groupId } : {}
+          hierarchyRes.groupId ? { type: 'all', id: hierarchyRes.groupId } : {}
         );
         const allConfig = typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig);
         try {
