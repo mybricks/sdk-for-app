@@ -67,22 +67,22 @@ export default function View({onLoad, className = ''}: T_Props) {
         );
         const allConfig = typeof configRes === 'string' ? safeParse(configRes) : (configRes || DefaultConfig);
         /** 合并协作组配置、全局配置 */
-        namespaces.forEach(namespace => {
-          const groupConfigNamespace = `${namespace}@group[${hierarchyRes.groupId}]`;
-          const groupConfig = allConfig[groupConfigNamespace] || {};
-          const globalConfig = allConfig[namespace] || {};
+        // namespaces.forEach(namespace => {
+        //   const groupConfigNamespace = `${namespace}@group[${hierarchyRes.groupId}]`;
+        //   const groupConfig = allConfig[groupConfigNamespace] || {};
+        //   const globalConfig = allConfig[namespace] || {};
 
-          if (hierarchyRes.groupId) {
-            allConfig[namespace] = {
-              ...globalConfig,
-              ...groupConfig,
-              appNamespace: globalConfig.appNamespace || groupConfig.appNamespace || namespace,
-              config: { ...globalConfig.config || {}, ...groupConfig.config || {} }
-            };
+        //   if (hierarchyRes.groupId) {
+        //     allConfig[namespace] = {
+        //       ...globalConfig,
+        //       ...groupConfig,
+        //       appNamespace: globalConfig.appNamespace || groupConfig.appNamespace || namespace,
+        //       config: { ...globalConfig.config || {}, ...groupConfig.config || {} }
+        //     };
 
-            delete allConfig[groupConfigNamespace];
-          }
-        });
+        //     delete allConfig[groupConfigNamespace];
+        //   }
+        // });
 
         const componentLibraryNamespaceList = allConfig?.['mybricks-material']?.config?.apps?.find((app) => app.namespace === appMeta?.namespace)?.componentLibraryNamespaceList
         if (Array.isArray(componentLibraryNamespaceList) && componentLibraryNamespaceList.length) {
