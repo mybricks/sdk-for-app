@@ -50,7 +50,7 @@ export default function View({onLoad, className = ''}: T_Props) {
         setUser({...loginUser, isAdmin: loginUser?.isAdmin});
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
-        const data = await API.File.getFullFile({userId: loginUser?.email, fileId})
+        const data = await API.File.getFullFile({fileId})
         const app = apps?.find(app => app.namespace === appMeta?.namespace);
         let hierarchyRes: Record<string, unknown> = { projectId: undefined, groupId: undefined };
 
@@ -236,7 +236,7 @@ export default function View({onLoad, className = ''}: T_Props) {
       })
       setJSX(nodes as any)
     }
-  }, [user, fileId, content, config, installedApps, hierarchy])
+  }, [user, fileId, content, config, installedApps, hierarchy]);
 
   return (
     <GlobalContext.Provider value={{fileContent: content, user, fileId}}>

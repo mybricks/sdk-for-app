@@ -68,7 +68,7 @@ function Locker(props: LockerProps): JSX.Element {
   const { user, fileId, fileContent } = useContext(GlobalContext)
 
   const render = useMemo(() => {
-    if (isMock || !user?.email || !fileId) {
+    if (isMock || !user?.id || !fileId) {
       if (isMock) {
         props.statusChange?.(1)
       }
@@ -78,7 +78,7 @@ function Locker(props: LockerProps): JSX.Element {
     const defaultProps = {
       pollable: true
     }
-  
+
     return <UI user={user} fileId={fileId} fileContent={fileContent} lockerProps={{...defaultProps, ...props}}/>
   }, [])
 
@@ -162,10 +162,10 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
   /** 轮询 */
   const polling: () => Promise<{users: User[], roleDescription: RoleDescription}> = useCallback(() => {
     return new Promise((resolve) => {
-      getFileCooperationUsers({userId: user.email, fileId}).then(({users, roleDescription, file}) => {
+      getFileCooperationUsers({userId: user.id, fileId}).then(({users, roleDescription, file}) => {
         setCooperationUsers(users)
         setRoleDescription(roleDescription)
-        lockerProps.statusChange?.((users.find((item) => item.userId === user.email))?.status || 0)
+        lockerProps.statusChange?.((users.find((item) => item.userId === user.id))?.status || 0)
         resolve({users, roleDescription})
         // setFile(file)
       }).catch((e) => {
@@ -182,7 +182,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
         method: 'post',
         url: '/api/file/toggleFileCooperationStatus',
         data: {
-          userId: user.email,
+          userId: user.id,
           fileId,
           status
         }
@@ -205,9 +205,8 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
 
   const avatarClick = useCallback((cooperationUser) => {
     if (operationLoading) return
-    const { email } = user
     const { userId } = cooperationUser
-    if (email !== userId) return
+    if (user.id !== userId) return
 
     if ([1, 2, '1', '2'].includes(roleDescription)) {
       lockToggle(cooperationUser)
@@ -241,8 +240,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     const hasMore = userCount > 5
     /** 仅展示5个用户信息 */
     const showCooperationUsers = cooperationUsers.slice(0, 5)
-
-    const { email } = user
+    const { id: currentUserId } = user
 
     return (
       <div className={css.cooperationUsersList}>
@@ -254,16 +252,16 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
               overlayClassName={css.overlayUsersListPopover}
               content={() => {
                 return (
-                  <div className={css.userInfo}>{user.userId}</div>
+                  <div className={css.userInfo}>{user.email}</div>
                 )
               }}
             >
               <div className={css.userAvatar} onClick={() => avatarClick(user)}>
-                <Spin spinning={operationLoading && email === user.userId} size={'small'}>
+                <Spin spinning={operationLoading && currentUserId === user.userId} size={'small'}>
                   {user.avatar ? (
                     <img src={user.avatar}/>
                   ) : (
-                    <div className={css.userCount}>{(user.name || user.userId || user.email).slice(0, 1)}</div>
+                    <div className={css.userCount}>{(user.name || user.email).slice(0, 1)}</div>
                   )}
                   {user.status === 1 && <span className={css.activeDot}>
                     <span className={css.animate}></span>
@@ -283,10 +281,10 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
       </div>
     )
   }, [operationLoading, cooperationUsers]);
-  
+
   return (
     <div className={css.locker}>
-      {lockerProps.permissionRequest?.show ? <LockerInfo useGroup={lockerProps.permissionRequest.group} roleDescription={roleDescription} fileContent={fileContent} userId={user.email}/> : <></>}
+      {lockerProps.permissionRequest?.show ? <LockerInfo useGroup={lockerProps.permissionRequest.group} roleDescription={roleDescription} fileContent={fileContent} userId={user.id}/> : <></>}
       {CooperationUsersList}
     </div>
   )
@@ -449,7 +447,7 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
     })
 
     const params: any = {
-      admins: admins.filter(admin => currentType === 'file' ? admin.selected : admin.roleDescription === '1' && admin.selected).map(admin => admin.email),
+      admins: admins.filter(admin => currentType === 'file' ? admin.selected : admin.roleDescription === '1' && admin.selected).map(admin => admin.userId),
       roleDescription: currentAccessLevel,
       reason: formValues.reason,
       userId,
@@ -598,7 +596,7 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
                         {firstSelect?.avatar ? (
                           <img src={firstSelect?.avatar}/>
                         ) : (
-                          <div className={css.userCount}>{(firstSelect?.name || firstSelect?.userId || firstSelect?.email)?.slice(0, 1)}</div>
+                          <div className={css.userCount}>{(firstSelect?.name || firstSelect?.email)?.slice(0, 1)}</div>
                         )}
                       </div>
                     </span>

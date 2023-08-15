@@ -5,18 +5,19 @@ import { getAxiosInstance } from '../util'
  *
  * @param {string} namespace 应用namespace
  * @param {*} config 应用配置JSON字符串
- * @param {*} email 用户email
+ * @param {*} userId 用户userId
+ * @param options {object}
  * @returns
  */
-async function saveSetting(namespace: string, config: string, email: any, options = {}) {
+async function saveSetting(namespace: string, config: string, userId: any, options = {}) {
   return new Promise((resolve, reject) => {
-    if(!email) {
-      reject('请传入email')
+    if(!userId) {
+      reject('userId')
     }
     getAxiosInstance()
     .post('/paas/api/config/update', {
       namespace: namespace,
-      userId: email,
+      userId,
       config,
       ...options
     }).then(({ data }: any) => {
