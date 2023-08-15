@@ -22,7 +22,8 @@ import moment from 'dayjs';
 export const safeParse = (content: string) => {
 	try {
 		return JSON.parse(content);
-	} catch {
+	} catch(e) {
+		console.log(e)
 		return {};
 	}
 };
