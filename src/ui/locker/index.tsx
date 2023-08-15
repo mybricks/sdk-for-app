@@ -205,7 +205,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
 
   const avatarClick = useCallback((cooperationUser) => {
     if (operationLoading) return
-    const { userId } = cooperationUser
+    const { id: userId } = cooperationUser
     if (user.id !== userId) return
 
     if ([1, 2, '1', '2'].includes(roleDescription)) {
@@ -257,7 +257,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
               }}
             >
               <div className={css.userAvatar} onClick={() => avatarClick(user)}>
-                <Spin spinning={operationLoading && currentUserId === user.userId} size={'small'}>
+                <Spin spinning={operationLoading && currentUserId === user.id} size={'small'}>
                   {user.avatar ? (
                     <img src={user.avatar}/>
                   ) : (
@@ -447,7 +447,7 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
     })
 
     const params: any = {
-      admins: admins.filter(admin => currentType === 'file' ? admin.selected : admin.roleDescription === '1' && admin.selected).map(admin => admin.userId),
+      admins: admins.filter(admin => currentType === 'file' ? admin.selected : admin.roleDescription === '1' && admin.selected).map(admin => admin.originUserId),
       roleDescription: currentAccessLevel,
       reason: formValues.reason,
       userId,
