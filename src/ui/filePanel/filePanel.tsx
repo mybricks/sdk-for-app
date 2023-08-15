@@ -72,13 +72,13 @@ const FilePanel: FC<FilePanelProps> = props => {
 	
 	useEffect(() => {
 		;(async () => {
-			const curUser: { email: string } = await API.User.getLoginUser()
+			const curUser: { id: number; email: string } = await API.User.getLoginUser()
 			// @ts-ignore
 			user.current = curUser;
 			
 			let rootFile = null;
 			if (fileId) {
-				rootFile = await API.File.getFileRoot({ creatorId: curUser?.email, parentId, fileId, checkModule });
+				rootFile = await API.File.getFileRoot({ creatorId: curUser?.id, parentId, fileId, checkModule });
 				rootFile.extName === 'my-file' && (rootFile.open = true);
 				
 				setDataSource(rootFile ? [rootFile] : []);
