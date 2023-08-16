@@ -45,7 +45,7 @@ const FilePanel: FC<FilePanelProps> = props => {
 	const [dataSource, setDataSource] = useState<any[]>([]);
 	const [appMap, setAppMap] = useState<AppMapCacheType>(AppMapCache);
 	const [path, setPath] = useState<any[]>([]);
-	const user = useRef<{ email: string }>(null);
+	const user = useRef<{ id: number }>(null);
 	
 	/** 请求所有已安装应用 */
 	useEffect(() => {
@@ -72,21 +72,21 @@ const FilePanel: FC<FilePanelProps> = props => {
 	
 	useEffect(() => {
 		;(async () => {
-			const curUser: { email: string } = await API.User.getLoginUser()
+			const curUser: { id: number; } = await API.User.getLoginUser()
 			// @ts-ignore
 			user.current = curUser;
 			
 			let rootFile = null;
 			if (fileId) {
-				rootFile = await API.File.getFileRoot({ creatorId: curUser?.email, parentId, fileId, checkModule });
+				rootFile = await API.File.getFileRoot({ creatorId: curUser?.id, parentId, fileId, checkModule });
 				rootFile.extName === 'my-file' && (rootFile.open = true);
 				
 				setDataSource(rootFile ? [rootFile] : []);
 				setPath(rootFile ? [rootFile] : []);
 			} else {
 				Promise.all([
-					await axios({ method: 'get', url: '/paas/api/userGroup/getVisibleGroups', params: { userId: curUser.email } }),
-					axios({ method: 'get', url: '/api/file/getMyFiles', params: { userId: curUser.email }})
+					await axios({ method: 'get', url: '/paas/api/userGroup/getVisibleGroups', params: { userId: curUser.id } }),
+					axios({ method: 'get', url: '/api/file/getMyFiles', params: { userId: curUser.id }})
 				])
 					.then(([{ data: { data: groupData, code: groupCode } }, { data: { data: myFileData, code: myFileCode } }]) => {
 						let dataSource: any[] = [{
@@ -118,7 +118,7 @@ const FilePanel: FC<FilePanelProps> = props => {
 			}
 			
 			const file = await getFiles(rootFile, {
-				userId: curUser?.email,
+				userId: curUser?.id,
 				groupId: rootFile.extName === 'group'? rootFile.id : rootFile.groupId,
 				parentId: rootFile.extName === 'group'? undefined : rootFile.id,
 			});
@@ -134,7 +134,7 @@ const FilePanel: FC<FilePanelProps> = props => {
 	}, [selectedFile, curOnOk]);
 	const getParams = useCallback((item: any) => {
 		let params: Record<string, unknown> = {
-			userId: user.current?.email,
+			userId: user.current?.id,
 		};
 		if (item.isMyFile) {
 			params.parentId = item.id !== MY_FILE_ROOT_ID ? item.id : undefined;

@@ -5,6 +5,7 @@ interface GlobalContext {
   fileContent: FileContent | null,
   fileId?: number | null,
   user?: {
+    id: number;
     email: string
   } | null
 }

@@ -3,11 +3,11 @@ import { getAxiosInstance } from '../util'
 /**
  * 获取文件列表
  *
- * @param {{ 
- *  email: string,                    邮箱或邮箱前缀
-  * parentId?: any,                   所属文件夹ID
-  * groupId?: string                  所属协作组ID
- * }} params
+ * @param params {
+ *  userId: string,                   邮箱或邮箱前缀
+ *  parentId?: any,                   所属文件夹ID
+ *  groupId?: string                  所属协作组ID
+ * }
  * @returns {(Promise<{
  *   id: string,                      文件ID
  *   groupId: number | null,          所属自作组ID
@@ -20,7 +20,7 @@ import { getAxiosInstance } from '../util'
  *   updateTime: string,              更新时间
  * }[]>)}
  */
-function getAll(params: { parentId?: any, email?: string, groupId?: string }): Promise<{
+function getAll(params: { parentId?: any, userId?: string, groupId?: string }): Promise<{
   id: string,
   groupId: number | null,
   parentId: number | null,
@@ -32,10 +32,10 @@ function getAll(params: { parentId?: any, email?: string, groupId?: string }): P
   updateTime: string,
 }[]> {
   return new Promise((resolve, reject) => {
-    const { parentId, email, groupId } = params || {}
+    const { parentId, userId, groupId } = params || {}
     getAxiosInstance().get('/paas/api/workspace/getAll',{
       params: {
-        userId: email,
+        userId,
         parentId,
         groupId
       }
