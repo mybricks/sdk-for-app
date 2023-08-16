@@ -284,7 +284,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
 
   return (
     <div className={css.locker}>
-      {lockerProps.permissionRequest?.show ? <LockerInfo useGroup={lockerProps.permissionRequest.group} roleDescription={roleDescription} fileContent={fileContent} userId={user.id}/> : <></>}
+      {lockerProps.permissionRequest?.show ? <LockerInfo useGroup={lockerProps.permissionRequest.group} roleDescription={roleDescription} fileContent={fileContent} userId={user.id} email={user.email}/> : <></>}
       {CooperationUsersList}
     </div>
   )
@@ -301,7 +301,7 @@ export const ROLE_DESCRIPTION_NUM_TO_EXP = {
   3: '可查看'
 }
 
-function LockerInfo ({roleDescription, fileContent, userId, useGroup}) {
+function LockerInfo ({roleDescription, fileContent, userId, email, useGroup}) {
   const [open, setOpen] = useState(false)
   const [visible, setVisible] = useState(false)
 
@@ -355,6 +355,7 @@ function LockerInfo ({roleDescription, fileContent, userId, useGroup}) {
         fileContent={fileContent}
         roleDescription={roleDescription}
         userId={userId}
+        email={email}
         useGroup={useGroup}
       />
     </>
@@ -366,7 +367,7 @@ const TYPE_TO_EXP = {
   'group': '当前协作组(推荐)'
 }
 
-function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGroup}) {
+function ApplyModal({open, onCancel, fileContent, roleDescription, userId, email, useGroup}) {
   const [form] = Form.useForm()
   const [state, setState] = useState({
     admins: [],
@@ -447,10 +448,10 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, useGr
     })
 
     const params: any = {
-      admins: admins.filter(admin => currentType === 'file' ? admin.selected : admin.roleDescription === '1' && admin.selected).map(admin => admin.originUserId),
+      admins: admins.filter(admin => currentType === 'file' ? admin.selected : admin.roleDescription === '1' && admin.selected).map(admin => admin.userId),
       roleDescription: currentAccessLevel,
       reason: formValues.reason,
-      userId,
+      userId: email,
       pageUrl: location.href
     }
 
