@@ -165,7 +165,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
       getFileCooperationUsers({userId: user.id, fileId}).then(({users, roleDescription, file}) => {
         setCooperationUsers(users)
         setRoleDescription(roleDescription)
-        lockerProps.statusChange?.((users.find((item) => item.userId === user.id))?.status || 0)
+        lockerProps.statusChange?.((users.find((item) => item.id === user.id))?.status || 0)
         resolve({users, roleDescription})
         // setFile(file)
       }).catch((e) => {
