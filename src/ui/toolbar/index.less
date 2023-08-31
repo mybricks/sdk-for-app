@@ -42,6 +42,14 @@
   .right {
     display: flex;
     align-items: center;
+
+    > *:not(:last-child) {
+      margin: 0px 5px;
+    }
+
+    > *:last-child {
+      margin-right: 0px;
+    }
   }
   
   .button {
@@ -59,9 +67,9 @@
     color: rgba(0, 0, 0, 0.9);
     cursor: pointer;
 
-    &:last-child {
-      margin-right: 0px;
-    }
+    // &:last-child {
+    //   margin-right: 0px;
+    // }
 
     &:hover {
       box-shadow: 0 2px 10px 0 rgb(0 0 0 / 20%);

@@ -6,6 +6,7 @@ import Button from './button'
 import { GoBack } from '../Icons'
 import Workflows from './workflows'
 import LastUpdate from './last-update-info'
+import Tools from './tools'
 
 import styles from './index.less'
 
@@ -78,5 +79,7 @@ Toolbar.Publish = Publish
 Toolbar.Button = Button
 
 Toolbar.Workflows = Workflows
+
+Toolbar.Tools = Tools
 
 export default Toolbar
