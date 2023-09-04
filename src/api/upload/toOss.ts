@@ -3,7 +3,7 @@ import { getAxiosInstance } from '../util'
 import { isEnvOfServer } from '../env'
 
 /**
- * 上传文件到oss，日过平台未配置私有化oss地址，则上传到本地磁盘
+ * 上传文件到oss，如果平台未配置私有化oss地址，则上传到本地磁盘
  *
  * @param {{ 
  *  content: string,        文件内容
