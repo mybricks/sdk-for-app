@@ -59,7 +59,7 @@ export default function View({onLoad, className = ''}: T_Props) {
           setHierarchy(hierarchyRes)
         }
         // @ts-ignore
-        setContent({...data, content: safeParse(data.content)});
+        setContent({...data, content: safeParse(data?.content || "{}")});
         const namespaces = [appMeta?.namespace, 'system', 'mybricks-material'];
         const configRes = await API.Setting.getSetting(
           namespaces,
