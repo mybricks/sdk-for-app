@@ -9,7 +9,9 @@ import React, {
 } from 'react'
 import { createPortal } from 'react-dom'
 
-import { SettingOutlined } from '@ant-design/icons'
+import { SettingOutlined, MoreOutlined } from '@ant-design/icons'
+
+import type { ReactNode } from 'react'
 
 // import PluginTools from './src/plugintools'
 import useToast from './components/toast'
@@ -27,6 +29,9 @@ interface ToolsProps {
   getExportDumpJSON: () => any
   // 导出tojson
   getExportToJSON: () => any
+
+  // 自定义
+  children?: ReactNode
 }
 
 const ToolsContext = createContext<ToolsProps>({} as any)
@@ -59,7 +64,7 @@ export default function Tools (props: ToolsProps) {
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
-      <SettingOutlined />
+      {props.children || <MoreOutlined />}
       <ToolsContext.Provider value={props}>
         {render && renderPopupPanel}
       </ToolsContext.Provider>
@@ -154,7 +159,7 @@ function PopupPanel({ open, getContainer }) {
     if (open) {
       const containerBct = container.getBoundingClientRect()
       panelEle.style.top = containerBct.height + 'px'
-      panelEle.style.zIndex = '2'
+      panelEle.style.zIndex = '1001'
       panelEle.style.visibility = 'visible'
     } else {
       panelEle.style.zIndex = '-1'
