@@ -25,6 +25,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   const [materialSelectorInfo, setMaterialSelectorInfo] = useState<any>({});
   const [content, setContent] = useState<FileContent | null>(null);
   const fileId = useMemo(() => Number(getUrlParam('id') ?? '0'), []);
+  const version = getUrlParam('version');
   const appMeta = API.App.getAppMeta();
   const [hierarchy, setHierarchy] = useState({}) // 初始化赋值
 
@@ -50,7 +51,7 @@ export default function View({onLoad, className = ''}: T_Props) {
         setUser({...loginUser, isAdmin: loginUser?.isAdmin});
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
-        const data = await API.File.getFullFile({fileId})
+        const data = version ? await API.File.getFullFile({fileId}) : await API.File.getFullFile({fileId, version});
         const app = apps?.find(app => app.namespace === appMeta?.namespace);
         let hierarchyRes: Record<string, unknown> = { projectId: undefined, groupId: undefined };
 

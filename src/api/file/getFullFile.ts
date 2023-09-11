@@ -27,7 +27,7 @@ type T_FullFile = {
 /**
  * 查询文件JSON
  *
- * @param {{ fileId: number }} params
+ * @param {{ fileId: number, version?: string }} params
  * @returns {(Promise<{
  *   content: string;
  *   id: number;
@@ -51,7 +51,7 @@ type T_FullFile = {
  *   shareType: number | null;
  * }>)}
  */
-function getFullFile(params: { fileId: number }): Promise<{
+function getFullFile(params: { fileId: number, version?: string }): Promise<{
   content: string;
   id: number;
   groupId: number | null;
