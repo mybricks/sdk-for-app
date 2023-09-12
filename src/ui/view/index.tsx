@@ -51,7 +51,7 @@ export default function View({onLoad, className = ''}: T_Props) {
         setUser({...loginUser, isAdmin: loginUser?.isAdmin});
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
-        const data = version ? await API.File.getFullFile({fileId}) : await API.File.getFullFile({fileId, version});
+        const data = version ? await API.File.getFullFile({fileId, version}) : await API.File.getFullFile({fileId});
         const app = apps?.find(app => app.namespace === appMeta?.namespace);
         let hierarchyRes: Record<string, unknown> = { projectId: undefined, groupId: undefined };
 
