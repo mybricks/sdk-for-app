@@ -233,6 +233,29 @@ export default function View({onLoad, className = ''}: T_Props) {
           } catch(e) {
             console.log(e)
           }
+        },
+        save(value) {
+          const saveContent = value.content
+          if (saveContent) {
+            content.saveLoading = true
+          }
+          return new Promise((resolve, reject) => {
+            API.File.save(value)
+              .then((res) => {
+                if (res?.version) {
+                  content.version = res.version
+                }
+                resolve(res)
+              })
+              .catch((err) => {
+                reject(err)
+              })
+              .finally(() => {
+                if (saveContent) {
+                  content.saveLoading = false
+                }
+              })
+          })
         }
       })
       setJSX(nodes as any)

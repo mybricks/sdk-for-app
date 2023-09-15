@@ -24,6 +24,9 @@ export interface FileContent {
   type: string;
   /** 版本 */
   version: string;
+
+  /** TODO */
+  saveLoading: boolean
 }
 
 interface PublishParams {
@@ -91,5 +94,6 @@ export type T_Props = {
     openPreview(param: { toJSON: any, comlibs: any[] }): void;
     report(param: { jsonData: any }): void;
     defaultComlibs: Array<any>
+    save(value: any): Promise<any>
   }) => {}
 }
