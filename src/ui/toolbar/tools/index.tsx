@@ -53,18 +53,23 @@ export default function Tools (props: ToolsProps) {
         getContainer={() => {
           return toolsRef.current
         }}
+        onClose={() => setShow(false)}
       />
     )
   }, [show])
 
+  const onClick = useCallback(() => {
+    setShow(true)
+  }, [])
+
   return (
     <div
       ref={toolsRef}
-      className={css.tools}
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
+      className={`${css.tools}${show ? ` ${css.open}` : ''}`}
     >
-      {props.children || MoreOutlined}
+      <div className={css.action} onClick={onClick}>
+        {props.children || MoreOutlined}
+      </div>
       <ToolsContext.Provider value={props}>
         {render && renderPopupPanel}
       </ToolsContext.Provider>
@@ -88,7 +93,7 @@ function useKeep () {
   }
 }
 
-function PopupPanel({ open, getContainer }) {
+function PopupPanel({ open, getContainer, onClose }) {
   const toolsContext = useToolsContext()
   const [toast, contextHolder] = useToast()
   const fileRef = useRef<HTMLInputElement>(null)
@@ -172,61 +177,68 @@ function PopupPanel({ open, getContainer }) {
     }
   }, [open])
 
-  return createPortal((
-    <div ref={panelRef} className={css.panel}>
-      <>
-        <div className={styles.toolsContainer}>
-          {/* <div className={styles.toolsTitle}>调试工具</div> */}
-          <div className={styles.toolsContent}>
-            <div className={styles.toolsItem}>
-              <div className={styles.toolsItemTitle}>页面协议（Dump）</div>
-              <div className={styles.toolsItemContent}>
-                
-                <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onImport()}>从剪切板中导入</button>
-                <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onExport()}>导出到剪切板</button>
-                <div>
-                  <input
-                    style={{ display: 'none' }}
-                    ref={fileRef}
-                    type="file"
-                    accept="application/json"
-                    onChange={handleFileChange}
-                  />
-                  <button
-                    className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`}
-                    onClick={() => onImportForFile()}>从文件中导入</button>
-                </div>
-
-                <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onExportToFile()}>导出到文件</button>
-              </div>
-            </div>
-            <div>
-              
-            </div>
-            <div className={styles.toolsItem}>
-              <div className={styles.toolsItemTitle}>
-                <div>页面产物（ToJSON）</div>
-                <div>
-                  <MSwitch onChange={onChange} />
-                </div>
-              </div>
-              {
-                toJsonVisible && (
+  return (
+    <>
+      {createPortal((
+        <div className={css.mask} onClick={onClose} style={{display: open ? 'block' : 'none'}}/>
+      ), document.body)}
+      {createPortal((
+        <div ref={panelRef} className={css.panel}>
+          <>
+            <div className={styles.toolsContainer}>
+              {/* <div className={styles.toolsTitle}>调试工具</div> */}
+              <div className={styles.toolsContent}>
+                <div className={styles.toolsItem}>
+                  <div className={styles.toolsItemTitle}>页面协议（Dump）</div>
                   <div className={styles.toolsItemContent}>
-                    <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onExportToJson()}>导出到剪切板</button>
-                    <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onExportToFileToJson()}>导出到文件</button>
-                  </div>
-                )
-              }
-              
-            </div>
+                    
+                    <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onImport()}>从剪切板中导入</button>
+                    <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onExport()}>导出到剪切板</button>
+                    <div>
+                      <input
+                        style={{ display: 'none' }}
+                        ref={fileRef}
+                        type="file"
+                        accept="application/json"
+                        onChange={handleFileChange}
+                      />
+                      <button
+                        className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`}
+                        onClick={() => onImportForFile()}>从文件中导入</button>
+                    </div>
 
-          </div>
+                    <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onExportToFile()}>导出到文件</button>
+                  </div>
+                </div>
+                <div>
+                  
+                </div>
+                <div className={styles.toolsItem}>
+                  <div className={styles.toolsItemTitle}>
+                    <div>页面产物（ToJSON）</div>
+                    <div>
+                      <MSwitch onChange={onChange} />
+                    </div>
+                  </div>
+                  {
+                    toJsonVisible && (
+                      <div className={styles.toolsItemContent}>
+                        <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onExportToJson()}>导出到剪切板</button>
+                        <button className={`${styles.toolsIBtn} ${styles.toolsIBtnBlock}`} onClick={() => onExportToFileToJson()}>导出到文件</button>
+                      </div>
+                    )
+                  }
+                  
+                </div>
+
+              </div>
+            </div>
+            {contextHolder}
+          </>
         </div>
-        {contextHolder}
-      </>
-    </div>
-  ), container)
+      ), container)}
+    </>
+  )
 }
 
 function getDateTime() {
