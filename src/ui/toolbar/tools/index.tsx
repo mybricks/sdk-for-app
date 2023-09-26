@@ -100,18 +100,23 @@ function PopupPanel({ open, getContainer }) {
   }, [])
 
   const onImport = useCallback(async () => {
-    try {
-      const importData = await navigator.clipboard.readText()
+    // try {
+    //   const importData = await navigator.clipboard.readText()
 
+    //   toolsContext.onImport(importData)
+    // } catch (err) {
+    //   console.warn(err, '剪切板读取失败，尝试切换为手动导入...')
+
+    //   const importData = window.prompt('将导出的页面数据复制到输入框')
+
+    //   if (importData) {
+    //     toolsContext.onImport(importData)
+    //   }
+    // }
+    const importData = window.prompt('将导出的页面数据复制到输入框')
+
+    if (importData) {
       toolsContext.onImport(importData)
-    } catch (err) {
-      console.warn(err, '剪切板读取失败，尝试切换为手动导入...')
-
-      const importData = window.prompt('将导出的页面数据复制到输入框')
-
-      if (importData) {
-        toolsContext.onImport(importData)
-      }
     }
   }, [])
 
