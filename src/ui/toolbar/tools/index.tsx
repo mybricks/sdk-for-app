@@ -9,7 +9,7 @@ import React, {
 } from 'react'
 import { createPortal } from 'react-dom'
 
-import { SettingOutlined, MoreOutlined } from '@ant-design/icons'
+const MoreOutlined = <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7878" width="1em" height="1em"><path d="M512 0a113.778 113.778 0 0 0-113.778 113.778A113.778 113.778 0 0 0 512 227.556a113.778 113.778 0 0 0 113.778-113.778A113.778 113.778 0 0 0 512 0zM398.222 910.222A113.778 113.778 0 0 0 512 1024a113.778 113.778 0 0 0 113.778-113.778A113.778 113.778 0 0 0 512 796.444a113.778 113.778 0 0 0-113.778 113.778z m0-398.222A113.778 113.778 0 0 0 512 625.778 113.778 113.778 0 0 0 625.778 512 113.778 113.778 0 0 0 512 398.222 113.778 113.778 0 0 0 398.222 512z" p-id="7879"></path></svg>
 
 import type { ReactNode } from 'react'
 
@@ -64,7 +64,7 @@ export default function Tools (props: ToolsProps) {
       onMouseEnter={() => setShow(true)}
       onMouseLeave={() => setShow(false)}
     >
-      {props.children || <MoreOutlined />}
+      {props.children || MoreOutlined}
       <ToolsContext.Provider value={props}>
         {render && renderPopupPanel}
       </ToolsContext.Provider>
