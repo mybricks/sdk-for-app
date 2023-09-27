@@ -2,7 +2,8 @@
 import { getAxiosInstance } from '../util'
 import { isEnvOfServer } from '../env'
 
-export default function staticServer({content, folderPath, fileName, noHash, domainName}: { content: any, folderPath: string, fileName: string, noHash: any, domainName?: string }) {
+export default function staticServer(param: { content: any, folderPath: string, fileName: string, noHash?: any, domainName?: string }) {
+  const {content, folderPath, fileName, noHash, domainName} = param
   let blob;
   let formData: any;
   if(isEnvOfServer()) {
