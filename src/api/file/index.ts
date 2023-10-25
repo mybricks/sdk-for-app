@@ -14,7 +14,6 @@ import getFileTreeMapByFile from './getFileTreeMapByFile'
 import getFiles from './getFiles'
 import getHierarchy from './getHierarchy'
 
-import getFileInfoByBaseFileIdAndRelativePath from './getFileInfoByBaseFileIdAndRelativePath'
 import batchPublishService from './batchPublishService'
 import getLatestModulePubByProjectId from "./getLatestModulePubByProjectId";
 import getFileRoot from "./getFileRoot";
@@ -46,7 +45,6 @@ const File = {
   getHierarchy,
   getFiles,
 	getFileRoot,
-  getFileInfoByBaseFileIdAndRelativePath,
   getFile,
   getCooperationUser,
   createCooperationUser,

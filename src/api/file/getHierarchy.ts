@@ -1,8 +1,16 @@
 import { getAxiosInstance } from '../util'
 
-const getHierarchy = (params: {
+/**
+ * 获取文件层级结构
+ *
+ * @param {({
+ *   fileId: number | string
+ * })} params
+ * @returns {Promise<{ projectId: any, hierarchy: any; groupId?: number }>}
+ */
+function getHierarchy(params: {
   fileId: number | string
-}): Promise<{ projectId: any, hierarchy: any; groupId?: number }> => {
+}): Promise<{ projectId: any, hierarchy: any; groupId?: number }> {
   return new Promise((resolve, reject) => {
     const { fileId } = params ?? {}
     getAxiosInstance()

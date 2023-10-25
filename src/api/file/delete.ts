@@ -5,13 +5,13 @@ import { getAxiosInstance } from '../util'
  *
  * @param {{
  *   fileId: number, 文件id
- *   updatorId: string, 删除者邮箱前缀
+ *   updatorId: string, 删除者id
  * }} params
  * @returns {Promise<{}>}
  */
 function deleteFile(params: {
   fileId: number,
-  updatorId: string
+  updatorId: number | string
 }): Promise<{}> {
   return new Promise((resolve, reject) => {
     getAxiosInstance()

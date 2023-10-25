@@ -1,6 +1,12 @@
 import { getAxiosInstance } from '../util'
 
-const getFile = ({id}: {id: number}) => {
+/**
+ * 获取文件基本信息
+ *
+ * @param {{id: number}} {id}
+ * @returns
+ */
+function getFile({id}: {id: number}) {
   return new Promise((resolve, reject) => {
     if (!id) {
       reject('文件id不能为空')
