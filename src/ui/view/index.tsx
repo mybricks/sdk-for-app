@@ -252,7 +252,10 @@ export default function View({onLoad, className = ''}: T_Props) {
               })
               .finally(() => {
                 if (saveContent) {
-                  content.saveLoading = false
+                  // TODO: 本地暂时无法复现出来自己保存后弹出版本提示
+                  setTimeout(() => {
+                    content.saveLoading = false
+                  }, 1 * 10 * 1000)
                 }
               })
           })
