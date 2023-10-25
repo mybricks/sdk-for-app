@@ -116,7 +116,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
   const [roleDescription, setRoleDescription] = useState<RoleDescription>(3)
   const [operationLoading, setOperationLoading] = useState(false)
   const [showVersionComparison, setShowVersionComparison] = useState(false)
-  const [file, setFile] = useState(null)
+  const [file, setFile] = useState({version: fileContent?.version || null})
 
   useEffect(() => {
     location.href.indexOf('DEBUG') === -1 ? lockerContext.setTimer() : null
@@ -173,7 +173,15 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
         lockerProps.statusChange?.((users.find((item) => item.id === user.id))?.status || 0)
         resolve({users, roleDescription})
         if (lockerProps.compareVersion) {
-          setFile(file)
+          setFile((oriFile) => {
+            if (!file.updatorId) {
+              file.version = null
+            }
+            if (oriFile?.version !== file.version) {
+              return file
+            }
+            return oriFile
+          })
         }
       }).catch((e) => {
         console.error(e)
