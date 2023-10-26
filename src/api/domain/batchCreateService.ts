@@ -1,4 +1,3 @@
-
 import { getAxiosInstance } from '../util'
 
 const batchCreateService = async (params: {fileId: number, serviceContentList: {id: string, code: string}[], projectId?: number}) => {

@@ -7,7 +7,7 @@ export default async function getUserGroup({id}: {id: number}) {
       return
     }
     getAxiosInstance()
-    .get(`/paas/api/userGroup/getUserGroup?id=${id}`)
+    .get('/paas/api/userGroup/getUserGroup', { params: { id } })
     .then(({ data }: any) => {
       if (data.code === 1 && data.data) {
         resolve(data.data)

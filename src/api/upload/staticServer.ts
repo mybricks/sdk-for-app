@@ -1,4 +1,3 @@
-// @ts-ignore
 import { getAxiosInstance } from '../util'
 import { isEnvOfServer } from '../env'
 
@@ -7,19 +6,24 @@ export default function staticServer(param: { content: any, folderPath: string, 
   let blob;
   let formData: any;
   if(isEnvOfServer()) {
-    // @ts-ignore
-    blob = new Buffer.from(content)
-    const FormData = require('form-data')
-    formData = new FormData()
+    formData = {
+      folderPath,
+      file: {
+        buffer: Buffer.from(content),
+        originalname: fileName,
+      },
+      noHash,
+      domainName,
+    };
   } else {
     blob = new Blob([content])
     // fix 客户端调用会报错
     formData = new window.FormData()
+    formData.append('file', blob, fileName)
+    formData.append('folderPath', folderPath)
+    noHash && formData.append('noHash', JSON.stringify(noHash))
+    domainName && formData.append('domainName', domainName)
   }
-  formData.append('file', blob, fileName)
-  formData.append('folderPath', folderPath)
-  noHash && formData.append('noHash', JSON.stringify(noHash))
-  domainName && formData.append('domainName', domainName)
 
   return new Promise((resolve, reject) => {
     getAxiosInstance()

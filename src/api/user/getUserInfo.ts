@@ -10,11 +10,12 @@ import type { T_UserInfo } from "./type";
 async function getUserInfo(email: string): Promise<T_UserInfo> {
   return new Promise((resolve, reject) => {
     if (!email) {
-      reject('email不能为空')
+      reject('email不能为空');
       return
     }
+
     getAxiosInstance()
-    .get(`/paas/api/user/queryBy?email=${email}`)
+    .get('/paas/api/user/queryBy', { params: { email } })
     .then(({ data }: any) => {
       if (data?.data) {
         resolve(data?.data?.[0])
