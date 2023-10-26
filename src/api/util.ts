@@ -35,20 +35,20 @@ function init() {
 }
 
 function getAxiosInstance() {
-  if (isEnvOfServer() && typeof global !== 'undefined' && typeof global.emitGlobalEvent !== 'undefined') {
+  if (isEnvOfServer() && typeof global !== 'undefined' && typeof (global as any).emitGlobalEvent !== 'undefined') {
     if (!AXIOS_INSTANCE) {
       AXIOS_INSTANCE = {
         get: async (path: string, { params = {} }: { params: Record<string, unknown> }) => {
-          return { data: await global.emitGlobalEvent(path, 'GET', params) };
+          return { data: await (global as any).emitGlobalEvent(path, 'GET', params) };
         },
         delete: async (path: string, { params = {} }: { params: Record<string, unknown> }) => {
-          return { data: await global.emitGlobalEvent(path, 'DELETE', params) };
+          return { data: await (global as any).emitGlobalEvent(path, 'DELETE', params) };
         },
         post: async (path: string, params: Record<string, unknown> = {}) => {
-          return { data: await global.emitGlobalEvent(path, 'POST', params) };
+          return { data: await (global as any).emitGlobalEvent(path, 'POST', params) };
         },
         put: async (path: string, params: Record<string, unknown> = {}) => {
-          return { data: await global.emitGlobalEvent(path, 'PUT', params) };
+          return { data: await (global as any).emitGlobalEvent(path, 'PUT', params) };
         },
       };
     }
