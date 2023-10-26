@@ -13,14 +13,7 @@ function saveProducts(param: { content: any, fileId: number, type: string, versi
   let blob;
   let formData: any;
   if(isEnvOfServer()) {
-    // @ts-ignore
-    blob = new Buffer.from(content)
-    const FormData = require('form-data')
-    formData = new FormData()
-    formData.append('file', blob, `${fileId}.zip`)
-    formData.append('fileId', fileId)
-    formData.append('type', type)
-    formData.append('version', version)
+    formData = { content, fileId, type, version };
   } else {
     blob = new Blob([content])
     // fix 客户端调用会报错
