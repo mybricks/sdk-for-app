@@ -21,7 +21,7 @@ const getCooperationUser = ({userId, groupId, fileId}: {userId: number, groupId?
           });
       } else {
         getAxiosInstance()
-          .get(`/paas/api/userFile/getUser?userId=${userId}&id=${fileId}`)
+          .get('/paas/api/userFile/getUser', { params: { userId, id: fileId } })
           .then(({ data }: any) => {
             if (data.code === 1) {
               resolve(data.data)

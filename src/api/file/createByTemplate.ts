@@ -3,14 +3,14 @@ import { getAxiosInstance } from '../util'
 /**
  * 基于模版新建文件
  *
- * @param {{
+ * @param params {{
  *   userId: string, 新建人邮箱前缀
  *   name: string, 文件名称
  *   extName: string, 文件后缀
  *   templateId: number, 模版ID
  *   groupId?: number, 所属协作组ID
  *   parentId?: number, 所属文件夹ID
- * }} params
+ * }}
  * @returns {Promise<{}>}
  */
 function createFileBaseTemplate(params: {

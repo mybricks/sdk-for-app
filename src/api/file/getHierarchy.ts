@@ -14,7 +14,7 @@ function getHierarchy(params: {
   return new Promise((resolve, reject) => {
     const { fileId } = params ?? {}
     getAxiosInstance()
-      .get(`/paas/api/file/getParentModuleAndProjectInfo?id=${fileId}`)
+      .get('/paas/api/file/getParentModuleAndProjectInfo', { params: { id: fileId } })
       .then(({ data }: any) => {
         resolve(data?.data || {})
       })

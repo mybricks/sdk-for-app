@@ -13,7 +13,7 @@ function getFile({id}: {id: number}) {
       return
     }
     getAxiosInstance()
-      .get(`/paas/api/file/getFile?id=${id}`)
+      .get('/paas/api/file/getFile', { params: { id } })
       .then(({ data }: any) => {
         if (data.code === 1 && data.data) {
           resolve(data.data)

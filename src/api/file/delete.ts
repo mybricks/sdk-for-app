@@ -3,10 +3,10 @@ import { getAxiosInstance } from '../util'
 /**
  * 删除指定文件
  *
- * @param {{
+ * @param params {{
  *   fileId: number, 文件id
  *   updatorId: string, 删除者id
- * }} params
+ * }}
  * @returns {Promise<{}>}
  */
 function deleteFile(params: {
