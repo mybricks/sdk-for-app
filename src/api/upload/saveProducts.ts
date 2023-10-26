@@ -14,7 +14,10 @@ function saveProducts(param: { content: any, fileId: number, type: string, versi
   let formData: any;
   if(isEnvOfServer()) {
     // @ts-ignore
-    formData = param
+    formData.append('file', blob, `${fileId}.zip`)
+    formData.append('fileId', fileId)
+    formData.append('type', type)
+    formData.append('version', version)
   } else {
     blob = new Blob([content])
     // fix 客户端调用会报错
