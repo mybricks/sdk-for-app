@@ -35,35 +35,19 @@ function init() {
 }
 
 function getAxiosInstance() {
-  if (isEnvOfServer()) {
+  if (isEnvOfServer() && typeof global !== 'undefined' && typeof global.emitGlobalEvent !== 'undefined') {
     if (!AXIOS_INSTANCE) {
       AXIOS_INSTANCE = {
         get: async (path: string, { params = {} }: { params: Record<string, unknown> }) => {
-          if (typeof global === 'undefined' || typeof global.emitGlobalEvent === 'undefined') {
-            return Promise.reject('全局 emitGlobalEvent 方法不存在');
-          }
-
           return { data: await global.emitGlobalEvent(path, 'GET', params) };
         },
         delete: async (path: string, { params = {} }: { params: Record<string, unknown> }) => {
-          if (typeof global === 'undefined' || typeof global.emitGlobalEvent === 'undefined') {
-            return Promise.reject('全局 emitGlobalEvent 方法不存在');
-          }
-
           return { data: await global.emitGlobalEvent(path, 'DELETE', params) };
         },
         post: async (path: string, params: Record<string, unknown> = {}) => {
-          if (typeof global === 'undefined' || typeof global.emitGlobalEvent === 'undefined') {
-            return Promise.reject('全局 emitGlobalEvent 方法不存在');
-          }
-
           return { data: await global.emitGlobalEvent(path, 'POST', params) };
         },
         put: async (path: string, params: Record<string, unknown> = {}) => {
-          if (typeof global === 'undefined' || typeof global.emitGlobalEvent === 'undefined') {
-            return Promise.reject('全局 emitGlobalEvent 方法不存在');
-          }
-
           return { data: await global.emitGlobalEvent(path, 'PUT', params) };
         },
       };
