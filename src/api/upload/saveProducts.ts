@@ -14,6 +14,9 @@ function saveProducts(param: { content: any, fileId: number, type: string, versi
   let formData: any;
   if(isEnvOfServer()) {
     // @ts-ignore
+    blob = new Buffer.from(content)
+    const FormData = require('form-data')
+    formData = new FormData()
     formData.append('file', blob, `${fileId}.zip`)
     formData.append('fileId', fileId)
     formData.append('type', type)
