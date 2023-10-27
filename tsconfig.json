@@ -17,7 +17,8 @@
     "target": "es2019"
   },
   "include": [
-    "src/api"
+    "src/api",
+    "src/decorator"
   ],
   "exclude": ["node_modules"]
 }

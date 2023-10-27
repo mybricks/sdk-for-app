@@ -195,7 +195,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     return new Promise(() => {
       axios({
         method: 'post',
-        url: '/api/file/toggleFileCooperationStatus',
+        url: '/paas/api/file/toggleFileCooperationStatus',
         data: {
           userId: user.id,
           fileId,
@@ -398,7 +398,7 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, email
 
     axios({
       method: 'get',
-      url: `/api/file/getAuthorizedUsers?groupId=${groupId}&fileId=${id}`
+      url: `/paas/api/file/getAuthorizedUsers?groupId=${groupId}&fileId=${id}`
     }).then(({data: {code, data}}) => {
       if (code === 1 && Array.isArray(data) && data.length) {
         data.forEach((d, idx) => {
@@ -736,7 +736,7 @@ async function getFileCooperationUsers ({userId, fileId}): Promise<{users: User[
   return new Promise((resolve, reject) => {
     axios({
       method: 'get',
-      url: `/api/file/getCooperationUsers?userId=${userId}&fileId=${fileId}`
+      url: `/paas/api/file/getCooperationUsers?userId=${userId}&fileId=${fileId}`
     }).then((res) => {
       const { code, data } = res.data || {}
       if (res.status === 200 && code === 1) {
