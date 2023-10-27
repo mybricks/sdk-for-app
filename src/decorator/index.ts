@@ -1,7 +1,7 @@
-import { MController } from './MController';
+import { Controller } from './MController';
 
 const Decorator = {
-  MController
+  Controller
 }
 
 export default Decorator

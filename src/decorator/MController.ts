@@ -7,7 +7,7 @@ const isString = (val: any): val is string => typeof val === 'string';
 const isUndefined = (obj: any): obj is undefined =>
   typeof obj === 'undefined';
 
-export function MController(
+export function Controller(
   prefixOrOptions?: any,
   _config?: { namespace?: string }
 ) {
