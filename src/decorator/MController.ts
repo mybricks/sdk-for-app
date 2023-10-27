@@ -37,7 +37,15 @@ export function MController(
         newPath = `/${_config.namespace}/` + path
       }
     }
-    console.log('path是:', target, newPath);
+    // @ts-ignore
+    if(!global.MYBRICKS_MODULE_CUSTOM_PATH) {
+      // @ts-ignore
+      global.MYBRICKS_MODULE_CUSTOM_PATH = {}
+    }
+    // @ts-ignore
+    global.MYBRICKS_MODULE_CUSTOM_PATH[newPath] = {
+      path: newPath,
+    }
     (Reflect as any).defineMetadata(CONTROLLER_WATERMARK, true, target);
     (Reflect as any).defineMetadata(HOST_METADATA, host, target);
     (Reflect as any).defineMetadata(PATH_METADATA, newPath, target);
