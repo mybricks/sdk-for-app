@@ -1,6 +1,6 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "SDK for application UI",
   "scripts": {
     "build:api": "npm run clean && tsc --build tsconfig.json",
@@ -22,6 +22,7 @@
   "files": [
     "api",
     "ui",
+    "decorator",
     "package.json"
   ],
   "author": "CheMingjun",
