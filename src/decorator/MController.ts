@@ -45,8 +45,9 @@ export function Controller(
     // @ts-ignore
     global.MYBRICKS_MODULE_CUSTOM_PATH[newPath] = {
       path: newPath,
-    }
-    (Reflect as any).defineMetadata(CONTROLLER_WATERMARK, true, target);
+    };
+    // @ts-ignore
+    Reflect.defineMetadata(CONTROLLER_WATERMARK, true, target);
     (Reflect as any).defineMetadata(HOST_METADATA, host, target);
     (Reflect as any).defineMetadata(PATH_METADATA, newPath, target);
     (Reflect as any).defineMetadata(SCOPE_OPTIONS_METADATA, scopeOptions, target);
