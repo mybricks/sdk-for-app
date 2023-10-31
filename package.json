@@ -1,10 +1,10 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "0.2.0-beta.1",
+  "version": "1.0.0",
   "description": "SDK for application UI",
   "scripts": {
     "build:api": "npm run clean && tsc --build tsconfig.json",
-    "clean": "npx rimraf tsconfig.tsbuildinfo ./src/*.js ./src/**.js ./src/**/*.js ./src/**/**/*.js ./src/**/**/**/*.js ./src/api/*.d.ts ./src/api/**.d.ts ./src/api/**/*.d.ts ./src/api/**/**/*.d.ts ./src/api/**/**/**/*.d.ts ",
+    "clean": "npx rimraf tsconfig.tsbuildinfo ./src/*.js ./src/**.js ./src/**/*.js ./src/**/**/*.js ./src/**/**/**/*.js ./src/api/*.d.ts ./src/api/**.d.ts ./src/api/**/*.d.ts ./src/api/**/**/*.d.ts ./src/api/**/**/**/*.d.ts ./src/decorator/**/**/**/*.d.ts ",
     "clean:temp": "rm -rf .temp",
     "generate:npm": "mkdir .temp && cp package.json ./.temp/package.json && cp -r src/** ./.temp && cd .temp && npm publish",
     "generate:npm-beta": "mkdir .temp && cp package.json ./.temp/package.json && cp -r src/** ./.temp && cd .temp && npm publish --tag beta --registry=https://registry.npmjs.org --access=public",
@@ -22,6 +22,7 @@
   "files": [
     "api",
     "ui",
+    "decorator",
     "package.json"
   ],
   "author": "CheMingjun",
