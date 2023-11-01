@@ -1,6 +1,6 @@
 // @ts-ignore
 import axios from "axios";
-import { isEnvOfServer } from './env'
+import { isEnvOfGlobalEmit, isEnvOfServer } from './env'
 
 let AXIOS_INSTANCE: any = null
 
@@ -35,7 +35,7 @@ function init() {
 }
 
 function getAxiosInstance() {
-  if (isEnvOfServer() && typeof global !== 'undefined' && typeof (global as any).emitGlobalEvent !== 'undefined') {
+  if (isEnvOfServer() && isEnvOfGlobalEmit()) {
     if (!AXIOS_INSTANCE) {
       AXIOS_INSTANCE = {
         get: async (path: string, param: { params: Record<string, unknown> }) => {

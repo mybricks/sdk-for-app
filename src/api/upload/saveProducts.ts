@@ -1,6 +1,6 @@
 // @ts-ignore
 import { getAxiosInstance } from '../util'
-import { isEnvOfServer } from '../env'
+import { isEnvOfGlobalEmit, isEnvOfServer } from '../env'
 
 /**
  * 保存每个版本的制品到存储中
@@ -13,7 +13,17 @@ function saveProducts(param: { content: any, fileId: number, type: string, versi
   let blob;
   let formData: any;
   if(isEnvOfServer()) {
-    formData = { content, fileId, type, version };
+    if (isEnvOfGlobalEmit()) {
+      formData = { content, fileId, type, version };
+    } else {
+      blob = Buffer.from(content);
+      const FormData = require('form-data');
+      formData = new FormData();
+      formData.append('file', blob, `${fileId}.zip`);
+      formData.append('fileId', fileId);
+      formData.append('type', type);
+      formData.append('version', version);
+    }
   } else {
     blob = new Blob([content])
     // fix 客户端调用会报错
