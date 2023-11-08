@@ -39,10 +39,10 @@ export default function staticServer(param: { content: any, folderPath: string, 
     getAxiosInstance()
     .post('/paas/api/flow/saveFile', formData)
     .then(({ data }: any) => {
-      console.log('响应是：', data)
       if (data.code === 1 && data.data) {
         resolve(data.data)
       } else {
+        console.log('响应是：', data)
         reject(data.msg || '上传失败')
       }
     }).catch((err: any) => {
