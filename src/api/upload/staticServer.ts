@@ -40,6 +40,10 @@ export default function staticServer(param: { content: any, folderPath: string, 
     .post('/paas/api/flow/saveFile', formData)
     .then(({ data }: any) => {
       if (data.code === 1 && data.data) {
+        // sdk层面先将url的值改写为不包含hostname部分
+        if(data?.data?.visitSubPath) {
+          data.data.url = data.data.visitSubPath
+        }
         resolve(data.data)
       } else {
         console.log('响应是：', data)
