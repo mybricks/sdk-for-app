@@ -3,15 +3,15 @@ import { getAxiosInstance } from '../util'
 /**
  * 删除指定文件
  *
- * @param {{
+ * @param params {{
  *   fileId: number, 文件id
- *   updatorId: string, 删除者邮箱前缀
- * }} params
+ *   updatorId: string, 删除者id
+ * }}
  * @returns {Promise<{}>}
  */
 function deleteFile(params: {
   fileId: number,
-  updatorId: string
+  updatorId: number | string
 }): Promise<{}> {
   return new Promise((resolve, reject) => {
     getAxiosInstance()

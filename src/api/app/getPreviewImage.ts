@@ -1,4 +1,3 @@
-import * as htmlToImage from "html-to-image";
 import staticServer from "../upload/staticServer";
 import domToImage from "dom-to-image";
 

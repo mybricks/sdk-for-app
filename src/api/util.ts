@@ -1,6 +1,6 @@
 // @ts-ignore
 import axios from "axios";
-import { isEnvOfServer } from './env'
+import { isEnvOfGlobalEmit, isEnvOfServer } from './env'
 
 let AXIOS_INSTANCE: any = null
 
@@ -35,10 +35,30 @@ function init() {
 }
 
 function getAxiosInstance() {
-  if(!AXIOS_INSTANCE) {
-    init()
+  if (isEnvOfServer() && isEnvOfGlobalEmit()) {
+    if (!AXIOS_INSTANCE) {
+      AXIOS_INSTANCE = {
+        get: async (path: string, param: { params: Record<string, unknown> }) => {
+          return { data: await (global as any).emitGlobalEvent(path, 'GET', param?.params ?? {}) };
+        },
+        delete: async (path: string, param: { params: Record<string, unknown> }) => {
+          return { data: await (global as any).emitGlobalEvent(path, 'DELETE', param?.params ?? {}) };
+        },
+        post: async (path: string, params: Record<string, unknown> = {}) => {
+          return { data: await (global as any).emitGlobalEvent(path, 'POST', params) };
+        },
+        put: async (path: string, params: Record<string, unknown> = {}) => {
+          return { data: await (global as any).emitGlobalEvent(path, 'PUT', params) };
+        },
+      };
+    }
+  } else {
+    if(!AXIOS_INSTANCE) {
+      init();
+    }
   }
-  return AXIOS_INSTANCE
+
+  return AXIOS_INSTANCE;
 }
 
 export {

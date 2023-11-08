@@ -20,9 +20,9 @@ interface ITemplatesResponseDTO {
 /**
  * 
  *
- * @param {{ 
+ * @param params {{
  *  sceneId: number  8表示H5模版
- * }} params
+ * }
  * @returns {Promise<ITemplatesResponseDTO[]>}
  */
 function getTemplates(params: { sceneId: number}): Promise<ITemplatesResponseDTO[]> {
