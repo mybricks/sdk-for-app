@@ -4,6 +4,7 @@ import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE, T_Pr
 import API from '../../api/index'
 import axios from 'axios';
 import SDKModal from '../sdkModal/SDKModal';
+import DocHelper from '../docHelper/index';
 import { ComponentSelector } from '../componentSelector/index';
 import {getUrlParam, safeParse} from '../util';
 import GlobalContext from '../globalContext';
@@ -28,6 +29,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   const version = getUrlParam('version');
   const appMeta = API.App.getAppMeta();
   const [hierarchy, setHierarchy] = useState({}) // 初始化赋值
+  const [openDocHelper,setOpenDocHelper] = useState(false); // 启用文档助手
 
   useMemo(() => {
     (async () => {
@@ -54,7 +56,7 @@ export default function View({onLoad, className = ''}: T_Props) {
         const data = version ? await API.File.getFullFile({fileId, version}) : await API.File.getFullFile({fileId});
         const app = apps?.find(app => app.namespace === appMeta?.namespace);
         let hierarchyRes: Record<string, unknown> = { projectId: undefined, groupId: undefined };
-
+        
         if(fileId && fileId != 0) {
           hierarchyRes = (await API.File.getHierarchy({fileId})) || hierarchyRes;
           setHierarchy(hierarchyRes)
@@ -100,6 +102,10 @@ export default function View({onLoad, className = ''}: T_Props) {
           setDefaultComlibs(latestComponentLibrarys)
         }
 
+        if(allConfig?.system?.config?.docHelperEnabledApps instanceof Array && allConfig.system.config.docHelperEnabledApps.includes(API.App.getAppMeta()?.namespace) || !API.App.getAppMeta()?.namespace) {
+          setOpenDocHelper(true);
+        }
+        
         setConfig(allConfig);
         document.title = data.name + ` - ${allConfig?.system?.config?.title || app?.title || 'Mybricks-通用无代码开发平台'}`;
         document.querySelector('#favicon')?.setAttribute('href', allConfig?.system?.config?.favicon || '/favicon.ico');
@@ -271,6 +277,7 @@ export default function View({onLoad, className = ''}: T_Props) {
         {jsx}
         {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
         {materialSelectorInfo.open ? <ComponentSelector {...materialSelectorInfo} /> : null}
+        {openDocHelper && <DocHelper/>}
       </div>
     </GlobalContext.Provider>
   )
