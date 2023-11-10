@@ -19,7 +19,7 @@ const createCommonMaterial = (params: {
 }): Promise<string> => {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
-      .get('/api/material/common/create', { params })
+      .post('/api/material/common/create', params)
       .then(({ data }: { data?: { code: number, message: string} }) => {
         if (data) {
           if (data.code === 1) {
