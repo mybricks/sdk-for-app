@@ -64,7 +64,7 @@ const createCloudMaterial = (params: {
 } & CreateMaterialComponent): Promise<string> => {
   return new Promise((resolve, reject) => {
     getAxiosInstance()
-      .post('/api/material/component/create', params)
+      .post('/api/material/component/create', { component: params, config: {} })
       .then(({ data }: { data?: { code: number, message: string} }) => {
         if (data) {
           if (data.code === 1) {
