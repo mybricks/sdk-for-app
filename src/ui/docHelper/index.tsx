@@ -76,7 +76,7 @@ function DocHelperSVG() {
   );
 }
 
-export default function () {
+export default function ({ userName }) {
   const messageListRef = useRef(null);
 
   const dialogRef = useRef(null);
@@ -264,7 +264,7 @@ export default function () {
           fileId: "492761247109189",
           projectId: 492761135968325,
           params: {
-            用户: context.user?.name || context.user?.email,
+            用户: userName || context.user?.name || context.user?.email,
             问题: question,
             会话: session,
             问题来源类型: questionList.includes(question) ? "预设" : "自定义",
