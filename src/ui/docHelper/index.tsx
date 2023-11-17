@@ -1,6 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Button, AutoComplete, Select } from "antd";
 import css from "./index.less";
+import GlobalContext from "../globalContext";
 import axios from "axios";
 
 interface Reference {
@@ -114,6 +121,8 @@ export default function () {
       .catch();
   }, []);
 
+  const context = useContext(GlobalContext);
+
   const filterCategoryList = useCallback(
     (categoryKey?: string) => {
       if (categoryKey) {
@@ -128,7 +137,7 @@ export default function () {
         );
       } else {
         setFilteredCategoryList(
-          totalCategoryList.slice(0, 5).map((item) => {
+          totalCategoryList.map((item) => {
             return { value: item.category };
           })
         );
@@ -177,7 +186,7 @@ export default function () {
         );
       } else {
         setFilteredQuestionList(
-          questionList.slice(0, 5).map((item) => {
+          questionList.map((item) => {
             return { value: item };
           })
         );
@@ -248,16 +257,27 @@ export default function () {
     setQuestion("");
     clearCategory();
     axios
-      .post(API_DOMAIN_SERVICE, {
-        serviceId: "u_lagjM",
-        fileId: "492761247109189",
-        projectId: 492761135968325,
-        params: {
-          问题: question,
-          会话: session,
-          问题来源类型: questionList.includes(question) ? '预设' : '自定义'
+      .post(
+        API_DOMAIN_SERVICE,
+        {
+          serviceId: "u_lagjM",
+          fileId: "492761247109189",
+          projectId: 492761135968325,
+          params: {
+            用户: context.user?.name || context.user?.email,
+            问题: question,
+            会话: session,
+            问题来源类型: questionList.includes(question) ? "预设" : "自定义",
+            问题类型: questionList.includes(question) ? category : "",
+          },
         },
-      })
+        {
+          headers: {
+            // pragma: 'no-cache',
+            // 'Cache-Control': 'no-cache'
+          },
+        }
+      )
       .then((res) => {
         setLoading(false);
         if (res.data.code === 1 && res.data.data?.data?.length) {
@@ -271,7 +291,7 @@ export default function () {
           ]);
           setMessagesLength((pre) => pre + 1);
         } else {
-          throw new Error()
+          throw new Error();
         }
       })
       .catch(() => {
@@ -279,11 +299,11 @@ export default function () {
           ...pre.slice(0, -1),
           {
             role: "assistant",
-            content: [{ answer: "服务异常，请稍后再试。" }],
+            content: [{ answer: "抱歉，我暂时还无法回答该问题。" }],
           },
         ]);
       });
-  }, [loading, question, session, questionList]);
+  }, [loading, question, session, questionList, category]);
 
   const judge = useCallback((id, score) => {
     axios
@@ -329,19 +349,24 @@ export default function () {
             <div className={css.toolbar}>
               <div className={css.close} onClick={closeDialog}>
                 <svg
-                  t="1699522531766"
+                  t="1700203307845"
                   class="icon"
                   viewBox="0 0 1024 1024"
                   version="1.1"
                   xmlns="http://www.w3.org/2000/svg"
-                  p-id="31168"
+                  p-id="4435"
                   width="20"
                   height="20"
                 >
                   <path
-                    d="M801.645714 170.666667l51.833905 51.590095L565.150476 511.951238l288.353524 289.670095-51.833905 51.614477-288.109714-289.450667L225.426286 853.23581 173.592381 801.621333l288.329143-289.670095L173.592381 222.256762 225.426286 170.666667l288.109714 289.426285L801.645714 170.666667z"
-                    p-id="31169"
-                    fill="#8a8a8a"
+                    d="M807.6288 550.8096H224.2048c-17.5104 0-30.72-16.7936-30.72-38.7072s13.3632-38.7072 30.72-38.7072h583.424c17.5104 0 30.72 16.7936 30.72 38.7072s-14.0288 38.7072-30.72 38.7072z"
+                    p-id="4436"
+                    fill="#707070"
+                  ></path>
+                  <path
+                    d="M807.5776 554.0352H224.2048c-19.456 0-34.0992-18.0224-34.0992-41.9328s14.6432-41.9328 34.0992-41.9328h583.3728c19.456 0 34.0992 18.0224 34.0992 41.9328 0 23.1424-15.2576 41.9328-34.0992 41.9328zM224.2048 476.6208c-15.7696 0-27.648 15.36-27.648 35.4816s11.8784 35.4816 27.648 35.4816h583.3728c15.36 0 27.648-15.9232 27.648-35.4816s-11.8784-35.4816-27.648-35.4816z"
+                    p-id="4437"
+                    fill="#707070"
                   ></path>
                 </svg>
               </div>
@@ -366,23 +391,25 @@ export default function () {
                   {item.role === "assistant" && (
                     <div>
                       <div className={css.reference}>
-                        {item.content[0]?.reference && item.content[0].reference.filter(item => item.url).length > 0 && (
-                          <div className={css.referenceLink}>
-                            <h2>参考链接：</h2>
-                            <ul className={css.referenceLinkList}>
-                              {item.content[0].reference.map(
-                                (item) =>
-                                  item.url && (
-                                    <li className={css.referenceLinkItem}>
-                                      <a href={item.url} target="_blank">
-                                        {item.title}
-                                      </a>
-                                    </li>
-                                  )
-                              )}
-                            </ul>
-                          </div>
-                        )}
+                        {item.content[0]?.reference &&
+                          item.content[0].reference.filter((item) => item.url)
+                            .length > 0 && (
+                            <div className={css.referenceLink}>
+                              <h2>参考链接：</h2>
+                              <ul className={css.referenceLinkList}>
+                                {item.content[0].reference.map(
+                                  (item) =>
+                                    item.url && (
+                                      <li className={css.referenceLinkItem}>
+                                        <a href={item.url} target="_blank">
+                                          {item.title}
+                                        </a>
+                                      </li>
+                                    )
+                                )}
+                              </ul>
+                            </div>
+                          )}
                         {item.content[1]?.answer && (
                           <div className={css.referenceImg}>
                             <h2>参考图片：</h2>
@@ -474,7 +501,12 @@ export default function () {
                 e.key === "Enter" && send();
               }}
             />
-            <Button type="primary" className={css.button} onClick={send}>
+            <Button
+              type="primary"
+              className={css.button}
+              disabled={loading ? true : false}
+              onClick={send}
+            >
               发送
             </Button>
           </div>
