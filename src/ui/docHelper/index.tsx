@@ -40,7 +40,7 @@ const API_GET_TOTAL_CATEGORY_LIST =
 const API_GET_QUESTION_LIST =
   "https://my.mybricks.world/paas/api/gpt/knowledge-docs";
 const GREETING =
-  "您好，我是Mybricks智能QA小助手，请问有什么问题可以帮您解答吗？";
+  "您好，我是您的AI小助手。请问有什么问题需要帮您解答吗？建议您优先选择问题分类，可以获得更精确的回答哦！";
 
 function getUuid() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
@@ -344,7 +344,7 @@ export default function () {
           <div className={css.header}>
             <div className={css.title} onMouseDown={drag} onMouseUp={endDrag}>
               <DocHelperSVG />
-              智能QA小助手
+              AI小助手
             </div>
             <div className={css.toolbar}>
               <div className={css.close} onClick={closeDialog}>
