@@ -42,14 +42,6 @@ const API_GET_QUESTION_LIST =
 const GREETING =
   "您好，我是您的AI小助手。请问有什么问题需要帮您解答吗？建议您优先选择问题分类，可以获得更精确的回答哦！";
 
-function getUuid() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
 function DocHelperSVG() {
   return (
     <svg
@@ -97,8 +89,6 @@ export default function ({ userName }) {
     dialogRef.current.style.left = nl + "px";
     dialogRef.current.style.top = nt + "px";
   });
-
-  const [session, setSession] = useState("");
 
   const [messagesLength, setMessagesLength] = useState(1);
 
@@ -162,11 +152,11 @@ export default function ({ userName }) {
     axios.get(`${API_GET_QUESTION_LIST}?category=${category}`).then((res) => {
       if (res.data.code === 1 && res.data.data?.length) {
         setQuestionList(
-          res.data.data
+          Array.from(new Set(res.data.data
             .map((item) => {
               return item.question.split("、");
             })
-            .flat()
+            .flat()))
         );
       }
     });
@@ -214,7 +204,6 @@ export default function ({ userName }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setSession(getUuid());
     getTotalCategoryList();
   }, []);
 
@@ -266,7 +255,6 @@ export default function ({ userName }) {
           params: {
             用户: userName || context.user?.name || context.user?.email,
             问题: question,
-            会话: session,
             问题来源类型: questionList.includes(question) ? "预设" : "自定义",
             问题类型: questionList.includes(question) ? category : "",
           },
@@ -303,7 +291,7 @@ export default function ({ userName }) {
           },
         ]);
       });
-  }, [loading, question, session, questionList, category]);
+  }, [loading, question, questionList, category]);
 
   const judge = useCallback((id, score) => {
     axios
