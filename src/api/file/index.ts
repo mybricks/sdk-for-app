@@ -18,6 +18,7 @@ import batchPublishService from './batchPublishService'
 import getLatestModulePubByProjectId from "./getLatestModulePubByProjectId";
 import getFileRoot from "./getFileRoot";
 import getLatestPub from './getLatestPub'
+import getLatestSave from './getLatestSave'
 import getFileContentByFileIdAndPubVersion from './getFileContentByFileIdAndPubVersion'
 import getFile from './getFile'
 import getCooperationUser from './getCooperationUser'
@@ -26,6 +27,7 @@ import updateCooperationUser from './updateCooperationUser'
 import getSaveVersions from './getSaveVersions'
 
 const File = {
+  getLatestSave,
   getFileContentByFileIdAndPubVersion,
   getLatestPub,
   getLatestModulePubByProjectId,
