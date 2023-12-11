@@ -3,6 +3,7 @@ import React, { useCallback } from 'react'
 import Save from './save'
 import Publish from './publish'
 import Button from './button'
+import Tips from './tips'
 import { GoBack } from '../Icons'
 import Workflows from './workflows'
 import LastUpdate from './last-update-info'
@@ -81,5 +82,7 @@ Toolbar.Button = Button
 Toolbar.Workflows = Workflows
 
 Toolbar.Tools = Tools
+
+Toolbar.Tips = Tips
 
 export default Toolbar
