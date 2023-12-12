@@ -21,47 +21,51 @@ export default ({
   info = infoList
 }: TipsProps) => {
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
-  const [isOptModalOpen, setIsOptModalOpen] = useState(false);
 
   const infoListRender = ((list)=>{
     return (
-      list.map((item)=>{
-        return(
-          <div className={css.itemList}>
-            <div className={css.itemListLeft}>
-              {item.name}
+      <div className={css.infoItem}>
+        {list.map((item)=>{
+          return(
+            <div className={css.itemList}>
+              <div className={css.itemListLeft}>
+                {item.name}
+              </div>
+              <div className={css.itemListRight}>
+                {item.keys.map((key)=>{
+                  if(key!=='/'){
+                    return (<div className={css.liBtn}>{key}</div>)
+                  }else{
+                    return (<div>{key}</div>)
+                  }
+                })}
+              </div>
             </div>
-            <div className={css.itemListRight}>
-              {item.keys.map((key)=>{
-                if(key!=='/'){
-                  return (<div className={css.liBtn}>{key}</div>)
-                }else{
-                  return (<div>{key}</div>)
-                }
-              })}
-            </div>
-          </div>
-        )
-      })
+          )
+        })}
+      </div>
+      
     )
   })
   
   const optListRender = ((list)=>{
     return (
-      list.map((item)=>{
-        return(
-          <div className={css.itemList}>
-            <div className={css.itemListLeft}>
-              {item.name}
+      <div className={css.optItem}>
+        {list.map((item)=>{
+          return(
+            <div className={css.itemList}>
+              <div className={css.itemListLeft}>
+                {item.name}
+              </div>
+              <div className={css.itemListRight}>
+                {item.keys.map((key)=>{
+                  return (<div className={css.liOpt}>{key}</div>)
+                  })}
+              </div>
             </div>
-            <div className={css.itemListRight}>
-              {item.keys.map((key)=>{
-                return (<div className={css.liOpt}>{key}</div>)
-                })}
-            </div>
-          </div>
-        )
-      })
+          )
+        })}
+      </div>
     )
   })
 
@@ -69,24 +73,6 @@ export default ({
   return (
     <div>
       <div className={css.tipsPosition}>
-        <div onClick={()=>{setIsOptModalOpen(true)}} className={css.item}>
-          <Popover
-            placement='bottom'
-            overlayClassName={css.overlayFilePopover}
-            content={()=>{
-              return (
-                <div className={css.fileInfo}>
-                  常规操作
-                </div>
-              )
-            }}
-          >
-            <div className={css.filePosition}>
-              {optIcon}
-            </div>
-          </Popover>
-        </div>
-
         <div onClick={()=>{setIsInfoModalOpen(true)}} className={css.item}>
           <Popover
             placement='bottom'
@@ -94,11 +80,10 @@ export default ({
             content={()=>{
               return (
                 <div className={css.fileInfo}>
-                  快捷键
+                  快捷键和常规操作
                 </div>
               )
-            }}
-          >
+            }}>
             <div className={css.filePosition}>
               {keyIcon}
             </div>
@@ -128,30 +113,17 @@ export default ({
       {/* 快捷键 */}
       <Modal
         visible={isInfoModalOpen}
-        title={'快捷键'}
+        title={'快捷键和常规操作'}
         footer={null}
         onCancel={() => setIsInfoModalOpen(false)}
-        width={520}
+        width={1060}
       >
         <div className={css.itemContent}>
           {infoListRender(info)}
-        </div>
-      </Modal>
-
-      {/* 常规操作 */}
-      <Modal
-        visible={isOptModalOpen}
-        title={'常规操作'}
-        footer={null}
-        onCancel={() => setIsOptModalOpen(false)}
-        width={640}
-      >
-        <div className={css.itemContent}>
+          <Divider type="vertical" style={{height: 'inherit'}}/>
           {optListRender(opt)}
         </div>
       </Modal>
     </div>
-
-
   )
 }
