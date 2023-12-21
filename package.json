@@ -1,6 +1,6 @@
 {
   "name": "@mybricks/sdk-for-app",
-  "version": "1.0.20",
+  "version": "1.0.21-beta.8",
   "description": "SDK for application UI",
   "scripts": {
     "build:api": "npm run clean && tsc --build tsconfig.json",
