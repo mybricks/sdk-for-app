@@ -11,7 +11,8 @@ function save(params: {userId: any, fileId: any, shareType?: any, name?: any, co
     // @ts-ignore
     if(params?.isEncode && params?.content) {
       console.log('开启压缩')
-      params.content = encodeURI(params?.content.replace(/\./g, '#D#').replace(/\,/g, '#DH#').replace(/\;/g, '#FH#').replace(/\(/g, '#ZKH#').replace(/\)/g, '#YKH#').replace(/\:/g, '#MH#').replace(/\'/g, '#DYH#'))
+      params.content = btoa(encodeURIComponent(params?.content))
+      // params.content = encodeURI(params?.content.replace(/\./g, '#D#').replace(/\,/g, '#DH#').replace(/\;/g, '#FH#').replace(/\(/g, '#ZKH#').replace(/\)/g, '#YKH#').replace(/\:/g, '#MH#').replace(/\'/g, '#DYH#'))
     }
     getAxiosInstance()
     .post('/paas/api/workspace/saveFile', params)
