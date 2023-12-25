@@ -11,6 +11,7 @@ import GlobalContext from '../globalContext';
 import PreviewStorage from './previewStorage'
 // @ts-ignore
 import css from './css.less'
+import AICopilot from "../AICopilot";
 
 const DefaultConfig: IConfig = {
   system: {}
@@ -277,7 +278,7 @@ export default function View({onLoad, className = ''}: T_Props) {
         {jsx}
         {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
         {materialSelectorInfo.open ? <ComponentSelector {...materialSelectorInfo} /> : null}
-        {openDocHelper && <DocHelper/>}
+        {openDocHelper && <AICopilot/>}
       </div>
     </GlobalContext.Provider>
   )

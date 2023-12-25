@@ -5,6 +5,7 @@ import Locker from './locker'
 import { openFilePanel } from './filePanel'
 import PreviewStorage from './view/previewStorage'
 import DocHelper from './docHelper/index';
+import AICopilot from './AICopilot'
 
 export {
   View,
@@ -13,5 +14,5 @@ export {
   openFilePanel,
   Locker,
   PreviewStorage,
-  DocHelper
+  AICopilot
 }
