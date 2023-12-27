@@ -290,6 +290,8 @@ export default function ({ userName }) {
             content: [{ answer: "抱歉，我暂时还无法回答该问题。" }],
           },
         ]);
+        /** 捕获异常后，清除加载中状态，不然 发送按钮的禁用状态 */
+        setLoading(false)
       });
   }, [loading, question, questionList, category]);
 
