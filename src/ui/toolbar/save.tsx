@@ -10,6 +10,7 @@ interface SaveButtonProps {
   /** 右上角小红点提示可以保存 */
   dotTip?: boolean
   onClick?: () => void
+  onDisabledClick?: () => void
   children?: any
 }
 
@@ -19,12 +20,14 @@ export default ({
   dotTip = false,
   onClick,
   children,
+  onDisabledClick
 }: SaveButtonProps) => {
   return (
     <Button
       disabled={disabled}
       loading={loading}
       onClick={onClick}
+      onDisabledClick={onDisabledClick}
       type='primary'
     >
       <div className={css.saveDot} style={{visibility: (!disabled && dotTip) ? 'visible' : 'hidden' }}>＊</div>
