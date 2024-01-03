@@ -27,6 +27,7 @@ const getPreviewImage = async ({ element, name }: GetPreviewImageProps) => {
     content: imageBlob,
     folderPath: `/imgs/${fileId || Date.now()}`,
     fileName: name || `${fileId || uuid()}.png`,
+    noHash: true
   })) as { url: string };
 
   return res.url;
