@@ -9,6 +9,7 @@ const getPreviewImage = async ({ element, name }: GetPreviewImageProps) => {
   if (!element) {
     throw new Error("element is null");
   }
+  const fileId = getUrlParam('id');
 
   // const div = document.createElement("div");
 
@@ -24,12 +25,25 @@ const getPreviewImage = async ({ element, name }: GetPreviewImageProps) => {
 
   const res = (await staticServer({
     content: imageBlob,
-    folderPath: `/imgs/${Date.now()}`,
-    fileName: name || `${uuid()}.png`,
+    folderPath: `/imgs/${fileId || Date.now()}`,
+    fileName: name || `${fileId || uuid()}.png`,
   })) as { url: string };
 
   return res.url;
 };
+
+const getUrlParam = (key: string): string | undefined => {
+  const searchAry: string[] = location.search.slice(1).split('&');
+
+  for(let i = 0; i < searchAry.length; i++) {
+    const kv = searchAry[i].split('=');
+    if (kv[0] === key) {
+      return kv[1];
+    }
+  }
+
+  return;
+}
 
 const snapshot = async (dom: HTMLDivElement) => {
   const container = document.createElement("div");
