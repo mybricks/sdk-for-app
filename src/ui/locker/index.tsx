@@ -3,7 +3,8 @@ import React, {
   useState,
   useEffect,
   useContext,
-  useCallback
+  useCallback,
+  useRef
 } from 'react'
 
 import {
@@ -15,7 +16,7 @@ import {
   Modal,
   Input,
   Checkbox,
-  notification
+  notification,
 } from 'antd';
 import axios from 'axios';
 import { DownOutlined } from '@ant-design/icons'
@@ -117,6 +118,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
   const [operationLoading, setOperationLoading] = useState(false)
   const [showVersionComparison, setShowVersionComparison] = useState(false)
   const [file, setFile] = useState({version: fileContent?.version || null})
+  const notificationToastKey = useRef<string | null>(null);
 
   useEffect(() => {
     location.href.indexOf('DEBUG') === -1 ? lockerContext.setTimer() : null
@@ -125,6 +127,22 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
       lockerContext.clearTimer()
     }
   }, [])
+
+  useEffect(() => {
+    if (!notificationToastKey.current) {
+      for (let item of cooperationUsers) {
+        if (user?.id === item?.id) {
+          if (item.status !== 1) {
+            // 第一次进入页面且没有上锁编辑弹出提示
+            notificationToast()
+          }
+          else {
+            break;
+          }
+        } 
+      }
+    }
+  }, [cooperationUsers])
 
   useEffect(() => {
     if (!lockerProps.compareVersion) {
@@ -189,6 +207,10 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     })
   }, [])
 
+  const notificationToast = useCallback(()=>{
+    notificationToastKey.current = Notification({message: '当前页面未上锁', description: '如果需要编辑，请先点击头像上锁再进行编辑', showButton: false})
+  }, [])
+
   const lockToggle = useCallback((cooperationUser) => {
     setOperationLoading(true)
     const status = cooperationUser.status === 1 ? 0 : 1
@@ -205,8 +227,17 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
         if (data.data) {
           if (status === 1) {
             message.success('上锁成功')
+            // notificationToastKey不为空 有提示弹窗先销毁
+            if (!!notificationToastKey.current) {
+              notification?.close(notificationToastKey.current)
+              notificationToastKey.current = null
+            }
           } else {
             message.success('解锁成功')
+            // 解锁没有编辑权限就弹出提示
+            if (!notificationToastKey.current) {
+              notificationToast()
+            }
           }
         } else {
           message.error(data.message)
@@ -758,9 +789,9 @@ const iconGou = (
   </svg>
 )
 
-function Notification({message, description}) {
+function Notification({message, description, showButton = true}) {
   const key = `open${Date.now()}`
-  const btn = (
+  const btn = showButton ? (
     <div className='fangzhou-theme'>
       <Button type='default' size='small' onClick={() => notification.close(key)} style={{marginRight: 8}}>
         关闭
@@ -769,7 +800,7 @@ function Notification({message, description}) {
         刷新页面
       </Button>
     </div>
-  )
+  ) : void 0;
   const args = {
     message,
     description,
@@ -780,4 +811,6 @@ function Notification({message, description}) {
   }
 
   notification.warning(args)
+
+  return key;
 }
