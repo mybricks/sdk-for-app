@@ -1,23 +1,22 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Button, Input, Space } from "antd";
 import css from "./index.less";
 import GlobalContext from "../globalContext";
 import axios from "axios";
+import Markdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
 
 interface Message {
   role: "user" | "assistant";
   end?: boolean;
   content: string;
+  cost?: {
+    token: number;
+    time: number;
+  };
 }
 
-const GREETING =
-  "您好，我是您的AI Copilot。请问有什么可以帮您？";
+const GREETING = "您好，我是您的AI Copilot。请问有什么可以帮您？";
 
 function DocHelperSVG() {
   return (
@@ -109,70 +108,95 @@ export default function () {
   }, []);
 
   const generate = useCallback(() => {
-    axios.post('http://localhost:13000/api/ai/generatePage',{
-      question: messages.at(-1)?.content
-    }).then(res => {
-      console.log(res)
-    })
-  }, [messages])
+    axios
+      .post("http://localhost:13000/api/ai/generatePage", {
+        question: messages.at(-1)?.content,
+      })
+      .then((res) => {
+        console.log(res);
+      });
+  }, [messages]);
 
   const send = useCallback(() => {
     if (loading || !input) {
       return;
     }
-    setMessages((pre) => [
-      ...pre,
-      { role: "user", content: input },
-      { role: "assistant", content: "努力思考中..." },
-    ]);
+    setMessages((pre) => [...pre, { role: "user", content: input }, { role: "assistant", content: "努力思考中..." }]);
     setMessagesLength((pre) => pre + 1);
     setLoading(true);
     setInput("");
 
     axios
-      .post(
-        'http://localhost:13000/api/ai/confirmRequirement',
-        {
-          messages: [...messages.slice(1), { role: 'user', content: input }].map(item => {
-            if (item.role === 'assistant') {
-              return {
-                role: item.role,
-                content: item.content
-              }
-            } else {
-              return item
-            }
-          })
-        },
-        {
-          headers: {
-            // pragma: 'no-cache',
-            // 'Cache-Control': 'no-cache'
-          },
-        }
-      )
+      .post("http://localhost:13000/api/ai/intent-conjecture2", {
+        demand: input,
+      })
       .then((res) => {
-        setLoading(false);
-        if (res.data.code === 1 && res.data.data) {
-          console.log(res.data.data)
+        console.log(res);
+        const { data } = res;
+        if (data.code === 1 && data.data) {
+          let tokenCost = data.data.intentCost.usage.total_tokens;
+          let timeCost = data.data.intentCost.time;
+          let maxLogTimeCost = 0
+          data.data.logs.map((log) => {
+            if (log.cost.vec.time + log.cost.generate.time > maxLogTimeCost) {
+              maxLogTimeCost = log.cost.vec.time + log.cost.generate.time
+            }
+            tokenCost += log.cost.generate.usage.total_tokens;
+          });
+          timeCost += maxLogTimeCost;
           setMessages((pre) => [
             ...pre.slice(0, -1),
-            res.data.data
+            {
+              role: "assistant",
+              content: `\`\`\`json\n${JSON.stringify(data.data.result, undefined, 2)}\n\`\`\``,
+              end: true,
+              cost: {
+                token: tokenCost,
+                time: timeCost,
+              },
+            },
           ]);
           setMessagesLength((pre) => pre + 1);
         } else {
           throw new Error();
         }
       })
-      .catch(() => {
-        setMessages((pre) => [
-          ...pre.slice(0, -1),
-          {
-            role: "assistant",
-            content: "抱歉，我暂时还不会哦。",
-          },
-        ]);
+      .finally(() => {
+        setLoading(false);
       });
+
+    // axios
+    //   .post("http://localhost:13000/api/ai/confirmRequirement", {
+    //     messages: [...messages.slice(1), { role: "user", content: input }].map((item) => {
+    //       if (item.role === "assistant") {
+    //         return {
+    //           role: item.role,
+    //           content: item.content,
+    //         };
+    //       } else {
+    //         return item;
+    //       }
+    //     }),
+    //   })
+    //   .then((res) => {
+    //     setLoading(false);
+    //     if (res.data.code === 1 && res.data.data) {
+    //       console.log(res.data.data);
+    //       setMessages((pre) => [...pre.slice(0, -1), res.data.data]);
+    //       setMessagesLength((pre) => pre + 1);
+    //     } else {
+    //       throw new Error();
+    //     }
+    //   })
+    //   .catch(() => {
+    //     setMessages((pre) => [
+    //       ...pre.slice(0, -1),
+    //       {
+    //         role: "assistant",
+    //         content: "抱歉，我暂时还不会哦。",
+    //       },
+    //     ]);
+    //   });
   }, [loading, input]);
 
   useEffect(() => {
@@ -228,16 +252,28 @@ export default function () {
                   }
                 >
                   <div>
-                    {item.content}
-                    {item.end &&
+                    <Markdown rehypePlugins={[rehypeHighlight]}>{item.content}</Markdown>
+                    {item.end && (
                       <div>
                         <Space>
-                          <button className={css.button} onClick={generate}>生成</button>
-                          <button className={css.button} onClick={ }>取消</button>
+                          <button className={css.button} onClick={generate}>
+                            生成
+                          </button>
+                          <button className={css.button} onClick={}>
+                            取消
+                          </button>
                         </Space>
                       </div>
-                    }
+                    )}
                   </div>
+                </div>
+                <div>
+                  {item.cost && (
+                    <div className={css.cost}>
+                      <span>耗时：{item.cost.time} ms</span>
+                      <span>耗费：{item.cost.token} token</span>
+                    </div>
+                  )}
                 </div>
               </li>
             ))}
@@ -252,12 +288,7 @@ export default function () {
                 e.key === "Enter" && send();
               }}
             />
-            <Button
-              type="primary"
-              className={css.button}
-              disabled={loading ? true : false}
-              onClick={send}
-            >
+            <Button type="primary" className={css.button} disabled={loading ? true : false} onClick={send}>
               发送
             </Button>
           </div>

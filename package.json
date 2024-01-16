@@ -70,6 +70,8 @@
     "dayjs": "^1.11.7",
     "dom-to-image": "^2.6.0",
     "form-data": "^4.0.0",
-    "html-to-image": "^1.11.11"
+    "html-to-image": "^1.11.11",
+    "react-markdown": "^9.0.1",
+    "rehype-highlight": "^7.0.0"
   }
 }
