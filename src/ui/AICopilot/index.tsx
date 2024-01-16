@@ -107,15 +107,34 @@ export default function () {
     }
   }, []);
 
-  const generate = useCallback(() => {
-    axios
-      .post("http://localhost:13000/api/ai/generatePage", {
-        question: messages.at(-1)?.content,
+  const generate = useCallback((demand: string) => {
+    return axios
+      .post("http://localhost:13000/api/ai/intent-conjecture2", {
+        demand,
       })
       .then((res) => {
         console.log(res);
+        const { data } = res;
+        if (data.code === 1 && data.data) {
+          let tokenCost = data.data.intentCost.usage.total_tokens;
+          let timeCost = data.data.intentCost.time;
+          let maxLogTimeCost = 0;
+          data.data.logs.map((log) => {
+            if (log.cost.vec.time + log.cost.generate.time > maxLogTimeCost) {
+              maxLogTimeCost = log.cost.vec.time + log.cost.generate.time;
+            }
+            tokenCost += log.cost.generate.usage.total_tokens;
+          });
+          timeCost += maxLogTimeCost;
+          console.log(data.data);
+        } else {
+          throw new Error();
+        }
+      })
+      .finally(() => {
+        setLoading(false);
       });
-  }, [messages]);
+  }, []);
 
   const send = useCallback(() => {
     if (loading || !input) {
@@ -127,32 +146,30 @@ export default function () {
     setInput("");
 
     axios
-      .post("http://localhost:13000/api/ai/intent-conjecture2", {
-        demand: input,
+      .post("http://localhost:13000/api/ai/confirmRequirement2", {
+        messages: [...messages.slice(1), { role: "user", content: input }].map((item) => {
+          if (item.role === "assistant") {
+            return {
+              role: item.role,
+              content: item.content,
+            };
+          } else {
+            return item;
+          }
+        }),
       })
       .then((res) => {
-        console.log(res);
-        const { data } = res;
-        if (data.code === 1 && data.data) {
-          let tokenCost = data.data.intentCost.usage.total_tokens;
-          let timeCost = data.data.intentCost.time;
-          let maxLogTimeCost = 0
-          data.data.logs.map((log) => {
-            if (log.cost.vec.time + log.cost.generate.time > maxLogTimeCost) {
-              maxLogTimeCost = log.cost.vec.time + log.cost.generate.time
-            }
-            tokenCost += log.cost.generate.usage.total_tokens;
-          });
-          timeCost += maxLogTimeCost;
+        setLoading(false);
+        if (res.data.code === 1 && res.data.data) {
+          console.log(res.data.data);
           setMessages((pre) => [
             ...pre.slice(0, -1),
             {
-              role: "assistant",
-              content: `\`\`\`json\n${JSON.stringify(data.data.result, undefined, 2)}\n\`\`\``,
-              end: true,
+              ...res.data.data,
+              end: res.data.data.content.includes("需求总结："),
               cost: {
-                token: tokenCost,
-                time: timeCost,
+                token: res.data.data.cost.usage.total_tokens,
+                time: res.data.data.cost.time,
               },
             },
           ]);
@@ -161,42 +178,15 @@ export default function () {
           throw new Error();
         }
       })
-      .finally(() => {
-        setLoading(false);
+      .catch(() => {
+        setMessages((pre) => [
+          ...pre.slice(0, -1),
+          {
+            role: "assistant",
+            content: "抱歉，我暂时还不会哦。",
+          },
+        ]);
       });
-
-    // axios
-    //   .post("http://localhost:13000/api/ai/confirmRequirement", {
-    //     messages: [...messages.slice(1), { role: "user", content: input }].map((item) => {
-    //       if (item.role === "assistant") {
-    //         return {
-    //           role: item.role,
-    //           content: item.content,
-    //         };
-    //       } else {
-    //         return item;
-    //       }
-    //     }),
-    //   })
-    //   .then((res) => {
-    //     setLoading(false);
-    //     if (res.data.code === 1 && res.data.data) {
-    //       console.log(res.data.data);
-    //       setMessages((pre) => [...pre.slice(0, -1), res.data.data]);
-    //       setMessagesLength((pre) => pre + 1);
-    //     } else {
-    //       throw new Error();
-    //     }
-    //   })
-    //   .catch(() => {
-    //     setMessages((pre) => [
-    //       ...pre.slice(0, -1),
-    //       {
-    //         role: "assistant",
-    //         content: "抱歉，我暂时还不会哦。",
-    //       },
-    //     ]);
-    //   });
   }, [loading, input]);
 
   useEffect(() => {
@@ -256,11 +246,8 @@ export default function () {
                     {item.end && (
                       <div>
                         <Space>
-                          <button className={css.button} onClick={generate}>
+                          <button className={css.button} onClick={() => generate(item.content.split('需求总结：')[1])}>
                             生成
-                          </button>
-                          <button className={css.button} onClick={}>
-                            取消
                           </button>
                         </Space>
                       </div>
