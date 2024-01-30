@@ -19,14 +19,14 @@ const generateAssetMapPlugin = (option: AssetMapPluginOption) => {
 
 	return [
 		new HtmlWebpackPlugin({
-			filename,
+			filename: filename.replace('.html', '.offline.html'),
 			chunks,
 			templateContent: (param: any) => {
 				return templateContent ? templateContent(param) : (template ? fs.readFileSync(template, 'utf-8') : '');
 			}
 		}),
 		new HtmlWebpackPlugin({
-			filename: filename.replace('.html', '.offline.html'),
+			filename,
 			chunks,
 			templateContent: (param: any) => {
 				let originContent = templateContent ? templateContent(param) : (template ? fs.readFileSync(template, 'utf-8') : '');
