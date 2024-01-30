@@ -18,7 +18,8 @@
   },
   "include": [
     "src/api",
-    "src/decorator"
+    "src/decorator",
+    "src/plugin"
   ],
   "exclude": ["node_modules"]
 }
