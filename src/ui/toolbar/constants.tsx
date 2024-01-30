@@ -32,6 +32,10 @@ export const infoList = [
   {
     name: '选择组件',
     keys: ['Drag','Click']
+  },
+  {
+    name: '拖动画布',
+    keys: ['Drag','Space']
   }
 ]
 
