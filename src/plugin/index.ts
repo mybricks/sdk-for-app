@@ -31,7 +31,7 @@ const generateAssetMapPlugin = (option: AssetMapPluginOption) => {
 			templateContent: (param: any) => {
 				let originContent = templateContent ? templateContent(param) : (template ? fs.readFileSync(template, 'utf-8') : '');
 				[...assetsMap, ...INLINE_ASSETS].forEach(asset => {
-					originContent = originContent.replace(new RegExp(`^${asset.path}$`, 'g'), asset.CDN);
+					originContent = originContent.replace(new RegExp(`(?<=")${asset.path}(?=")`, 'g'), asset.CDN);
 				});
 
 				return originContent;
