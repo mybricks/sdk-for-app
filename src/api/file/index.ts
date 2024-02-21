@@ -25,6 +25,7 @@ import getCooperationUser from './getCooperationUser'
 import createCooperationUser from './createCooperationUser'
 import updateCooperationUser from './updateCooperationUser'
 import getSaveVersions from './getSaveVersions'
+import getPubAssetPath from './getPubAssetPath'
 
 const File = {
   getLatestSave,
@@ -37,6 +38,7 @@ const File = {
   save,
   create,
   createByTemplate,
+  getPubAssetPath,
   delete: deleteFile,
   getDeliveryChannel,
   updateDeliveryChannel,
