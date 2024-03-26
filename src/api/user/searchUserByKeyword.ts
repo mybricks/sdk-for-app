@@ -15,7 +15,7 @@ async function searchUserByKeyword({ keyword }: any): Promise<T_UserInfo> {
     }
 
     getAxiosInstance()
-    .get('/paas/api/user/searchByKeyword', { keyword })
+    .post('/paas/api/user/searchByKeyword', { keyword })
     .then(({ data }: any) => {
       if (data?.code === 1) {
         resolve(data?.data)
