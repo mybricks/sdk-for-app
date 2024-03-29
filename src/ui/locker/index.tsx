@@ -298,7 +298,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
               overlayClassName={css.overlayUsersListPopover}
               content={() => {
                 return (
-                  <div className={css.userInfo}>{user.email}</div>
+                  <div className={css.userInfo}>{user.name || user.email}</div>
                 )
               }}
             >
