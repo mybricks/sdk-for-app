@@ -11,12 +11,14 @@
 
   .left {
     display: flex;
+
     .leftContent {
       display: flex;
       align-items: center;
       justify-content: space-between;
       width: 235px;
     }
+
     .leftInfo {
       display: flex;
       align-items: center;
@@ -43,15 +45,15 @@
     display: flex;
     align-items: center;
 
-    > *:not(:last-child) {
+    >*:not(:last-child) {
       margin: 0px 5px;
     }
 
-    > *:last-child {
+    >*:last-child {
       margin-right: 0px;
     }
   }
-  
+
   .button {
     outline: 0;
     border: 0;
@@ -66,6 +68,7 @@
     box-shadow: 0 2px 4px 0 rgb(54 58 80 / 32%);
     color: rgba(0, 0, 0, 0.9);
     cursor: pointer;
+    white-space: nowrap;
 
     // &:last-child {
     //   margin-right: 0px;
@@ -74,7 +77,7 @@
     &:hover {
       box-shadow: 0 2px 10px 0 rgb(0 0 0 / 20%);
     }
-  
+
     .saveDot {
       position: absolute;
       top: -1px;
@@ -89,7 +92,7 @@
       opacity: 0.4;
       cursor: not-allowed;
     }
-  
+
     :global {
       .ant-dropdown-menu {
         .ant-dropdown-menu-item {
@@ -125,7 +128,7 @@
     align-items: center;
     line-height: 100%;
 
-    & > svg {
+    &>svg {
       margin-left: 4px;
     }
   }
@@ -137,7 +140,7 @@
   justify-content: center;
 }
 
-.item{
+.item {
   margin: 0 5px
 }
 
@@ -146,7 +149,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  cursor: pointer; 
+  cursor: pointer;
   vertical-align: middle;
   color: #999;
   font-size: 20px;
@@ -157,7 +160,7 @@
 .filePosition:hover {
   display: flex;
   overflow: hidden;
-  cursor: pointer; 
+  cursor: pointer;
   color: #555;
   background-color: #EBECEE;
   border-radius: 50%;
@@ -167,24 +170,27 @@
 
 .overlayFilePopover {
   padding-top: 0 !important;
+
   :global {
     .ant-popover-arrow {
       display: none !important;
     }
+
     .ant-popover-inner {
       padding: 0 !important;
     }
+
     .ant-popover-inner-content {
       padding: 0 !important;
     }
   }
 }
 
-.infoItem{
+.infoItem {
   width: 450px
 }
 
-.optItem{
+.optItem {
   width: 500px
 }
 
@@ -194,13 +200,13 @@
   padding: 4px 10px;
 }
 
-.itemContent{
+.itemContent {
   height: auto;
   display: flex;
   justify-content: space-between;
 }
 
-.itemList{
+.itemList {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
@@ -209,13 +215,13 @@
   font-size: 14px;
 }
 
-.itemListLeft{
+.itemListLeft {
   display: flex;
   align-items: center;
-  
+
 }
 
-.itemListRight{
+.itemListRight {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -225,22 +231,22 @@
   line-height: 24px;
 }
 
-.liBtn{
+.liBtn {
   min-width: 12px;
-  height: 24px; 
-  line-height: 24px; 
-  text-align: center; 
-  background-color:#fff; 
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background-color: #fff;
   border-radius: 3px;
   border: 1px solid #ccc;
   padding: 0 7px;
   margin: 0 2px;
 }
 
-.liOpt{
+.liOpt {
   min-width: 12px;
-  height: 24px; 
-  line-height: 24px; 
+  height: 24px;
+  line-height: 24px;
   text-align: center;
   margin: 0 2px;
   display: flex;
