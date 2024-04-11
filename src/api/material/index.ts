@@ -4,6 +4,7 @@ import getNextVersionByNamespace from './getNextVersionByNamespace'
 import createCommonMaterial from './createCommonMaterial'
 import createTheme from './createTheme'
 import createCloudMaterial from './createCloudMaterial';
+import getMaterialList from './getMaterialList'
 
 const Material = {
   getLatestComponentLibrarys,
@@ -11,7 +12,8 @@ const Material = {
   getNextVersionByNamespace,
   createCommonMaterial,
   createTheme,
-  createCloudMaterial
+  createCloudMaterial,
+  getMaterialList
 }
 
 export default Material
