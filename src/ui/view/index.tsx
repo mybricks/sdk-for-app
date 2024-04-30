@@ -98,7 +98,7 @@ export default function View({onLoad, className = ''}: T_Props) {
 
         const componentLibraryNamespaceList = allConfig?.['mybricks-material']?.config?.apps?.find((app) => app.namespace === appMeta?.namespace)?.componentLibraryNamespaceList
         if (Array.isArray(componentLibraryNamespaceList) && componentLibraryNamespaceList.length) {
-          const latestComponentLibrarys = await API.Material.getLatestComponentLibrarys(componentLibraryNamespaceList)
+          const latestComponentLibrarys = await API.Material.getLatestComponentLibrariesByPOST(componentLibraryNamespaceList)
           setDefaultComlibs(latestComponentLibrarys)
         }
 
