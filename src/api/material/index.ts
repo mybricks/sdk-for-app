@@ -5,7 +5,7 @@ import createCommonMaterial from './createCommonMaterial'
 import createTheme from './createTheme'
 import createCloudMaterial from './createCloudMaterial';
 import getMaterialList from './getMaterialList'
-import getLatestComponentLibrariesByPOST from "./getLatestComponentLibrariesByPOST";
+import getLatestComponentLibrariesByPOST from './getLatestComponentLibrariesByPOST';
 
 const Material = {
   getLatestComponentLibrarys,
