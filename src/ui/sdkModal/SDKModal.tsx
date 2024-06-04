@@ -1,4 +1,4 @@
-import React, {FC, useCallback, useEffect, useRef} from 'react';
+import React, { FC, useCallback, useEffect, useRef } from 'react';
 import { Modal } from 'antd';
 
 import styles from './SDKModal.less';
@@ -17,7 +17,7 @@ const MYBRICKS_MSG_CHANNEL = 'MYBRICKS_MSG_CHANNEL';
 const SDKModal: FC<SDKModalProps> = props => {
 	const { url, open, onClose, onSuccess, params } = props.modalInfo;
 	const iframeRef = useRef<HTMLIFrameElement>(null);
-	
+
 	const onMessage = useCallback((event) => {
 		const { key, action, payload } = event.data;
 		if (key === MYBRICKS_MSG_CHANNEL) {
@@ -38,28 +38,30 @@ const SDKModal: FC<SDKModalProps> = props => {
 			}
 		}
 	}, [onClose, onSuccess, params]);
-	
+
 	useEffect(() => {
 		window.addEventListener('message', onMessage);
 		return () => {
 			window.removeEventListener('message', onMessage);
 		};
 	}, [onMessage]);
-	
-  return (
-	  <Modal
-		  closable={false}
-		  className={styles.SDKModal}
-		  centered
-		  open={open}
+
+	return (
+		<Modal
+			closable={false}
+			className={styles.SDKModal}
+			maskStyle={{ zIndex: 10000 }}
+			wrapClassName='SDKModalWrap'
+			centered
+			open={open}
 			visible={open}
-		  width={1200}
-		  destroyOnClose
-		  footer={null}
-	  >
-		  <iframe className={styles.iframe} ref={iframeRef} src={url} frameBorder="0"></iframe>
-	  </Modal>
-  );
+			width={1200}
+			destroyOnClose
+			footer={null}
+		>
+			<iframe className={styles.iframe} ref={iframeRef} src={url} frameBorder="0"></iframe>
+		</Modal>
+	);
 };
 
 export default SDKModal;
