@@ -1,12 +1,12 @@
-import React, {forwardRef, ForwardRefRenderFunction, useImperativeHandle, useLayoutEffect, useMemo, useState} from "react";
-import {message} from 'antd';
+import React, { forwardRef, ForwardRefRenderFunction, useImperativeHandle, useLayoutEffect, useMemo, useState } from "react";
+import { message } from 'antd';
 import { FileContent, ViewProps, ViewRef, IInstalledApp, IConfig, API_CODE, T_Props } from '../type'
 import API from '../../api/index'
 import axios from 'axios';
 import SDKModal from '../sdkModal/SDKModal';
 import DocHelper from '../docHelper/index';
 import { ComponentSelector } from '../componentSelector/index';
-import {getUrlParam, safeParse} from '../util';
+import { getUrlParam, safeParse } from '../util';
 import GlobalContext from '../globalContext';
 import PreviewStorage from './previewStorage'
 // @ts-ignore
@@ -16,7 +16,7 @@ const DefaultConfig: IConfig = {
   system: {}
 }
 
-export default function View({onLoad, className = ''}: T_Props) {
+export default function View({ onLoad, useCustomLoad, onCustomLoad, className = '' }: T_Props) {
   const [jsx, setJSX] = useState(<Loading />)
   const [user, setUser] = useState<any>({});
   const [config, setConfig] = useState<IConfig | null>(null);
@@ -29,7 +29,7 @@ export default function View({onLoad, className = ''}: T_Props) {
   const version = getUrlParam('version');
   const appMeta = API.App.getAppMeta();
   const [hierarchy, setHierarchy] = useState({}) // 初始化赋值
-  const [openDocHelper,setOpenDocHelper] = useState(false); // 启用文档助手
+  const [openDocHelper, setOpenDocHelper] = useState(false); // 启用文档助手
 
   useMemo(() => {
     (async () => {
@@ -39,10 +39,10 @@ export default function View({onLoad, className = ''}: T_Props) {
           fileId,
           HAINIU_UserInfo: localStorage.getItem('HAINIU_UserInfo')
         })
-        if(loginUserRes?.data?.code !== 1) {
+        if (loginUserRes?.data?.code !== 1) {
           message.warn(loginUserRes.msg || '登录信息已过期，请重新登录', 2)
           setTimeout(() => {
-            if(location.href.indexOf('jumped') === -1) {
+            if (location.href.indexOf('jumped') === -1) {
               document.cookie = 'mybricks-login-user=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;'
               location.href = `/?jumped=true&redirectUrl=${encodeURIComponent(location.href)}`
             }
@@ -50,19 +50,20 @@ export default function View({onLoad, className = ''}: T_Props) {
           return
         }
         const loginUser = loginUserRes?.data?.data;
-        setUser({...loginUser, isAdmin: loginUser?.isAdmin});
+        setUser({ ...loginUser, isAdmin: loginUser?.isAdmin });
         const apps: any = await API.App.getInstalledList()
         setInstalledApps(apps);
-        const data = version ? await API.File.getFullFile({fileId, version}) : await API.File.getFullFile({fileId});
+        let data;
+        if (fileId && fileId != 0) data = version ? await API.File.getFullFile({ fileId, version }) : await API.File.getFullFile({ fileId });
         const app = apps?.find(app => app.namespace === appMeta?.namespace);
         let hierarchyRes: Record<string, unknown> = { projectId: undefined, groupId: undefined };
-        
-        if(fileId && fileId != 0) {
-          hierarchyRes = (await API.File.getHierarchy({fileId})) || hierarchyRes;
+
+        if (fileId && fileId != 0) {
+          hierarchyRes = (await API.File.getHierarchy({ fileId })) || hierarchyRes;
           setHierarchy(hierarchyRes)
         }
         // @ts-ignore
-        setContent({...data, content: safeParse(data?.content || "{}")});
+        setContent({ ...data, content: safeParse(data?.content || "{}") });
         const namespaces = [appMeta?.namespace, 'system', 'mybricks-material'];
         const configRes = await API.Setting.getSetting(
           namespaces,
@@ -102,14 +103,17 @@ export default function View({onLoad, className = ''}: T_Props) {
           setDefaultComlibs(latestComponentLibrarys)
         }
 
-        if(allConfig?.system?.config?.docHelperEnabledApps instanceof Array && allConfig.system.config.docHelperEnabledApps.includes(API.App.getAppMeta()?.namespace) || !API.App.getAppMeta()?.namespace) {
+        if (allConfig?.system?.config?.docHelperEnabledApps instanceof Array && allConfig.system.config.docHelperEnabledApps.includes(API.App.getAppMeta()?.namespace) || !API.App.getAppMeta()?.namespace) {
           setOpenDocHelper(true);
         }
-        
         setConfig(allConfig);
-        document.title = data.name + ` - ${allConfig?.system?.config?.title || app?.title || 'Mybricks-通用无代码开发平台'}`;
+        if (!data?.name) {
+          document.title = allConfig?.system?.config?.title || app?.title || 'Mybricks-通用无代码开发平台'
+        } else {
+          document.title = data.name + ` - ${allConfig?.system?.config?.title || app?.title || 'Mybricks-通用无代码开发平台'}`;
+        }
         document.querySelector('#favicon')?.setAttribute('href', allConfig?.system?.config?.favicon || '/favicon.ico');
-      } catch(e: any) {
+      } catch (e: any) {
         console.log(e)
         message.error(`应用初始化数据失败, ${e.message}`);
       }
@@ -117,8 +121,12 @@ export default function View({onLoad, className = ''}: T_Props) {
   }, [fileId])
 
   useLayoutEffect(() => {
-    if(user && content && installedApps && config && !!Object.keys(hierarchy).length) {
-      const nodes = onLoad({
+    let loadFn: T_Props['onLoad'] | T_Props['onCustomLoad'];
+    if (useCustomLoad && user && installedApps && config) loadFn = onCustomLoad;
+    else if (user && content && installedApps && config && !!Object.keys(hierarchy).length) loadFn = onLoad;
+
+    if (loadFn) {
+      const nodes = loadFn({
         user,
         get installedApps() {
           return installedApps;
@@ -145,7 +153,7 @@ export default function View({onLoad, className = ''}: T_Props) {
           params = {},
           onSuccess
         }: { url: string, params: any, onSuccess: Function, onFailed: Function }) {
-          if(url.startsWith('MYBRICKS://')) {
+          if (url.startsWith('MYBRICKS://')) {
             const [schema, removeSchemaPart] = url.split('://');
             const [pathPart] = removeSchemaPart?.split('?');
             const [namespace, action] = pathPart?.split('/');
@@ -172,7 +180,7 @@ export default function View({onLoad, className = ''}: T_Props) {
                   url: urlSchema,
                   onSuccess,
                   onFailed,
-                  onClose: () => setSDKModalInfo({open: false}),
+                  onClose: () => setSDKModalInfo({ open: false }),
                 });
               } else if (urlSchema.endsWith('js')) {
                 axios.get(urlSchema).then((res) => {
@@ -184,7 +192,7 @@ export default function View({onLoad, className = ''}: T_Props) {
                     } else {
                       fn = window?.[action];
                     }
-                    fn({...params, onSuccess, onFailed});
+                    fn({ ...params, onSuccess, onFailed });
                   } catch (e) {
                     console.log(e);
                   }
@@ -193,14 +201,14 @@ export default function View({onLoad, className = ''}: T_Props) {
                 console.log('invalid url schema');
               }
             }
-          } else if(url.startsWith('http')) {
+          } else if (url.startsWith('http')) {
             setMaterialSelectorInfo({
               open: true,
               ...params,
               url: url,
               onSuccess,
               onFailed,
-              onClose: () => setMaterialSelectorInfo({open: false}),
+              onClose: () => setMaterialSelectorInfo({ open: false }),
             });
           }
         },
@@ -236,11 +244,12 @@ export default function View({onLoad, className = ''}: T_Props) {
                 content: jsonData
               }
             })
-          } catch(e) {
+          } catch (e) {
             console.log(e)
           }
         },
         save(value) {
+          if (!content) return Promise.reject('文件内容不存在');
           const saveContent = value.content
           if (saveContent) {
             content.saveLoading = true
@@ -248,9 +257,8 @@ export default function View({onLoad, className = ''}: T_Props) {
           return new Promise((resolve, reject) => {
             API.File.save(value)
               .then((res) => {
-                if (res?.version) {
-                  content.version = res.version
-                }
+                // @ts-ignore
+                if (res?.version) { content.version = res.version }
                 resolve(res)
               })
               .catch((err) => {
@@ -272,12 +280,12 @@ export default function View({onLoad, className = ''}: T_Props) {
   }, [user, fileId, content, config, installedApps, hierarchy]);
 
   return (
-    <GlobalContext.Provider value={{fileContent: content, user, fileId}}>
+    <GlobalContext.Provider value={{ fileContent: content, user, fileId }}>
       <div className={`${css.view} ${className}`}>
         {jsx}
-        {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo}/> : null}
+        {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo} /> : null}
         {materialSelectorInfo.open ? <ComponentSelector {...materialSelectorInfo} /> : null}
-        {openDocHelper && <DocHelper/>}
+        {openDocHelper && <DocHelper />}
       </div>
     </GlobalContext.Provider>
   )

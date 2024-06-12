@@ -88,12 +88,28 @@ export type T_Props = {
     meta: any;
     openUrl: (param: any) => any;
     projectId: any;
-	  moduleId: any;
+    moduleId: any;
     hierarchy: any;
     hasMaterialApp: boolean;
     openPreview(param: { toJSON: any, comlibs: any[] }): void;
     report(param: { jsonData: any }): void;
     defaultComlibs: Array<any>
     save(value: any): Promise<any>
-  }) => {}
+  }) => {};
+  useCustomLoad?: boolean;
+  onCustomLoad?: (props: {
+    user: any;
+    installedApps: any[];
+    config: any;
+    meta: any;
+    openUrl: (param: any) => any;
+    projectId: any;
+    moduleId: any;
+    hierarchy: any;
+    hasMaterialApp: boolean;
+    openPreview(param: { toJSON: any, comlibs: any[] }): void;
+    report(param: { jsonData: any }): void;
+    defaultComlibs: Array<any>
+    save(value: any): Promise<any>
+  }) => {};
 }
