@@ -57,7 +57,7 @@ export interface LockerProps {
   /** 编辑状态变更 1: 可编辑，其余均为查看 */
   statusChange?: (status: Status) => void
   /**
-   * 解锁页面前处理
+   * 解锁页面前处理，返回flase，不会解锁；返回true，正常解锁
    * @returns 
    */
   beforeToggleUnLock?: () => MaybePromise<boolean>
@@ -221,6 +221,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     if(status === 0 && lockerProps.beforeToggleUnLock) {
       const res  = await lockerProps.beforeToggleUnLock()
       if(res === false) {
+        // 返回false，不继续向下执行，即不进行解锁
         setOperationLoading(false)
         return
       }
