@@ -23,6 +23,7 @@ import { DownOutlined } from '@ant-design/icons'
 
 import { unifiedTime } from '../util';
 import GlobalContext from '../globalContext';
+import { MaybePromise } from '../type';
 
 // @ts-ignore
 import css from './index.less'
@@ -55,7 +56,11 @@ export interface LockerProps {
   pollable?: boolean
   /** 编辑状态变更 1: 可编辑，其余均为查看 */
   statusChange?: (status: Status) => void
-
+  /**
+   * 解锁页面前处理
+   * @returns 
+   */
+  beforeToggleUnLock?: () => MaybePromise<boolean>
   permissionRequest?: {
     show: boolean
     group?: boolean
@@ -211,9 +216,16 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     notificationToastKey.current = Notification({message: '当前页面未上锁', description: '如果需要编辑，请先点击头像上锁再进行编辑', showButton: false})
   }, [])
 
-  const lockToggle = useCallback((cooperationUser) => {
-    setOperationLoading(true)
+  const lockToggle = useCallback(async(cooperationUser) => {
     const status = cooperationUser.status === 1 ? 0 : 1
+    if(status === 0 && lockerProps.beforeToggleUnLock) {
+      const res  = await lockerProps.beforeToggleUnLock()
+      if(res === false) {
+        setOperationLoading(false)
+        return
+      }
+    }
+    setOperationLoading(true)
     return new Promise(() => {
       axios({
         method: 'post',
