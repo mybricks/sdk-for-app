@@ -11,6 +11,9 @@ export interface ViewProps {
   namespace: string;
 }
 
+export type MaybePromise<T> = T | PromiseLike<T>
+
+
 export interface FileContent {
   content: string;
   creatorName: string;
