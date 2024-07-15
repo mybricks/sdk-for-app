@@ -98,5 +98,10 @@ export const INLINE_ASSETS = [
 		tag: 'script',
 		path: 'public/json-schema-to-typescript.js',
 		CDN: 'https://f2.eckwai.com/kos/nlav12333/mybricks/babel/json-schema-to-typescript.js',
+	},
+	{
+		tag: 'script',
+		path: 'public/less@4.2.0.less.js',
+		CDN: 'https://f2.beckwai.com/kos/nlav12333/mybricks/less/less-4.2.0.js',
 	}
 ];
