@@ -66,6 +66,7 @@ function getMessageFromErrorException (err: Error, placeMessage = '未知错误'
   if (err?.stack?.toString) {
     return err.stack.toString();
   }
+  // @ts-ignore
   return err?.message || err?.msg || err?.errMsg || placeMessage
 }
 
