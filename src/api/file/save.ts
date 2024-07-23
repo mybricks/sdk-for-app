@@ -1,4 +1,4 @@
-import { getAxiosInstance } from '../util'
+import { getAxiosInstance, getMessageFromAxiosErrorException } from '../util'
 
 /**
  * 保存
@@ -20,10 +20,10 @@ function save(params: {userId: any, fileId: any, shareType?: any, name?: any, co
       if (data?.code === 1) {
         resolve(data?.data);
       } else {
-        reject('保存失败');
+        reject(`${data?.stack || data?.message || '保存失败，未知错误'}`)
       }
     }).catch((e: any) => {
-      reject(e.msg || '保存失败')
+      reject(getMessageFromAxiosErrorException(e, '保存失败'))
     })
   });
 }

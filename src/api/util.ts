@@ -1,5 +1,5 @@
 // @ts-ignore
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { isEnvOfGlobalEmit, isEnvOfServer } from './env'
 
 let AXIOS_INSTANCE: any = null
@@ -61,8 +61,29 @@ function getAxiosInstance() {
   return AXIOS_INSTANCE;
 }
 
+/** 从标准错误中获取错误字符串 */
+function getMessageFromErrorException (err: Error, placeMessage = '未知错误') {
+  if (err?.stack?.toString) {
+    return err.stack.toString();
+  }
+  return err?.message || err?.msg || err?.errMsg || placeMessage
+}
+
+/** 从Axios错误中获取错误字符串 */
+function getMessageFromAxiosErrorException (err: AxiosError, placeMessage = '未知错误') {
+  const errorMessage = getMessageFromErrorException(err, '');
+  if (err?.response) {
+    return `HTTP 异常，状态码为 ${err.response.status}${err.response.statusText || ''}，错误详情为 ${errorMessage}`
+  }
+
+  return errorMessage || placeMessage
+}
+
+
 export {
   init,
-  getAxiosInstance
+  getAxiosInstance,
+  getMessageFromErrorException,
+  getMessageFromAxiosErrorException
 }
 
