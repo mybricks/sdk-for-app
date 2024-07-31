@@ -10,6 +10,7 @@ import getTemplates from './getTemplates'
 import getDeliveryChannel from './getDeliveryChannel'
 import deleteFile from './delete'
 import deleteFileSaves from './deleteFileSaves'
+import deleteMutiFileSaves from './deleteMutiFileSaves'
 import publish from './publish'
 import getFileTreeMapByFile from './getFileTreeMapByFile'
 import getFiles from './getFiles'
@@ -42,6 +43,7 @@ const File = {
   getPubAssetPath,
   delete: deleteFile,
   deleteFileSaves,
+  deleteMutiFileSaves,
   getDeliveryChannel,
   updateDeliveryChannel,
   publish,
