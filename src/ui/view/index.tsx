@@ -200,6 +200,7 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
               } else {
                 console.log('invalid url schema');
               }
+              return () => setSDKModalInfo({ open: false });
             }
           } else if (url.startsWith('http')) {
             setMaterialSelectorInfo({
