@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import Save from './save'
 import Publish from './publish'
@@ -16,6 +16,8 @@ import styles from './index.less'
 //   Save,
 //   Workflows,
 // }
+
+const searchParams = new URL(location.href).searchParams;
 
 interface ToolbarProps {
   /** 返回按钮 */
@@ -47,11 +49,16 @@ const Toolbar = ({
     }
   }, [])
 
+  const hasBackIcon = useMemo(() => {
+    const noBackIcon = searchParams.get('noBackIcon') === '1';
+    return noBackIcon ? false : backIcon
+  }, [backIcon])
+
   return (
     <div className={styles.toolbar}>
       <div className={styles.left}>
         <div className={styles.leftContent}>
-          {backIcon ? (
+          {hasBackIcon ? (
             <div className={styles.back} onClick={handleBack}>
               {GoBack}
             </div>
