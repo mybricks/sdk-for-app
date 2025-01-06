@@ -55,7 +55,7 @@ export interface LockerProps {
   /** 是否轮询，默认开启 */
   pollable?: boolean
   /** 编辑状态变更 1: 可编辑，其余均为查看 */
-  statusChange?: (status: Status) => void
+  statusChange?: (status: Status, file?: File, extraFiles?: Record<string, User>, isNew?: boolean) => void
   /**
    * 解锁页面前处理，返回flase，不会解锁；返回true，正常解锁
    * @returns 
@@ -67,6 +67,11 @@ export interface LockerProps {
   }
   /** 开启版本对比 */
   compareVersion?: boolean
+
+  /**
+   * 需要额外返回的fileId对应当前上锁用户的信息
+   */
+  getExtraFileIds?: () => number[];
 }
 
 // @ts-ignore
@@ -190,10 +195,16 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
   /** 轮询 */
   const polling: () => Promise<{users: User[], roleDescription: RoleDescription}> = useCallback(() => {
     return new Promise((resolve) => {
-      getFileCooperationUsers({userId: user.id, fileId}).then(({users, roleDescription, file}) => {
+      getFileCooperationUsers({userId: user.id, fileId, extraFileIds: lockerProps.getExtraFileIds?.()}).then((res) => {
+        const { users, roleDescription, file, extraFiles } = res
         setCooperationUsers(users)
         setRoleDescription(roleDescription)
-        lockerProps.statusChange?.((users.find((item) => item.id === user.id))?.status || 0)
+        lockerProps.statusChange?.((
+          (users.find((item) => item.id === user.id))?.status || 0), 
+          file,
+          extraFiles,
+          "extraFiles" in res
+        )
         resolve({users, roleDescription})
         if (lockerProps.compareVersion) {
           setFile((oriFile) => {
@@ -776,11 +787,16 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, email
 }
 
 /** 获取协作用户信息 */
-async function getFileCooperationUsers ({userId, fileId}): Promise<{users: User[], roleDescription: RoleDescription}> {
+async function getFileCooperationUsers ({userId, fileId, extraFileIds}): Promise<{users: User[], roleDescription: RoleDescription}> {
   return new Promise((resolve, reject) => {
     axios({
       method: 'get',
-      url: `/paas/api/file/getCooperationUsers?userId=${userId}&fileId=${fileId}`
+      url: `/paas/api/file/getCooperationUsers`,
+      params: {
+        userId,
+        fileId,
+        extraFileIds
+      }
     }).then((res) => {
       const { code, data } = res.data || {}
       if (res.status === 200 && code === 1) {
