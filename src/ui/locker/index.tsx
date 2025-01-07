@@ -61,6 +61,10 @@ export interface LockerProps {
    * @returns 
    */
   beforeToggleUnLock?: () => MaybePromise<boolean>
+  /**
+   * 上锁前处理，返回false，不会上锁，返回true，正常上锁
+   */
+  beforeToggleLock?: () => MaybePromise<boolean>
   permissionRequest?: {
     show: boolean
     group?: boolean
@@ -72,6 +76,9 @@ export interface LockerProps {
    * 需要额外返回的fileId对应当前上锁用户的信息
    */
   getExtraFileIds?: () => number[];
+
+  /** 是否自动上锁 */
+  autoLock: boolean;
 }
 
 // @ts-ignore
@@ -195,7 +202,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
   /** 轮询 */
   const polling: () => Promise<{users: User[], roleDescription: RoleDescription}> = useCallback(() => {
     return new Promise((resolve) => {
-      getFileCooperationUsers({userId: user.id, fileId, extraFileIds: lockerProps.getExtraFileIds?.()}).then((res) => {
+      getFileCooperationUsers({userId: user.id, fileId, autoLock: lockerProps.autoLock, extraFileIds: lockerProps.getExtraFileIds?.()}).then((res) => {
         const { users, roleDescription, file, extraFiles } = res
         setCooperationUsers(users)
         setRoleDescription(roleDescription)
@@ -231,6 +238,13 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     const status = cooperationUser.status === 1 ? 0 : 1
     if(status === 0 && lockerProps.beforeToggleUnLock) {
       const res  = await lockerProps.beforeToggleUnLock()
+      if(res === false) {
+        // 返回false，不继续向下执行，即不进行解锁
+        setOperationLoading(false)
+        return
+      }
+    } else if (status === 1 && lockerProps.beforeToggleLock) {
+      const res  = await lockerProps.beforeToggleLock()
       if(res === false) {
         // 返回false，不继续向下执行，即不进行解锁
         setOperationLoading(false)
@@ -787,7 +801,7 @@ function ApplyModal({open, onCancel, fileContent, roleDescription, userId, email
 }
 
 /** 获取协作用户信息 */
-async function getFileCooperationUsers ({userId, fileId, extraFileIds}): Promise<{users: User[], roleDescription: RoleDescription}> {
+async function getFileCooperationUsers ({userId, fileId, autoLock, extraFileIds}): Promise<{users: User[], roleDescription: RoleDescription}> {
   return new Promise((resolve, reject) => {
     axios({
       method: 'get',
@@ -795,7 +809,8 @@ async function getFileCooperationUsers ({userId, fileId, extraFileIds}): Promise
       params: {
         userId,
         fileId,
-        extraFileIds
+        extraFileIds,
+        autoLock: autoLock ? 1 : 0
       }
     }).then((res) => {
       const { code, data } = res.data || {}
