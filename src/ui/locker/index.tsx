@@ -331,7 +331,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
         {showCooperationUsers.map((user) => {
           return (
             <Popover
-              key={user.userId}
+              key={user.id}
               placement='bottom'
               overlayClassName={css.overlayUsersListPopover}
               content={() => {
