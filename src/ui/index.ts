@@ -5,6 +5,7 @@ import Locker from './locker'
 import { openFilePanel } from './filePanel'
 import PreviewStorage from './view/previewStorage'
 import DocHelper from './docHelper/index';
+import { comlibsLoaderByDef } from "./comlibs";
 
 export {
   View,
@@ -13,5 +14,6 @@ export {
   openFilePanel,
   Locker,
   PreviewStorage,
-  DocHelper
+  DocHelper,
+  comlibsLoaderByDef
 }
