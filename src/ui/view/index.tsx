@@ -9,6 +9,9 @@ import { ComponentSelector } from '../componentSelector/index';
 import { getUrlParam, safeParse } from '../util';
 import GlobalContext from '../globalContext';
 import PreviewStorage from './previewStorage'
+import { getInitComLibs } from "../comlibs/getComlibs";
+import comLibLoader from "../comlibs/comLibLoader";
+import comLibAdder from "../comlibs/comLibAdder";
 // @ts-ignore
 import css from './css.less'
 
@@ -16,7 +19,7 @@ const DefaultConfig: IConfig = {
   system: {}
 }
 
-export default function View({ onLoad, useCustomLoad, onCustomLoad, className = '' }: T_Props) {
+export default function View({ onLoad, useCustomLoad, onCustomLoad, className = '', appType = "react" }: T_Props) {
   const [jsx, setJSX] = useState(<Loading />)
   const [user, setUser] = useState<any>({});
   const [config, setConfig] = useState<IConfig | null>(null);
@@ -40,6 +43,7 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
           HAINIU_UserInfo: localStorage.getItem('HAINIU_UserInfo')
         })
         if (loginUserRes?.data?.code !== 1) {
+          // @ts-ignore
           message.warn(loginUserRes.msg || '登录信息已过期，请重新登录', 2)
           setTimeout(() => {
             if (location.href.indexOf('jumped') === -1) {
@@ -126,6 +130,76 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
     else if (user && content && installedApps && config && !!Object.keys(hierarchy).length) loadFn = onLoad;
 
     if (loadFn) {
+      const ctx = {
+        latestComlibs: [],
+        hasMaterialApp: (installedApps || [])?.some?.((app: any) => app?.namespace === 'mybricks-material')
+      }
+      const openUrl = ({
+        url,
+        onFailed,
+        params = {},
+        onSuccess
+      }: { url: string, params: any, onSuccess: Function, onFailed: Function }) => {
+        if (url.startsWith('MYBRICKS://')) {
+          const [schema, removeSchemaPart] = url.split('://');
+          const [pathPart] = removeSchemaPart?.split('?');
+          const [namespace, action] = pathPart?.split('/');
+          let urlSchema = '';
+          installedApps?.forEach((app: IInstalledApp) => {
+            if (app.namespace === namespace) {
+              app?.exports?.forEach(e => {
+                if (e.name === action) {
+                  urlSchema = e.path;
+                }
+              })
+            }
+          });
+          if (!urlSchema) {
+            onFailed?.({
+              code: -1,
+              message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
+            })
+          } else {
+            if (urlSchema.endsWith('html')) {
+              setSDKModalInfo({
+                open: true,
+                params,
+                url: urlSchema,
+                onSuccess,
+                onFailed,
+                onClose: () => setSDKModalInfo({ open: false }),
+              });
+            } else if (urlSchema.endsWith('js')) {
+              axios.get(urlSchema).then((res) => {
+                try {
+                  eval(res.data);
+                  let fn;
+                  if (window?.[action]?.default) {
+                    fn = window?.[action]?.default;
+                  } else {
+                    fn = window?.[action];
+                  }
+                  fn({ ...params, onSuccess, onFailed });
+                } catch (e) {
+                  console.log(e);
+                }
+              })
+            } else {
+              console.log('invalid url schema');
+            }
+            return () => setSDKModalInfo({ open: false });
+          }
+        } else if (url.startsWith('http')) {
+          setMaterialSelectorInfo({
+            open: true,
+            ...params,
+            url: url,
+            onSuccess,
+            onFailed,
+            onClose: () => setMaterialSelectorInfo({ open: false }),
+          });
+        }
+      };
       const nodes = loadFn({
         user,
         get installedApps() {
@@ -147,72 +221,7 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
         get defaultComlibs() {
           return defaultComlibs
         },
-        openUrl({
-          url,
-          onFailed,
-          params = {},
-          onSuccess
-        }: { url: string, params: any, onSuccess: Function, onFailed: Function }) {
-          if (url.startsWith('MYBRICKS://')) {
-            const [schema, removeSchemaPart] = url.split('://');
-            const [pathPart] = removeSchemaPart?.split('?');
-            const [namespace, action] = pathPart?.split('/');
-            let urlSchema = '';
-            installedApps?.forEach((app: IInstalledApp) => {
-              if (app.namespace === namespace) {
-                app?.exports?.forEach(e => {
-                  if (e.name === action) {
-                    urlSchema = e.path;
-                  }
-                })
-              }
-            });
-            if (!urlSchema) {
-              onFailed?.({
-                code: -1,
-                message: `应用 ${namespace} 未对外暴露 ${action} 能力!`
-              })
-            } else {
-              if (urlSchema.endsWith('html')) {
-                setSDKModalInfo({
-                  open: true,
-                  params,
-                  url: urlSchema,
-                  onSuccess,
-                  onFailed,
-                  onClose: () => setSDKModalInfo({ open: false }),
-                });
-              } else if (urlSchema.endsWith('js')) {
-                axios.get(urlSchema).then((res) => {
-                  try {
-                    eval(res.data);
-                    let fn;
-                    if (window?.[action]?.default) {
-                      fn = window?.[action]?.default;
-                    } else {
-                      fn = window?.[action];
-                    }
-                    fn({ ...params, onSuccess, onFailed });
-                  } catch (e) {
-                    console.log(e);
-                  }
-                })
-              } else {
-                console.log('invalid url schema');
-              }
-              return () => setSDKModalInfo({ open: false });
-            }
-          } else if (url.startsWith('http')) {
-            setMaterialSelectorInfo({
-              open: true,
-              ...params,
-              url: url,
-              onSuccess,
-              onFailed,
-              onClose: () => setMaterialSelectorInfo({ open: false }),
-            });
-          }
-        },
+        openUrl,
         get projectId() {
           // @ts-ignore
           return hierarchy?.projectId
@@ -274,7 +283,48 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
                 }
               })
           })
-        }
+        },
+        getInitComLibs({ localComlibs, currentComlibs }) {
+          return new Promise((resolve, reject) => {
+            getInitComLibs({
+              defaultComlibs,
+              localComlibs,
+              currentComlibs,
+              appType
+            }).then((result) => {
+              ctx.latestComlibs = result.latestComlibs;
+              resolve(result)
+            }).catch(reject)
+          })
+        },
+        comLibAdder: ({ comlibs }) => {
+          return ctx.hasMaterialApp ? comLibAdder({
+            comlibs,
+            appType,
+            openUrl,
+            get latestComlibs() {
+              return ctx.latestComlibs
+            },
+            get hasMaterialApp() {
+              return ctx.hasMaterialApp
+            },
+            user,
+          }) : null
+        },
+        comLibLoader: ({ comlibs }) => {
+          return comLibLoader({
+            comlibs,
+            appType,
+            openUrl,
+            get latestComlibs() {
+              return ctx.latestComlibs
+            },
+            get hasMaterialApp() {
+              return ctx.hasMaterialApp
+            },
+            user,
+          });
+        },
       })
       setJSX(nodes as any)
     }
@@ -286,6 +336,7 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
         {jsx}
         {sdkModalInfo.open ? <SDKModal modalInfo={sdkModalInfo} /> : null}
         {materialSelectorInfo.open ? <ComponentSelector {...materialSelectorInfo} /> : null}
+        {/* @ts-ignore */}
         {openDocHelper && <DocHelper />}
       </div>
     </GlobalContext.Provider>

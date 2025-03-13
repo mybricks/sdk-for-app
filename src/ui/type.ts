@@ -81,6 +81,7 @@ export interface ViewRef {
 }
 
 export type T_Props = {
+  appType?: string;
   className?: string;
   onLoad: (props: {
     fileId: number;
@@ -98,6 +99,17 @@ export type T_Props = {
     report(param: { jsonData: any }): void;
     defaultComlibs: Array<any>
     save(value: any): Promise<any>
+    getInitComLibs({ 
+      localComlibs,  // 本地兼容组件库
+      currentComlibs, // 当前组件库
+      appType, // 应用类型 react、vue
+    }): Promise<any>
+    comLibLoader: ({
+      comlibs,
+    }) => any;
+    comLibAdder: ({
+      comlibs,
+    }) => any;
   }) => {};
   useCustomLoad?: boolean;
   onCustomLoad?: (props: {
