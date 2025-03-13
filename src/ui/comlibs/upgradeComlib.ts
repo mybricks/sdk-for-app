@@ -41,7 +41,7 @@ export const upgradeComlibByVersion = async (ctx: Record<string, any>, comlib: R
     const winIndex = window[ComLib_Edit].findIndex(lib => lib.namespace===namespace)
     if(index===-1 || winIndex===-1) return message.error(`找不到namespace为【${namespace}】的物料，检查物料namespace`);
     try {
-        const material = await upgradeExternal({ namespace, version })
+        const material = await upgradeExternal({ namespace, version, appType: ctx.appType })
         window[ComLib_Edit].splice(winIndex, 1)
         const { styles } =  await myRequire([material.editJs], (error) => {
             Promise.reject(error)

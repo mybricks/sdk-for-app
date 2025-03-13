@@ -7,7 +7,7 @@ export const addComlib = async (ctx: Record<string, any>, newComlib: Record<stri
     const { id, namespace, version } = newComlib
     if(!namespace) return message.error('缺少物料namespace')
     try {
-        const material = await upgradeExternal({ namespace, version })
+        const material = await upgradeExternal({ namespace, version, appType: ctx.appType })
         const { styles } =  await myRequire([material.editJs], (error) => {
             Promise.reject(error)
         })
