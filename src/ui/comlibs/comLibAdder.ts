@@ -66,7 +66,7 @@ export default (ctx) => (targetComlib) => {
   // }
 
   return new Promise((resolve) => {
-    ctx.sdk.openUrl({
+    ctx.openUrl({
       url: 'MYBRICKS://mybricks-material/materialSelectorPage',
       params: {
         defaultSelected: ctx.comlibs,
