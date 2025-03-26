@@ -65,7 +65,7 @@ const Toolbar = ({
           ) : (
             <div className={styles.back} />
           )}
-          <div className={styles.projectName} style={{ marginRight: 'auto' }}>
+          <div title={title} className={styles.projectName} style={{ marginRight: '10px' }}>
             {title}
           </div>
         </div>

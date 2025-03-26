@@ -15,7 +15,8 @@
     .leftContent {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      //标题居左
+      justify-content: start;
       width: 235px;
     }
 
@@ -38,6 +39,10 @@
 
     .projectName {
       padding: 3px 0 0 10px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      text-align: left;
     }
   }
 
@@ -61,6 +66,7 @@
     padding: 3px 13px;
     margin: 0 5px;
     font-size: 12px;
+    line-height: 12px;
     height: 22px;
     position: relative;
     background-color: #fff;
