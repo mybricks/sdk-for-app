@@ -14,7 +14,10 @@ export const upgradeLatestComlib = async (ctx: Record<string, any>, comlib: Reco
     try {
         const material = await upgradeExternal({ namespace, version, appType: ctx.appType })
         window[ComLib_Edit].splice(winIndex, 1)
-        const { styles } =  await myRequire([material.editJs], (error) => {
+        const { styles } =  await myRequire({
+                urls: [material.editJs],
+                ctx
+            }, (error) => {
             Promise.reject(error)
         })
         ctx.comlibs[index] = Object.assign({...ctx.comlibs[index], version: latestComlib.version, editJs, rtJs, id, coms}, material)
@@ -43,7 +46,10 @@ export const upgradeComlibByVersion = async (ctx: Record<string, any>, comlib: R
     try {
         const material = await upgradeExternal({ namespace, version, appType: ctx.appType })
         window[ComLib_Edit].splice(winIndex, 1)
-        const { styles } =  await myRequire([material.editJs], (error) => {
+        const { styles } =  await myRequire({
+            urls: [material.editJs],
+            ctx
+        }, (error) => {
             Promise.reject(error)
         })
         ctx.comlibs.splice(index, 1, Object.assign(comlib, material));

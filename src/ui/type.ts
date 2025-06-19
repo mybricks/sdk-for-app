@@ -106,9 +106,11 @@ export type T_Props = {
     }): Promise<any>
     comLibLoader: ({
       comlibs,
+      cleanStyles
     }) => any;
     comLibAdder: ({
       comlibs,
+      cleanStyles
     }) => any;
   }) => {};
   useCustomLoad?: boolean;

@@ -174,7 +174,7 @@ export default (ctx) => (libDesc) => {
                 message.loading({ content: '正在更新组件，请稍后...', key, duration: 0 });
 
                 const newComponents = updateCtxMyComlibComponents(updatedMaterials, comlibsComponents)
-                updateMyComponents(newComponents).then((myComlib: any) => {
+                updateMyComponents({nameAndVersions: newComponents, ctx}).then((myComlib: any) => {
                   message.success({ content: "更新成功", key, duration: 2})
                   resolve({
                     id: '_myself_',
@@ -244,7 +244,7 @@ export default (ctx) => (libDesc) => {
               },
               onSuccess: ({ materials, updatedMaterials }) => {
                 const newComponents = addSelfLibComponents(materials, comlibsComponents)
-                getComlibsByNamespaceAndVersion(newComponents).then((newComlib: any) => {
+                getComlibsByNamespaceAndVersion({nameAndVersions: newComponents, ctx}).then((newComlib: any) => {
                   resolve({
                     id: '_myself_',
                     title: '我的组件',
@@ -270,7 +270,7 @@ export default (ctx) => (libDesc) => {
                 message.loading({ content: '正在加载组件，请稍后...', key, duration: 0 });
 
                 const newComponents = updateCtxMyComlibComponents(updatedMaterials, comlibsComponents)
-                updateMyComponents(newComponents).then((myComlib: any) => {
+                updateMyComponents({nameAndVersions: newComponents, ctx}).then((myComlib: any) => {
                   message.success({ content: "加载成功", key, duration: 2})
                   resolve({
                     id: '_myself_',
@@ -314,7 +314,7 @@ export default (ctx) => (libDesc) => {
                 message.loading({ content: '正在加载组件，请稍后...', key, duration: 0 });
 
                 const newComponents = updateCtxMyComlibComponents(updatedMaterials, comlibsComponents)
-                updateMyComponents(newComponents).then((myComlib: any) => {
+                updateMyComponents({nameAndVersions: newComponents, ctx}).then((myComlib: any) => {
                   message.success({ content: "加载成功", key, duration: 2})
                   resolve({
                     id: '_myself_',

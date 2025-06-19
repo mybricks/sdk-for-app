@@ -297,7 +297,7 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
             }).catch(reject)
           })
         },
-        comLibAdder: ({ comlibs }) => {
+        comLibAdder: ({ comlibs, cleanStyles = true }) => {
           return ctx.hasMaterialApp ? comLibAdder({
             comlibs,
             appType,
@@ -309,9 +309,10 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
               return ctx.hasMaterialApp
             },
             user,
+            cleanStyles
           }) : null
         },
-        comLibLoader: ({ comlibs }) => {
+        comLibLoader: ({ comlibs, cleanStyles = true }) => {
           return comLibLoader({
             comlibs,
             appType,
@@ -323,6 +324,7 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
               return ctx.hasMaterialApp
             },
             user,
+            cleanStyles,
           });
         },
       })

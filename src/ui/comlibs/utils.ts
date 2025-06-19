@@ -38,7 +38,9 @@ function createScript(src, index) {
 
 let styleCount = 0
 
-export function myRequire(arr, onError): Promise<{ styles: any }> {
+export function myRequire(params, onError): Promise<{ styles: any }> {
+  const { urls: arr, ctx } = params
+  const { cleanStyles = true } = ctx;
   return new Promise((resolve, reject) => {
     if (!(arr instanceof Array)) {
       console.error('arr is not a Array')
@@ -82,7 +84,9 @@ export function myRequire(arr, onError): Promise<{ styles: any }> {
 
             if (REQ_TOTAL == REQLEN) {
               resolve({ styles })
-              removeStylesBySubstring('mybricks_comlib_')
+              if (cleanStyles) {
+                removeStylesBySubstring('mybricks_comlib_')
+              }
               // callback && callback.apply(this, EXP_ARR);
               document.head.appendChild = _headAppendChild
             }
@@ -216,7 +220,8 @@ export class ComboComlibURL {
 }
 
 
-export const getMySelfLibComsFromUrl = (url) => {
+export const getMySelfLibComsFromUrl = (params) => {
+  const { url, ctx } = params;
 
   if (url?.split('components=')?.[1]?.length === 0) {
     window['__comlibs_edit_'].unshift({
@@ -230,7 +235,10 @@ export const getMySelfLibComsFromUrl = (url) => {
   }
 
   return new Promise((resolve, reject) => {
-    myRequire([url], () => {
+    myRequire({
+      urls: [url],
+      ctx
+    }, () => {
       reject(new Error('加载我的组件失败'))
     }).then(({ styles }) => {
       /** 添加之后会有多组件存储于__comlibs_edit_需要合并下 */
@@ -260,10 +268,14 @@ interface NameAndVersion {
 
 type ComboLibType = 'rt' | 'edit'
 
-export const getComlibsByNamespaceAndVersion = (nameAndVersions: NameAndVersion[], comboLibType: ComboLibType = 'edit') => {
+export const getComlibsByNamespaceAndVersion = (params) => {
+  const { nameAndVersions, comboLibType = 'edit', ctx } = params;
   const comboComlibURL = new ComboComlibURL()
   comboComlibURL.setComponents(nameAndVersions)
-  return getMySelfLibComsFromUrl(comboLibType === 'edit' ? comboComlibURL.toEditUrl() : comboComlibURL.toRtUrl());
+  return getMySelfLibComsFromUrl({
+    url: comboLibType === 'edit' ? comboComlibURL.toEditUrl() : comboComlibURL.toRtUrl(),
+    ctx
+  });
 }
 
 const getMyComlib = () => {
@@ -317,12 +329,16 @@ const mergeMyComlib = (myComlib, newMyComlib) => {
   })
 }
 
-export const updateMyComponents = (nameAndVersions: NameAndVersion[], comboLibType: ComboLibType = 'edit') => {
+export const updateMyComponents = (params) => {
+  const { nameAndVersions, comboLibType = 'edit', ctx } = params;
   const comboComlibURL = new ComboComlibURL()
   comboComlibURL.setComponents(nameAndVersions)
 
   return new Promise((resolve, reject) => {
-    myRequire([comboLibType === 'edit' ? comboComlibURL.toEditUrl() : comboComlibURL.toRtUrl()], (err) => {
+    myRequire({
+      urls: [comboLibType === 'edit' ? comboComlibURL.toEditUrl() : comboComlibURL.toRtUrl()],
+      ctx
+    }, (err) => {
       reject(err)
     }).then(({ styles }) => {
       const { myComlib, newMyComlib } = getMyComlib();
