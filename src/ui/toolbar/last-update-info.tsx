@@ -9,6 +9,7 @@ import dayjs from 'dayjs'
 import { Loading } from './loading'
 
 import globalContext from '../globalContext'
+import { Cloud } from './svg/cloud'
 
 // @ts-ignore
 import css from './last-update-info.less'
@@ -21,7 +22,8 @@ const LoadingOutlined = window?.icons?.LoadingOutlined || NullComp
 export default function LastUpdate({
   loading = false,
   content = '',
-  onClick = () => {},
+  isModify = false,
+  onClick = () => { },
 }) {
   const { fileContent } = useContext(globalContext)
 
@@ -29,8 +31,8 @@ export default function LastUpdate({
     return content || (fileContent?._saveTime
       ? `改动已保存-${UpdateTime(fileContent?._saveTime)}`
       : `${fileContent?.updatorName ?? ''}保存于${UpdateTime(
-          fileContent?._updateTime
-        )}`)
+        fileContent?._updateTime
+      )}`)
   }, [content, fileContent?._saveTime, fileContent?.updatorName, fileContent?._updateTime])
 
   const Tip = useMemo(() => {
@@ -39,7 +41,10 @@ export default function LastUpdate({
         loadStatus={loading}
         render={
           <>
-            <ClockCircleOutlined className={css.clockIcon} />
+            <div className={css.cloudTips}>
+              {Cloud}
+              <div className={css.green_dot} style={isModify ? { background: "#F8B600" } : {}}></div>
+            </div>
             <span>{_content}</span>
           </>
         }
@@ -51,11 +56,11 @@ export default function LastUpdate({
         }
       />
     )
-  }, [_content, loading])
+  }, [_content, loading, isModify])
 
   return (
     <div className={css.lastUpdate}>
-      <Divider type="vertical" style={{ marginLeft: 0 }} />
+      {/* <Divider type="vertical" style={{ marginLeft: 0 }} /> */}
       <div className={css.content} onClick={onClick}>
         {Tip}
       </div>
