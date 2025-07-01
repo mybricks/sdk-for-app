@@ -71,6 +71,7 @@ const Toolbar = ({
         </div>
         {updateInfo}
       </div>
+      <div id="sdk_toolbar_center"></div>
       <div className={styles.right}>
         {children}
       </div>
