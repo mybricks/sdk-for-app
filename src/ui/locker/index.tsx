@@ -233,7 +233,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
   }, [])
 
   const notificationToast = useCallback(()=>{
-    notificationToastKey.current = Notification({message: '当前页面未上锁', description: '如果需要编辑，请先点击头像上锁再进行编辑', showButton: false})
+    notificationToastKey.current = Notification({message: '当前页面未上锁', description: '请点击头像上锁后，再进行编辑', showButton: false})
   }, [])
 
   const lockToggle = useCallback(async(cooperationUser) => {
