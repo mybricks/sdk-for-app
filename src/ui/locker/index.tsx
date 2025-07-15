@@ -25,6 +25,8 @@ import { unifiedTime } from '../util';
 import GlobalContext from '../globalContext';
 import { MaybePromise } from '../type';
 
+import updateTip from "./components/updateTip";
+
 // @ts-ignore
 import css from './index.less'
 
@@ -833,28 +835,61 @@ const iconGou = (
   </svg>
 )
 
-function Notification({message, description, showButton = true}) {
+function Notification({ message, description, showButton = true }) {
   const key = `open${Date.now()}`
-  const btn = showButton ? (
-    <div className='fangzhou-theme'>
-      <Button type='default' size='small' onClick={() => notification.close(key)} style={{marginRight: 8}}>
-        关闭
-      </Button>
-      <Button type='primary' size='small' onClick={() => window.location.reload()}>
-        刷新页面
-      </Button>
-    </div>
-  ) : void 0;
-  const args = {
-    message,
-    description,
-    duration: null,
-    btn,
-    key,
-    top: 40
+  // const btn = showButton ? (
+  //   <div className='fangzhou-theme'>
+  //     <Button type='default' size='small' onClick={() => notification.close(key)} style={{ marginRight: 8 }}>
+  //       关闭
+  //     </Button>
+  //     <Button type='primary' size='small' onClick={() => window.location.reload()}>
+  //       刷新页面
+  //     </Button>
+  //   </div>
+  // ) : void 0;
+
+  // const args = {
+  //   message,
+  //   description,
+  //   duration: null,
+  //   btn,
+  //   key,
+  //   style: { borderRadius: "8px", padding: "4px" },
+  //   top: 40
+  // }
+
+  // notification.warning(args)
+
+  const onCloseClick = ()=> {
+    notification.close(key)
   }
 
-  notification.warning(args)
+  const reLoadClick = ()=> {
+    window.location.reload()
+  }
+
+  notification.open({
+    key: key,
+    message: '',
+    style: { borderRadius: "8px", padding: "4px" },
+    description: (
+      <>
+        {updateTip({ 
+          message,
+          description,
+          showButton,
+          onClose:onCloseClick,
+          reLoad:reLoadClick 
+          })}
+      </>
+    ),
+    duration: null,
+    onClose: () => {
+      notification.close(key)
+    }
+  });
+
+
 
   return key;
 }
