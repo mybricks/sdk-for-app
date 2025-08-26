@@ -57,7 +57,8 @@ export interface LockerProps {
   /** 是否轮询，默认开启 */
   pollable?: boolean
   /** 编辑状态变更 1: 可编辑，其余均为查看 */
-  statusChange?: (status: Status, file?: File, extraFiles?: Record<string, User>, isNew?: boolean) => void
+  statusChange?: (params: {status: Status, file?: File, extraFiles?: Record<string, User>, isNew?: boolean, init?: boolean}) => void
+
   /**
    * 解锁页面前处理，返回flase，不会解锁；返回true，正常解锁
    * @returns 
@@ -81,6 +82,13 @@ export interface LockerProps {
 
   /** 是否自动上锁 */
   autoLock: boolean;
+
+  /** 
+   * 切换锁
+   * 1 上锁
+   * 0 解锁
+   */
+  toggleLock?: (status: number) => void;
 }
 
 // @ts-ignore
@@ -111,7 +119,8 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
   const [lockerContext] = useState<{
     timer: number | null,
     setTimer: () => void,
-    clearTimer: () => void
+    clearTimer: () => void,
+    init: boolean,
   }>({
     timer: null,
     setTimer() {
@@ -129,7 +138,8 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
         window.clearInterval(lockerContext.timer)
         lockerContext.timer = null
       }
-    }
+    },
+    init: false,
   });
   /** 协作用户信息 */
   const [cooperationUsers, setCooperationUsers] = useState<User[]>([])
@@ -147,21 +157,21 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     }
   }, [])
 
-  useEffect(() => {
-    if (!notificationToastKey.current) {
-      for (let item of cooperationUsers) {
-        if (user?.id === item?.id) {
-          if (item.status !== 1) {
-            // 第一次进入页面且没有上锁编辑弹出提示
-            notificationToast()
-          }
-          else {
-            break;
-          }
-        } 
-      }
-    }
-  }, [cooperationUsers])
+  // useEffect(() => {
+  //   if (!notificationToastKey.current) {
+  //     for (let item of cooperationUsers) {
+  //       if (user?.id === item?.id) {
+  //         if (item.status !== 1) {
+  //           // 第一次进入页面且没有上锁编辑弹出提示
+  //           notificationToast()
+  //         }
+  //         else {
+  //           break;
+  //         }
+  //       } 
+  //     }
+  //   }
+  // }, [cooperationUsers])
 
   useEffect(() => {
     if (!lockerProps.compareVersion) {
@@ -204,16 +214,22 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
   /** 轮询 */
   const polling: () => Promise<{users: User[], roleDescription: RoleDescription}> = useCallback(() => {
     return new Promise((resolve) => {
-      getFileCooperationUsers({userId: user.id, fileId, autoLock: lockerProps.autoLock, extraFileIds: lockerProps.getExtraFileIds?.()}).then((res) => {
+      getFileCooperationUsers({userId: user.id, fileId, autoLock: lockerProps.autoLock, extraFileIds: lockerProps.getExtraFileIds?.()}).then((res) => {        
         const { users, roleDescription, file, extraFiles } = res
         setCooperationUsers(users)
         setRoleDescription(roleDescription)
-        lockerProps.statusChange?.((
-          (users.find((item) => item.id === user.id))?.status || 0), 
-          file,
+
+        const params: any = {
+          status: ((users.find((item) => item.id === user.id))?.status || 0), 
+          file, 
           extraFiles,
-          "extraFiles" in res
-        )
+          isNew: "extraFiles" in res,
+        }
+        if (!lockerContext.init) {
+          lockerContext.init = true;
+          params.init = true;
+        }
+        lockerProps.statusChange?.(params)
         resolve({users, roleDescription})
         if (lockerProps.compareVersion) {
           setFile((oriFile) => {
@@ -255,28 +271,34 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     }
     setOperationLoading(true)
     return new Promise(() => {
+      const userId = user.id;
       axios({
         method: 'post',
         url: '/paas/api/file/toggleFileCooperationStatus',
         data: {
-          userId: user.id,
+          userId,
           fileId,
           status
         }
       }).then(({data}) => {
         if (data.data) {
-          if (status === 1) {
-            message.success('上锁成功')
-            // notificationToastKey不为空 有提示弹窗先销毁
-            if (!!notificationToastKey.current) {
-              notification?.close(notificationToastKey.current)
-              notificationToastKey.current = null
-            }
+          lockerContext.status = 1
+          if (lockerProps.toggleLock) {
+            lockerProps.toggleLock(status)
           } else {
-            message.success('解锁成功')
-            // 解锁没有编辑权限就弹出提示
-            if (!notificationToastKey.current) {
-              notificationToast()
+            if (status === 1) {
+              message.success('上锁成功')
+              // notificationToastKey不为空 有提示弹窗先销毁
+              // if (!!notificationToastKey.current) {
+              //   notification?.close(notificationToastKey.current)
+              //   notificationToastKey.current = null
+              // }
+            } else {
+              message.success('解锁成功')
+              // 解锁没有编辑权限就弹出提示
+              // if (!notificationToastKey.current) {
+              //   notificationToast()
+              // }
             }
           }
         } else {
