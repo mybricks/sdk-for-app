@@ -26,6 +26,7 @@ import GlobalContext from '../globalContext';
 import { MaybePromise } from '../type';
 
 import updateTip from "./components/updateTip";
+import { initialLockPrompt } from "./components/initialLockPrompt"
 
 // @ts-ignore
 import css from './index.less'
@@ -89,6 +90,11 @@ export interface LockerProps {
    * 0 解锁
    */
   toggleLock?: (status: number) => void;
+
+  /** 是否开启初始化锁提示 */
+  enableInitialLockPrompt?: boolean;
+  /** 搭建文件类型 */
+  type?: "spa" | "mpa"
 }
 
 // @ts-ignore
@@ -228,6 +234,15 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
         if (!lockerContext.init) {
           lockerContext.init = true;
           params.init = true;
+          if (lockerProps.enableInitialLockPrompt && params.status !== 1) {
+            // 开启初始化提示 && 未上锁状态
+            notificationToastKey.current = initialLockPrompt({ 
+              type: lockerProps.type,
+              onClose: () => {
+                notificationToastKey.current = null
+              }
+            })
+          }
         }
         lockerProps.statusChange?.(params)
         resolve({users, roleDescription})
@@ -282,7 +297,11 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
         }
       }).then(({data}) => {
         if (data.data) {
-          lockerContext.status = 1
+          if (status === 1 && notificationToastKey.current) {
+            // 上锁成功 && 有初始化提示，自动关闭提示
+            notification.close(notificationToastKey.current)
+            notificationToastKey.current = null
+          }
           if (lockerProps.toggleLock) {
             lockerProps.toggleLock(status)
           } else {
