@@ -230,6 +230,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
           file, 
           extraFiles,
           isNew: "extraFiles" in res,
+          roleDescription,
         }
         if (!lockerContext.init) {
           lockerContext.init = true;
