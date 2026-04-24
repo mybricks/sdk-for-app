@@ -6,6 +6,7 @@ import { openFilePanel } from './filePanel'
 import PreviewStorage from './view/previewStorage'
 import DocHelper from './docHelper/index';
 import { comlibsLoaderByDef } from "./comlibs";
+import GlobalContext from './globalContext'
 
 export {
   View,
@@ -15,5 +16,6 @@ export {
   Locker,
   PreviewStorage,
   DocHelper,
-  comlibsLoaderByDef
+  comlibsLoaderByDef,
+  GlobalContext
 }
