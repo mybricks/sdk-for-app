@@ -17,6 +17,8 @@ import {
   Input,
   Checkbox,
   notification,
+  Dropdown,
+  Divider,
 } from 'antd';
 import axios from 'axios';
 import { DownOutlined } from '@ant-design/icons'
@@ -27,6 +29,7 @@ import { MaybePromise } from '../type';
 
 import updateTip from "./components/updateTip";
 import { initialLockPrompt } from "./components/initialLockPrompt"
+import ChevronDownIcon from './ChevronDownIcon'
 
 // @ts-ignore
 import css from './index.less'
@@ -40,8 +43,10 @@ interface User {
   avatar?: string
   /** 名称 */
   name?: string
-  /** 邮箱/账号 */
-  userId: string
+  /** 邮箱 */
+  email?: string
+  /** 用户ID */
+  id: string
   /**
    * 状态
    * 0 在线
@@ -354,6 +359,11 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
     }
   }, [operationLoading, roleDescription])
 
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [hoveredAvatarId, setHoveredAvatarId] = useState<string | null>(null)
+
+  const MAX_DISPLAY_USER = 3
+
   /** 协作用户ui */
   const CooperationUsersList: JSX.Element = useMemo(() => {
     /** 协作用户数 */
@@ -364,51 +374,177 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
       return <></>
     }
 
-    /** 人数大于5，收起 */
-    const hasMore = userCount > 5
-    /** 仅展示5个用户信息 */
-    const showCooperationUsers = cooperationUsers.slice(0, 5)
+    /** 构建展示列表 */
+    let displayList = cooperationUsers
+    let resCollabList = cooperationUsers
+    const length = cooperationUsers?.length
+    
+    if (length > MAX_DISPLAY_USER) {
+      displayList = cooperationUsers.slice(0, MAX_DISPLAY_USER - 1)
+      resCollabList = displayList.slice(0, -1)
+    } else {
+      resCollabList = displayList.slice(0, -1)
+    }
+    const lastCollab = displayList[displayList.length - 1]
+    const isWrite = cooperationUsers.some(item => item.status === 1)
     const { id: currentUserId } = user
 
+    /** 渲染单个用户头像 */
+    const renderUserAvatar = (cooperationUser: User, isMe: boolean) => {
+      const avatarUrl = cooperationUser.avatar
+      const shouldShowLockTip = isMe && [1, 2].includes(roleDescription) && !isWrite
+      const userId = cooperationUser.id
+      
+      return (
+        <Spin spinning={operationLoading && currentUserId === userId} size={'small'}>
+          {avatarUrl ? (
+            <img src={avatarUrl} alt=""/>
+          ) : (
+            <div className={css.defaultAvatar}>
+              {(cooperationUser.name || cooperationUser.email || userId)?.slice(0, 1)}
+            </div>
+          )}
+          {cooperationUser.status === 1 && (
+            <span className={css.activeDot}>
+              <span className={css.animate}></span>
+            </span>
+          )}
+        </Spin>
+      )
+    }
+
+    /** 渲染下拉列表项 */
+    const renderListItem = (cooperationUser: User) => {
+      const isMe = cooperationUser.id === currentUserId
+      const avatarUrl = cooperationUser.avatar
+      const { name, status, id } = cooperationUser
+      
+      return (
+        <div key={id} className={css.dropdownItem}>
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={name || id} />
+          ) : (
+            <span className={css.defaultAvatar}>
+              {(name || id)?.slice(0, 1)}
+            </span>
+          )}
+          <div className={css.itemInfo}>
+            <div className={css.itemName}>
+              <span className={`${css.itemNameText} ${isMe ? css.itemNameTextWithMe : ''}`}>
+                {name || id}
+              </span>
+              {isMe && <span className={css.itemMeTag}>我</span>}
+            </div>
+            {/* <div className={css.itemRole}>{id}</div> */}
+          </div>
+          <div className={`${css.itemStatus} ${status === 1 ? css.itemStatusActive : ''}`}>
+            {status === 1 ? '编辑中' : '浏览中'}
+          </div>
+        </div>
+      )
+    }
+
     return (
-      <div className={css.cooperationUsersList}>
-        {showCooperationUsers.map((user) => {
+      <div className={css.collablist}>
+        {resCollabList?.map((cooperationUser) => {
+          const { id } = cooperationUser
+          const isMe = id === currentUserId
+          const shouldShowLockTip = isMe && [1, 2].includes(roleDescription) && !isWrite
+
           return (
-            <Popover
-              key={user.id}
-              placement='bottom'
-              overlayClassName={css.overlayUsersListPopover}
-              content={() => {
-                return (
-                  <div className={css.userInfo}>{user.name || user.email}</div>
-                )
-              }}
+            <div
+              className={`${css.avatar} ${css.collablistItem} ${css.withLine}`}
+              onClick={() => avatarClick(cooperationUser)}
+              key={id}
             >
-              <div className={css.userAvatar} onClick={() => avatarClick(user)}>
-                <Spin spinning={operationLoading && currentUserId === user.id} size={'small'}>
-                  {user.avatar ? (
-                    <img src={user.avatar}/>
-                  ) : (
-                    <div className={css.userCount}>{(user.name || user.email).slice(0, 1)}</div>
-                  )}
-                  {user.status === 1 && <span className={css.activeDot}>
-                    <span className={css.animate}></span>
-                  </span>}
-                </Spin>
-              </div>
-            </Popover>
+              {shouldShowLockTip ? (
+                <Popover
+                  content={<span>点击头像上锁后编辑</span>}
+                  placement="bottom"
+                  visible={hoveredAvatarId === id}
+                  overlayClassName={css.lockTipPopover}
+                >
+                  <span
+                    onMouseEnter={() => setHoveredAvatarId(id)}
+                    onMouseLeave={() => setHoveredAvatarId(null)}
+                  >
+                    {renderUserAvatar(cooperationUser, isMe)}
+                  </span>
+                </Popover>
+              ) : (
+                renderUserAvatar(cooperationUser, isMe)
+              )}
+            </div>
           )
         })}
-        {hasMore && (
-          <div className={css.userAvatar}>
-            <div className={css.userCount}>
-              {userCount > 99 ? '99+' : userCount}
-            </div>
-          </div>
-        )}
+        {(() => {
+          const lastAvatarUrl = lastCollab?.avatar
+          const isLastMe = lastCollab?.id === currentUserId
+          const shouldShowLockTip = isLastMe && [1, 2].includes(roleDescription) && !isWrite
+          const showLastLock = shouldShowLockTip && hoveredAvatarId === lastCollab?.id
+          
+          return (
+            <Dropdown
+              overlayClassName={css.customDropdown}
+              arrow={true}
+              trigger={['click']}
+              placement="bottomRight"
+              visible={dropdownOpen}
+              onVisibleChange={setDropdownOpen}
+              overlay={
+                <div className={css.dropdownContent}>
+                  <div className={css.dropdownScrollArea}>
+                    {cooperationUsers.map((cooperationUser) => {
+                      return renderListItem(cooperationUser)
+                    })}
+                  </div>
+                </div>
+              }
+            >
+              <div
+                className={`${css.avatar} ${css.collablistItem} ${css.moreAvatarTrigger} ${dropdownOpen ? css.moreAvatarTriggerActive : ''}`}
+                key="more"
+                style={{ cursor: 'pointer' }}
+              >
+                {lastCollab && (
+                  <span
+                    onClick={isLastMe ? (e) => {
+                      e.stopPropagation()
+                      avatarClick(lastCollab)
+                    } : undefined}
+                  >
+                    <Popover
+                      content={<span>点击头像上锁后编辑</span>}
+                      placement="bottom"
+                      visible={showLastLock}
+                      overlayClassName={css.lockTipPopover}
+                    >
+                      <span
+                        onMouseEnter={(e) => {
+                          e.stopPropagation()
+                          setHoveredAvatarId(lastCollab.id)
+                        }}
+                        onMouseLeave={(e) => {
+                          e.stopPropagation()
+                          setHoveredAvatarId(null)
+                        }}
+                      >
+                        {renderUserAvatar(lastCollab, isLastMe)}
+                      </span>
+                    </Popover>
+                  </span>
+                )}
+                <ChevronDownIcon
+                  className={css.downLine}
+                  style={{ flexShrink: 0, cursor: 'pointer' }}
+                />
+              </div>
+            </Dropdown>
+          )
+        })()}
       </div>
     )
-  }, [operationLoading, cooperationUsers]);
+  }, [operationLoading, cooperationUsers, roleDescription, dropdownOpen, hoveredAvatarId]);
 
   return (
     <div className={css.locker}>
