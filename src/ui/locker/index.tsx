@@ -425,7 +425,7 @@ function UI({user, fileId, fileContent, lockerProps}: {user, fileId, fileContent
             <img src={avatarUrl} alt={name || id} />
           ) : (
             <span className={css.defaultAvatar}>
-              {(name || id)?.slice(0, 1)}
+              {(name || id)?.slice?.(0, 1)}
             </span>
           )}
           <div className={css.itemInfo}>

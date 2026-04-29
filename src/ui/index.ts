@@ -8,6 +8,8 @@ import DocHelper from './docHelper/index';
 import { comlibsLoaderByDef } from "./comlibs";
 import GlobalContext from './globalContext'
 
+export * from './components'
+
 export {
   View,
   Loading,
