@@ -1,18 +1,18 @@
-import React, { forwardRef } from 'react'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
 import { THEME_CONFIG } from '../../constants'
 import { useTheme } from '../../hooks/useTheme'
 import styles from './index.less'
 
 interface ToolbarProps {
-  vbDesignContext?: any
-  disabled?: boolean
-  title?: string
-  isCurrentUser?: boolean
-  role?: string
-  onOK?: (values: { title?: string }) => Promise<void>
-  save?: (value?: { silent?: boolean }) => Promise<boolean>
-  canSave?: boolean
-  onNavigateAway?: () => boolean
+  appData: {
+    fileContent: {
+      name: string;
+      _updateTime: number
+      [key: string]: any
+    }
+    user: any
+    fileId: number
+  }
 }
 
 export interface TitlebarRef {
@@ -20,8 +20,15 @@ export interface TitlebarRef {
 }
 
 const DesignerTitleBar = forwardRef<TitlebarRef, ToolbarProps>(
-  ({ title }) => {
+  ({ appData }, ref) => {
     const { isDarkMode, currentAssets } = useTheme(THEME_CONFIG)
+    const [title, setTitle] = useState(appData.fileContent.name)
+
+    useImperativeHandle(ref, () => {
+      return {
+        setTitle
+      }
+    })
 
     const handleToHome = async () => {
       window.top!.location.href = '/'
