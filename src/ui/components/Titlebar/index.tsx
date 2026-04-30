@@ -31,7 +31,7 @@ const DesignerTitleBar = forwardRef<TitlebarRef, ToolbarProps>(
     })
 
     const handleToHome = async () => {
-      window.top!.location.href = '/'
+      window.location.href = '/workspace.html'
     }
 
     return (
