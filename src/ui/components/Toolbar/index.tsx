@@ -28,10 +28,13 @@ interface ToolbarProps {
   }
   moreActions: {
     icon: JSX.Element
-    title: string
+    title: string 
     onClick: () => void
   }[]
-  // downloadVibeUI: () => void
+  exportActions: {
+    title: string
+    onClick: () => (void | Promise<void>)
+  }[]
   onOperableChange: (operable: boolean) => void
   beforeToggleUnLock: () => Promise<boolean>
   onSave: () => Promise<void>
@@ -42,13 +45,14 @@ export interface TitlebarRef {
   setHasUnsaved: (hasUnsaved: boolean) => void
   setCanSave: (canSave: boolean) => void
   setIsSaving: (isSaving: boolean) => void
+  setIsExporting: (isExporting: boolean) => void
 }
 const DesignerToolBar = forwardRef<TitlebarRef, ToolbarProps>((props, ref) =>{ 
   const {
     appData,
     moreActions,
+    exportActions,
     onSave,
-    // downloadVibeUI,
     onOperableChange,
     beforeToggleUnLock
   } = props
@@ -57,6 +61,7 @@ const DesignerToolBar = forwardRef<TitlebarRef, ToolbarProps>((props, ref) =>{
   const [hasUnsaved, setHasUnsaved] = useState(false)
   const [canSave, setCanSave] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
   const appDataRef = useRef({
     fileContent: appData.fileContent,
     user: appData.user,
@@ -69,6 +74,7 @@ const DesignerToolBar = forwardRef<TitlebarRef, ToolbarProps>((props, ref) =>{
       setHasUnsaved,
       setCanSave,
       setIsSaving,
+      setIsExporting
     }
   })
 
@@ -118,13 +124,39 @@ const DesignerToolBar = forwardRef<TitlebarRef, ToolbarProps>((props, ref) =>{
                 保存
               </Button>
             </Badge>
-            {/* <div
-              data-mybricks-tip={`{content:'在 IDE 中打开',position:'bottom'}`}
-              className={styles['code_btn']}
-              onClick={() => downloadVibeUI()}
-            >
-              {code}
-            </div> */}
+            {exportActions ? (
+              <Popover
+                content={() => {
+                  return (
+                    <div className={styles.popoverContent}>
+                      {exportActions.map((action) => {
+                        const { title, onClick } = action
+                        return (
+                          <div className={styles.menuItem} onClick={async (e) => {
+                            try {
+                              setIsExporting(true)
+                              await onClick()
+                            } catch (e) {
+                              console.error('[SDK:Toolbar:export]', e)
+                            } finally {
+                              setIsExporting(false)
+                            }
+                          }}>
+                            <span className={styles.menuItemText}>{title}</span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )
+                }}
+                placement="bottomLeft"
+                overlayClassName={styles.toolbarPopover}
+              >
+                <Button size="small" loading={isExporting}>
+                  导出
+                </Button>
+              </Popover>
+            ) : null}
             {moreActions ? (
               <Popover
                 content={() => {
