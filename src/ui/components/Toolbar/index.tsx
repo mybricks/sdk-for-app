@@ -29,7 +29,7 @@ interface ToolbarProps {
   moreActions: {
     icon: JSX.Element
     title: string 
-    onClick: () => void
+    onClick: () => (void | Promise<void>)
   }[]
   exportActions: {
     title: string
@@ -67,6 +67,8 @@ const DesignerToolBar = forwardRef<TitlebarRef, ToolbarProps>((props, ref) =>{
     user: appData.user,
     fileId: appData.fileId
   })
+  const [exportPopoverOpen, setExportPopoverOpen] = useState(false)
+  const [morePopoverOpen, setMorePopoverOpen] = useState(false)
 
   useImperativeHandle(ref, () => {
     return {
@@ -126,6 +128,8 @@ const DesignerToolBar = forwardRef<TitlebarRef, ToolbarProps>((props, ref) =>{
             </Badge>
             {exportActions ? (
               <Popover
+                visible={exportPopoverOpen}
+                onVisibleChange={setExportPopoverOpen}
                 content={() => {
                   return (
                     <div className={styles.popoverContent}>
@@ -134,6 +138,7 @@ const DesignerToolBar = forwardRef<TitlebarRef, ToolbarProps>((props, ref) =>{
                         return (
                           <div className={styles.menuItem} onClick={async (e) => {
                             try {
+                              setExportPopoverOpen(false)
                               setIsExporting(true)
                               await onClick()
                             } catch (e) {
@@ -159,13 +164,22 @@ const DesignerToolBar = forwardRef<TitlebarRef, ToolbarProps>((props, ref) =>{
             ) : null}
             {moreActions ? (
               <Popover
+                visible={morePopoverOpen}
+                onVisibleChange={setMorePopoverOpen}
                 content={() => {
                   return (
                     <div className={styles.popoverContent}>
                       {moreActions.map((action) => {
                         const { icon, title, onClick } = action
                         return (
-                          <div className={styles.menuItem} onClick={onClick}>
+                          <div className={styles.menuItem} onClick={async () => {
+                            try {
+                              setMorePopoverOpen(false)
+                              await onClick()
+                            } catch (e) {
+                              console.error('[SDK:Toolbar:export]', e)
+                            }
+                          }}>
                             {icon}
                             <span className={styles.menuItemText}>{title}</span>
                           </div>
