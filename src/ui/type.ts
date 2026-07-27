@@ -103,6 +103,7 @@ export type T_Props = {
       localComlibs,  // 本地兼容组件库
       currentComlibs, // 当前组件库
       appType, // 应用类型 react、vue
+      defaultExternals, // 默认外部依赖
     }): Promise<any>
     comLibLoader: ({
       comlibs,

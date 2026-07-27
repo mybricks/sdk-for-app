@@ -9,7 +9,7 @@ import { ComponentSelector } from '../componentSelector/index';
 import { getUrlParam, safeParse } from '../util';
 import GlobalContext from '../globalContext';
 import PreviewStorage from './previewStorage'
-import { getInitComLibs } from "../comlibs/getComlibs";
+import { getInitComLibs, insertDeps } from "../comlibs/getComlibs";
 import comLibLoader from "../comlibs/comLibLoader";
 import comLibAdder from "../comlibs/comLibAdder";
 // @ts-ignore
@@ -284,15 +284,21 @@ export default function View({ onLoad, useCustomLoad, onCustomLoad, className = 
               })
           })
         },
-        getInitComLibs({ localComlibs, currentComlibs }) {
+        getInitComLibs({ localComlibs, currentComlibs, defaultExternals }) {
           return new Promise((resolve, reject) => {
             getInitComLibs({
               defaultComlibs,
               localComlibs,
               currentComlibs,
               appType
-            }).then((result) => {
+            }).then(async (result) => {
               ctx.latestComlibs = result.latestComlibs;
+              if (Array.isArray(defaultExternals) && defaultExternals.length) {
+                await insertDeps({
+                  libs: [{ externals: defaultExternals }],
+                  appType
+                });
+              }
               resolve(result)
             }).catch(reject)
           })
