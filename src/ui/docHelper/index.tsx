@@ -102,7 +102,11 @@ export default function ({ userName }) {
 
   const getTotalCategoryList = useCallback(() => {
     axios
-      .get(API_GET_TOTAL_CATEGORY_LIST)
+      .get(API_GET_TOTAL_CATEGORY_LIST,
+        {
+          withCredentials: false
+        }
+      )
       .then((res) => {
         if (res.data.code === 1 && res.data.data?.length) {
           setTotalCategoryList(res.data.data);
@@ -149,17 +153,20 @@ export default function ({ userName }) {
   );
 
   const getQuestionList = useCallback((category: string) => {
-    axios.get(`${API_GET_QUESTION_LIST}?category=${category}`).then((res) => {
-      if (res.data.code === 1 && res.data.data?.length) {
-        setQuestionList(
-          Array.from(new Set(res.data.data
-            .map((item) => {
-              return item.question.split("、");
-            })
-            .flat()))
-        );
-      }
-    });
+    axios.get(`${API_GET_QUESTION_LIST}?category=${category}`,
+      {
+        withCredentials: false
+      }).then((res) => {
+        if (res.data.code === 1 && res.data.data?.length) {
+          setQuestionList(
+            Array.from(new Set(res.data.data
+              .map((item) => {
+                return item.question.split("、");
+              })
+              .flat()))
+          );
+        }
+      });
   }, []);
 
   const filterQuestionList = useCallback(
@@ -264,6 +271,7 @@ export default function ({ userName }) {
             // pragma: 'no-cache',
             // 'Cache-Control': 'no-cache'
           },
+          withCredentials: false
         }
       )
       .then((res) => {
@@ -305,7 +313,11 @@ export default function ({ userName }) {
           id,
           评价: score,
         },
-      })
+      },
+        {
+          withCredentials: false
+        }
+      )
       .then((res) => {
         if (res.data.code === 1) {
           setMessages((pre) =>
